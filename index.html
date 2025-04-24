@@ -172,7 +172,11 @@
                 2025-04-24
               </p>
               <p class="post-excerpt text-hacker-color3 group-hover:text-white">
-                ...
+                笛卡尔积原理：连接表是一个很耗时的操作（A×B&amp;#x3D;A和B中每个元素的组合所组成的集合，就是连接表）
+1SELECT count(*) FROM information_schema.columns A, information_schema.columns B, information_schema.tables C;
+
+靶场实践（sqli-9）
+1?id=1 &amp;#x27; and if(length((select database()))&amp;gt;7,(select count(*) from information_schema.columns A,information_sche...
               </p>
             </a>
           </div>
