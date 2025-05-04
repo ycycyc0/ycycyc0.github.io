@@ -164,6 +164,25 @@
       <div class="w-full">
         
           <div class="post-item group border-b border-b-hacker-color3 ">
+            <a href="/2025/05/04/SQL%E6%B3%A8%E5%85%A5%E8%84%9A%E6%9C%AC/" class="block py-2 px-8 group-hover:bg-hacker-hover-color space-y-4">
+              <h2 class="post-title text-hacker-color1 group-hover:text-white font-bold text-2xl">
+                SQL注入脚本
+              </h2>
+              <p class="post-meta text-hacker-color3 text-sm group-hover:text-white">
+                2025-05-04
+              </p>
+              <p class="post-excerpt text-hacker-color3 group-hover:text-white">
+                布尔盲注脚本跑出数据库名称
+分析这个脚本应该有的结构：1.定义一个变量（输入目标的url）
+2.获取数据库长度的函数
+3.获取数据库名称的函数
+4.主程序的入口
+1234567891011121314151617181920212223242526272829303132 import requests url=&amp;quot;xxxxx&amp;quot; def get_length():    for i in range(10):        payloasd1=&amp;quot;?id=1%27%20and%20(length(database()))%20=%20&amp;#123;&amp;#125;%20--...
+              </p>
+            </a>
+          </div>
+        
+          <div class="post-item group border-b border-b-hacker-color3 ">
             <a href="/2025/04/24/%E7%AC%9B%E5%8D%A1%E5%B0%94%E7%A7%AF-%E6%97%B6%E9%97%B4%E7%9B%B2%E6%B3%A8/" class="block py-2 px-8 group-hover:bg-hacker-hover-color space-y-4">
               <h2 class="post-title text-hacker-color1 group-hover:text-white font-bold text-2xl">
                 笛卡尔积-时间盲注
