@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ycycyc - Spring基础</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/tailwind.css">
+    <link rel="stylesheet" href="/css/highlight.css">
+    <link rel="stylesheet" href="/css/toc.css">
+    
+<header class="bg-black text-hacker-white py-4 font-dos font-extrabold">
+    <div class="container mx-auto flex items-center justify-between space-x-8">
+    
+      <h1 class="text-2xl font-bold ml-[100px] md:ml-0 animate-pulse text-hacker-color1 md:mr-[20%]">
+        <a href="/" class="hover:text-white transition-colors select-none">
+          ycycyc
+        </a>
+      </h1>
+  
+    <!-- 大屏幕 -->
+      <nav class="hidden md:block">
+        <ul class="flex space-x-6">
+          
+            <li>
+              <a href="/" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Home
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Archives
+              </a>
+            </li>
+          
+            <li>
+              <a href="/categories" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Categories
+              </a>
+            </li>
+          
+            <li>
+              <a href="/tags" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                Tags
+              </a>
+            </li>
+          
+            <li>
+              <a href="/about" class="select-none text-lg hover:text-hacker-color1 transition-all hover:underline decoration-wavy duration-300 text-hacker-color3">
+                About
+              </a>
+            </li>
+          
+        </ul>
+      </nav>
+  
+      <!-- 小屏幕 -->
+      <button id="menu-toggle" class="block md:hidden text-white focus:outline-none">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  
+    <!-- 折叠菜单 -->
+    <nav id="mobile-menu" class="hidden bg-black">
+      <ul class="space-y-2 py-4 px-6">
+        
+          <li>
+            <a href="/" class="block text-white hover:text-hacker-color1 transition-colors">
+              Home
+            </a>
+          </li>
+        
+          <li>
+            <a href="/archives" class="block text-white hover:text-hacker-color1 transition-colors">
+              Archives
+            </a>
+          </li>
+        
+          <li>
+            <a href="/categories" class="block text-white hover:text-hacker-color1 transition-colors">
+              Categories
+            </a>
+          </li>
+        
+          <li>
+            <a href="/tags" class="block text-white hover:text-hacker-color1 transition-colors">
+              Tags
+            </a>
+          </li>
+        
+          <li>
+            <a href="/about" class="block text-white hover:text-hacker-color1 transition-colors">
+              About
+            </a>
+          </li>
+        
+      </ul>
+    </nav>
+   <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-F9W89HDHWL"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-F9W89HDHWL');
+</script>
+  
+    <!-- RSS Link -->
+    <link rel="alternate" type="application/rss+xml" title=" RSS" href="/rss.xml" />
+  </header>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="/js/search.js"></script>
+  <script>
+        document.addEventListener("DOMContentLoaded", () => {
+    const menuToggle = document.getElementById("menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+
+    menuToggle.addEventListener("click", () => {
+        if (mobileMenu.classList.contains("hidden")) {
+        mobileMenu.classList.remove("hidden");
+        } else {
+        mobileMenu.classList.add("hidden");
+        }
+    });
+    });
+
+  </script>
+  
+
+    <style>
+        p {
+            margin-top: 0 !important;
+            margin-bottom: 1rem !important;
+            font-size: 1.1rem;
+        }
+        figure {
+            margin: 0 !important;
+        }
+        pre {
+            padding: 0 !important;
+            margin-top: 0 !important;
+            margin-bottom: 1rem !important;
+        }
+        td {
+            padding: 0 !important;
+            margin-bottom: 1rem !important;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 0 !important;
+            margin-bottom: 1rem !important;
+        }
+        @media (min-width: 1024px) {
+            #middle-box {
+                min-width: 56rem;
+            }
+        }
+    </style>
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body class="bg-black text-hacker-color3 container mx-auto" style="overflow-x:hidden">
+    <!-- 文章标题 -->
+    <h1 class="text-5xl text-hacker-color1 font-bold font-dos my-6 text-center">Spring基础</h1>
+
+    <!-- 发布时间 -->
+    <p class="text-hacker-color3 text-center text-sm mb-4">
+        2025-07-23
+    </p>
+
+    <!-- 文章内容 -->
+    <div id="article-content" class="article-entry prose prose-invert mx-auto max-w-4xl leading-relaxed highlight" style="display: flex;">
+        <div id="middle-box">
+            <h1 id="Spring"><a href="#Spring" class="headerlink" title="Spring"></a>Spring</h1><h3 id="什么是spring？"><a href="#什么是spring？" class="headerlink" title="什么是spring？"></a>什么是spring？</h3><p>Java开发的一个分层的全栈轻量级的开发框架，以loC(反转控制)和AOP(面向切面编程)为内核。</p>
+<p>提供了web层的SpringMVC和持久层的Spring JDBCT模板</p>
+<h3 id="spring程序开发步骤"><a href="#spring程序开发步骤" class="headerlink" title="spring程序开发步骤"></a>spring程序开发步骤</h3><p>在之前的开发中的开发过程</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250709164334370.png" alt="image-20250709164334370"></p>
+<p>要在业务方法的内部调用一个对象，调用方法就是直接new对象，使用一个接口去具体的接受一个对象的实现。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250709164616886.png" alt="image-20250709164616886"></p>
+<p>上面是利用Spring框架去调用对象的大致的步骤，有一个作用就是方便解耦。</p>
+<pre class="line-numbers language-none"><code class="language-none">1.导入Spring开发包的基本包的坐标
+2.编写Dao接口和实现类
+3.创建Spring的核心配置文件(xml)
+4.在Spring配置文件中配置UserDaolmpl
+5.使用Spring的API获得Bean的实例<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="基于XML方式来实现spring框架的IOC功能"><a href="#基于XML方式来实现spring框架的IOC功能" class="headerlink" title="基于XML方式来实现spring框架的IOC功能"></a>基于XML方式来实现spring框架的IOC功能</h3><p>这是现在IDEA里面的文件结构</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250712212206233.png" alt="image-20250712212206233"></p>
+<p>在一个子maven的项目里面的resource下面创建一个xml的配置文件(XML Configuration File)，选择spring Config</p>
+<p>上图已经创建了Spring.xml文件</p>
+<p>强调一下目的：</p>
+<p><strong>让spring帮我们new对象，对象直接的依赖也让spring来为我们进行组织。</strong></p>
+<p>现在我们可以将UserDao和UserService配置成一个bean(通过bean标签进行配置)</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250712221006063.png" alt="image-20250712221006063"></p>
+<p>接下来注入依赖达到引用userDao的效果</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250713150115842.png" alt="image-20250713150115842"></p>
+<p>就这样对象里面依赖的另一个对象我们也依赖spring帮我们注入了。</p>
+<h3 id="springboot"><a href="#springboot" class="headerlink" title="springboot"></a>springboot</h3><p>javaweb的一个开发框架，简化开发，约定大于配置，能够迅速的开发web应用。</p>
+<h4 id="第一个springboot的应用程序"><a href="#第一个springboot的应用程序" class="headerlink" title="第一个springboot的应用程序"></a>第一个springboot的应用程序</h4><h5 id="1-基本框架的搭建"><a href="#1-基本框架的搭建" class="headerlink" title="1.基本框架的搭建"></a>1.基本框架的搭建</h5><p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250713163729077.png" alt="image-20250713163729077"></p>
+<p>这样一个基本的springboot的基本框架就搭建成功了</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250723010136851.png" alt="image-20250723010136851"></p>
+<p>而且单元测试成功，处在一个挂载的状态</p>
+<h5 id="2-springboot的基本框架下面创建项目步骤"><a href="#2-springboot的基本框架下面创建项目步骤" class="headerlink" title="2.springboot的基本框架下面创建项目步骤"></a>2.springboot的基本框架下面创建项目步骤</h5><p>接下来<em><strong>在application的同级目录下面创建包</strong></em></p>
+<p>先创建下面的几个包</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250713165147087.png" alt="image-20250713165147087"></p>
+<p>在controller下面配置一个简单的项目</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250713195347302.png" alt="image-20250713195347302"></p>
+<pre class="line-numbers language-none"><code class="language-none">解释一下上面两个注解的作用：
+首先是@RestController
+组合了 @Controller 和 @ResponseBody，表示该类是一个 REST 控制器，而且返回的类型是一个字符串。
+@RequestMapping：表示该方法处理路径为 &#x2F;hello 的请求。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>重启一下项目</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250713200623768.png" alt="image-20250713200623768"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250713200723742.png" alt="image-20250713200723742"></p>
+<p>这里就是成功调用了一个接口，接口的名字就是<strong><a target="_blank" rel="noopener" href="http://localhost:8080/hello">http://localhost:8080/hello</a></strong></p>
+<p>访问这个接口的结果如下</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250713200924610.png" alt="image-20250713200924610"></p>
+<p>注：查看注解的具体内容，按住ctrl再点击对应的注解。</p>
+<h5 id="3-Pom-xml内容的解析"><a href="#3-Pom-xml内容的解析" class="headerlink" title="3.Pom.xml内容的解析"></a>3.Pom.xml内容的解析</h5><p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250713213507074.png" alt="image-20250713213507074"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250713213530679.png" alt="image-20250713213530679"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250713213553762.png" alt="image-20250713213553762"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250713214001709.png" alt="image-20250713214001709"></p>
+<p>接下来重点解析一下pom.xml下面配置的依赖</p>
+<p>spring-web依赖：作用是为项目提供构建 <strong>Web 应用程序</strong> 所需的全套基础设施，下面是他包含的一下子依赖，</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250713203112496.png" alt="image-20250713203112496"></p>
+<p>补充：tomcat这里是作为一个默认的嵌入式容器</p>
+<h5 id="4-打jar包的插件怎么使用"><a href="#4-打jar包的插件怎么使用" class="headerlink" title="4.打jar包的插件怎么使用"></a>4.打jar包的插件怎么使用</h5><p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250714175733242.png" alt="image-20250714175733242"></p>
+<p>在maven窗口打开的项目可以看到Lifecycle模块里面还有一个package模块，双击pakage就可以进行打包</p>
+<p>打包之后的jar包相当于一个简单的没有视图层的应用程序放在target的目录下面</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250714182530556.png" alt="image-20250714182530556"></p>
+<p>打开文件所在的位置，使用powershell跳转到对应的目录下面就可以直接运行</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250714182714285.png" alt="image-20250714182714285"></p>
+<p>同样打开<a target="_blank" rel="noopener" href="http://localhost:8080/hello%E6%8E%A5%E5%8F%A3%E5%B0%B1%E5%8F%AF%E4%BB%A5%E8%AE%BF%E9%97%AE%E6%88%91%E4%BB%AC%E8%BF%99%E4%B8%AAjar%E5%8C%85%E4%B8%8B%E9%9D%A2%E7%9A%84%E9%A1%B9%E7%9B%AE%E7%9A%84%E5%86%85%E5%AE%B9">http://localhost:8080/hello接口就可以访问我们这个jar包下面的项目的内容</a></p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250714191141150.png" alt="image-20250714191141150"></p>
+<h4 id="几个注意的点"><a href="#几个注意的点" class="headerlink" title="几个注意的点"></a>几个注意的点</h4><h5 id="1-更改端口号："><a href="#1-更改端口号：" class="headerlink" title="1.更改端口号："></a>1.更改端口号：</h5><p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250714192419871.png" alt="image-20250714192419871"></p>
+<p>在resource目录下面的application.properties下面添加</p>
+<p>server.port&#x3D;要更改的端口号(比如8081)，重新运行程序，访问</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250714192604361.png" alt="image-20250714192604361"></p>
+<h5 id="2-更改springboot-banner"><a href="#2-更改springboot-banner" class="headerlink" title="2.更改springboot banner"></a>2.更改springboot banner</h5><p>也就是下面这个图案</p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250714193956810.png" alt="image-20250714193956810"></p>
+<p>使用springboot banner在线网站找到自己想要更改的banner，将他复制之后放入(在source目录下面创建的banner.txt文件中)</p>
+<p><a target="_blank" rel="noopener" href="https://www.bootschool.net/ascii">Spring Boot banner在线生成工具，制作下载英文banner.txt，修改替换banner.txt文字实现自定义，个性化启动banner-bootschool.net</a></p>
+<p><img src="https://cdn.jsdelivr.net/gh/ycycyc0/blogimg@main/img/image-20250714194852227.png" alt="image-20250714194852227"></p>
+<p>就这样banner更改成功。</p>
+
+        </div>
+        
+            <div class="post-container">
+                <aside class="toc-container">
+                    <button class="toc-toggle">文章目录</button>
+                    <nav class="toc" id="toc"></nav>
+                </aside>
+            </div>
+        
+    </div>
+    
+    <!-- 评论系统 -->
+    
+
+    <!-- 返回主页链接 -->
+    <div class="text-center my-8">
+        <a href="/" class="text-hacker-color1 underline hover:text-hacker-color2">← Back to Home</a>
+    </div>
+
+    <script src="/js/toc.js"></script>  <!-- 引入 TOC 逻辑 -->
+    <footer class="bg-black text-gray-400 py-4">
+    <div class="container mx-auto text-center">
+      <p>© <span id="current-year"></span>  ycycyc 
+        <br> Powered by <a class="hover:text-white duration-150 hover:underline decoration-slice" target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a> & <a class="hover:text-white duration-150 hover:underline decoration-slice" target="_blank" rel="noopener" href="https://github.com/m310ct/hexo-theme-hexploit">Hexpolit</a></p>
+    </div>
+  </footer>
+  
+  <script> 
+    document.getElementById("current-year").textContent = new Date().getFullYear();
+  </script>
+  
+
+</body>
+</html>
